@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:squick/modules/explore/screen/explore_screen.dart';
+import 'package:squick/modules/home/screen/home_screen.dart';
 import 'package:squick/modules/map/screen/map_screen.dart';
 import 'package:squick/modules/past_transactions/screen/past_transactions_screen.dart';
 import 'package:squick/modules/scan/screen/scan_screen.dart';
@@ -20,8 +21,9 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      initialRoute: MapScreen.id,
+      initialRoute: HomeScreen.id,
       routes: {
+        HomeScreen.id: (context) => HomeScreen(),
         MapScreen.id: (context) => MapScreen(),
         ExploreScreen.id: (context) => ExploreScreen(),
         TransactionsScreen.id: (context) => TransactionsScreen(),
