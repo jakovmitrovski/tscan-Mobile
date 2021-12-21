@@ -1,4 +1,7 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:squick/constants/app_constants.dart';
+import 'package:squick/widgets/squick_button.dart';
 
 class MapScreen extends StatefulWidget {
   static const String id = "/map";
@@ -11,13 +14,15 @@ class MapScreen extends StatefulWidget {
 
 class _MapScreenState extends State<MapScreen> {
 
-  int count = 0;
-
   @override
   Widget build(BuildContext context) {
 
     return Container(
-      child: Center(child: Text('Map Screen')),
+      child: Column(
+        children: [
+          Center(child: Text('Map Screen')),
+        ]
+      ),
     );
   }
 }

@@ -36,73 +36,83 @@ class _MenuState extends State<Menu> {
         : 'assets/images/wallet_inactive.png';
 
 
-    //TODO: ADD ELEVEATION
-    return BottomAppBar(
-      child: Container(
-        color: Colors.white60,
-        height: 60,
-        child: Row(
-          mainAxisSize: MainAxisSize.max,
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            Expanded(
-              child: GestureDetector(
-                onTap: () {
-                  if (!widget.explore) {
-                    widget.notify(0);
-                  }
-                },
-                child: Image.asset(
-                  exploreImage,
-                ),
-              ),
-            ),
-            Expanded(
-              child: GestureDetector(
-                onTap: () {
-                  if (!widget.map) {
-                    widget.notify(1);
-                  }
-                },
-                child: Image.asset(
-                  mapImage
-                ),
-              ),
-            ),
-            Expanded(
-              child: Container(
-                width: 40,
-                color: Colors.white,
-              ),
-            ),
-            Expanded(
-              child: GestureDetector(
-                onTap: (){
-                  if (!widget.transactions) {
-                    widget.notify(2);
-                  }
-                },
-                child: Image.asset(
-                  transactionsImage
-                ),
-              ),
-            ),
-            Expanded(
-              child: GestureDetector(
-                onTap: () {
-                  if (!widget.wallet) {
-                    widget.notify(3);
-                  }
-                },
-                child: Image.asset(
-                  walletImage
-                ),
-              ),
-            )
+    return Container(
+      decoration: BoxDecoration(
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.05),
+            blurRadius: 24,
+          ),
         ],
-        ),
       ),
-      notchMargin: 14.0, // TODO: DOZNAJ SO E OVA
+      child: BottomAppBar(
+        elevation: 5,
+        child: Container(
+          color: Colors.white60,
+          height: 60,
+          child: Row(
+            mainAxisSize: MainAxisSize.max,
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              Expanded(
+                child: GestureDetector(
+                  onTap: () {
+                    if (!widget.explore) {
+                      widget.notify(0);
+                    }
+                  },
+                  child: Image.asset(
+                    exploreImage,
+                  ),
+                ),
+              ),
+              Expanded(
+                child: GestureDetector(
+                  onTap: () {
+                    if (!widget.map) {
+                      widget.notify(1);
+                    }
+                  },
+                  child: Image.asset(
+                    mapImage
+                  ),
+                ),
+              ),
+              Expanded(
+                child: Container(
+                  width: 40,
+                  color: Colors.white,
+                ),
+              ),
+              Expanded(
+                child: GestureDetector(
+                  onTap: (){
+                    if (!widget.transactions) {
+                      widget.notify(2);
+                    }
+                  },
+                  child: Image.asset(
+                    transactionsImage
+                  ),
+                ),
+              ),
+              Expanded(
+                child: GestureDetector(
+                  onTap: () {
+                    if (!widget.wallet) {
+                      widget.notify(3);
+                    }
+                  },
+                  child: Image.asset(
+                    walletImage
+                  ),
+                ),
+              )
+          ],
+          ),
+        ),
+        notchMargin: 14.0,
+      ),
     );
   }
 }

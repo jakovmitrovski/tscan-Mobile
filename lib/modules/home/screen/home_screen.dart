@@ -67,14 +67,17 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        body: IndexedStack(
-          children: [
-            ExploreScreen(),
-            MapScreen(),
-            TransactionsScreen(),
-            WalletScreen()
-          ],
-          index: currentIndex,
+        body: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 25.0),
+          child: IndexedStack(
+            children: [
+              ExploreScreen(),
+              MapScreen(),
+              TransactionsScreen(),
+              WalletScreen()
+            ],
+            index: currentIndex,
+          ),
         ),
         floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
         floatingActionButton: const FloatingMenuButton(),
