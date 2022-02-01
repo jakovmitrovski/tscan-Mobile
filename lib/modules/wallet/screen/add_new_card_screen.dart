@@ -132,7 +132,6 @@ class _AddCardScreenState extends State<AddCardScreen> {
                   ..rotateY(0.0)
                   ..rotateZ(0.0),
                 child: CreditCardWidget(
-                  showPrimary: false,
                   cardNumber: cardNumber,
                   expiryDate: expiryDate,
                   cardHolderName: cardHolderName,

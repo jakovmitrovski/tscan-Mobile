@@ -178,8 +178,6 @@ class _WalletScreenState extends State<WalletScreen> {
                             decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(16)),
                             child: CreditCardWidget(
-                              showPrimary: true,
-                              isPrimary: card.isPrimary,
                               height: 190,
                               cardNumber: card.cardNumber,
                               expiryDate: card.expiryDate,

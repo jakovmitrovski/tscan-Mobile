@@ -102,7 +102,7 @@ class _HomeScreenState extends State<HomeScreen> {
           color: colorBlueLight,
           size: 100.0,
         ) : Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 25.0),
+          padding: isMap? const EdgeInsets.symmetric(horizontal: 0.0) : const EdgeInsets.symmetric(horizontal: 25.0),
           child: IndexedStack(
             children: [
               ExploreScreen(),
@@ -114,7 +114,7 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ),
         floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-        floatingActionButton: FloatingMenuButton(
+        floatingActionButton: (MediaQuery.of(context).viewInsets.bottom != 0) ? null : FloatingMenuButton(
           onPressed: () {
             _navigateWithLoader();
           }

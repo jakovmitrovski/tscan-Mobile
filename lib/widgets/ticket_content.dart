@@ -143,9 +143,8 @@ class TicketContent extends StatelessWidget {
               ),
               Padding(
                 padding: const EdgeInsets.all(10.0),
-                // TODO: change it with parking.image
                 child: Image.network(
-                  'https://squick-images.s3.eu-central-1.amazonaws.com/parking1.png',
+                  ticket.parking.imageUrl,
                 ),
               ),
             ]
@@ -181,7 +180,7 @@ class TicketContent extends StatelessWidget {
                       horizontal: 20.0, vertical: 10.0),
                   child: BarcodeWidget(
                     barcode: Barcode.codabar(),
-                    data: '98240972',
+                    data: ticket.ticketValue,
                   ),
                 ),
               ),
