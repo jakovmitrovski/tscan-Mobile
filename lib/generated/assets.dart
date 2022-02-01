@@ -2,12 +2,14 @@
 class Assets {
   Assets._();
 
+  static const String fontsRiverutaMedium = 'assets/fonts/Riveruta_Medium.ttf';
   static const String fontsRobotoBlack = 'assets/fonts/Roboto_Black.ttf';
   static const String fontsRobotoBold = 'assets/fonts/Roboto_Bold.ttf';
   static const String fontsRobotoLight = 'assets/fonts/Roboto_Light.ttf';
   static const String fontsRobotoMedium = 'assets/fonts/Roboto_Medium.ttf';
   static const String fontsRobotoRegular = 'assets/fonts/Roboto_Regular.ttf';
   static const String fontsRobotoThin = 'assets/fonts/Roboto_Thin.ttf';
+  static const String imagesBackButtonTicketInfo = 'assets/images/back_button_ticket_info.png';
   static const String imagesCardDesign0 = 'assets/images/card_design_0.png';
   static const String imagesCardDesign1 = 'assets/images/card_design_1.png';
   static const String imagesCardDesign2 = 'assets/images/card_design_2.png';
@@ -24,12 +26,16 @@ class Assets {
   static const String imagesMapInactive = 'assets/images/map_inactive.png';
   static const String imagesMasterCardLogo = 'assets/images/master_card_logo.png';
   static const String imagesNotPrimaryCard = 'assets/images/not_primary_card.png';
+  static const String imagesParkedCar = 'assets/images/parked_car.png';
+  static const String imagesParkingLogo = 'assets/images/parking_logo.png';
   static const String imagesPlusIcon = 'assets/images/plus_icon.png';
   static const String imagesPrimaryCard = 'assets/images/primary_card.png';
   static const String imagesScanTicket = 'assets/images/scan_ticket.png';
   static const String imagesSplash = 'assets/images/splash.png';
+  static const String imagesSuccessfulTransaction = 'assets/images/successful_transaction.png';
   static const String imagesTransactionsActive = 'assets/images/transactions_active.png';
   static const String imagesTransactionsInactive = 'assets/images/transactions_inactive.png';
+  static const String imagesUnsuccessfulTransaction = 'assets/images/unsuccessful_transaction.png';
   static const String imagesVisaLogo = 'assets/images/visa_logo.png';
   static const String imagesWalletActive = 'assets/images/wallet_active.png';
   static const String imagesWalletInactive = 'assets/images/wallet_inactive.png';

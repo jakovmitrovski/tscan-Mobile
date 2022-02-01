@@ -176,4 +176,12 @@ TextStyle font10Light =
 TextStyle font10Thin =
     Utils.getFont(fontSize: 10.0, fontWeight: FontWeight.w100);
 
+const kCreditCardTextStyle = TextStyle(
+  color: Colors.white,
+  fontFamily: 'Riveruta',
+  fontWeight: FontWeight.w500,
+  fontSize: 17.0,
+  letterSpacing: 2,
+);
+
 const kMaxNumberOfCreditCards = 4;

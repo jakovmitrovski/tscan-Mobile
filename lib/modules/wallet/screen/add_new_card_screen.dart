@@ -81,92 +81,78 @@ class _AddCardScreenState extends State<AddCardScreen> {
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.only(left: 10, right: 10),
-          child: Column(
-            children: <Widget>[
-              Padding(
-                padding: const EdgeInsets.only(top: 25.0, left: 10, right: 10),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Expanded(
-                      flex: 2,
-                      child: SizedBox(
-                        width: 44,
-                        height: 44,
-                        child: Material(
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10),
-                            side: const BorderSide(color: colorBlueDark),
-                          ),
-                          child: Padding(
-                            padding: const EdgeInsets.only(left: 8.0),
-                            child: InkWell(
-                              onTap: () {
-                                Navigator.pop(context);
-                              },
-                              child: const Icon(
-                                Icons.arrow_back_ios,
-                                color: colorBlueDark,
-                                size: 25,
-                              ),
-                            ),
-                          ),
+          child: SingleChildScrollView(
+            child: Column(
+              children: <Widget>[
+                Padding(
+                  padding: const EdgeInsets.only(top: 20,left: 10, right: 10),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Expanded(
+                        flex: 1,
+                        child: InkWell(
+                          onTap: () {
+                            Navigator.pop(context);
+                          },
+                          child: Image.asset(
+                              'assets/images/back_button_ticket_info.png'),
                         ),
                       ),
-                    ),
-                    Expanded(
-                      flex: 13,
-                      child: Text(
-                        'Додади картичка',
-                        style: font20Medium.copyWith(color: colorBlueDark),
-                        textAlign: TextAlign.center,
+                      Expanded(
+                        flex: 8,
+                        child: Text(
+                          'Додади картичка',
+                          style: font20Medium.copyWith(color: colorBlueDark),
+                          textAlign: TextAlign.center,
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
-              ),
-              Transform(
-                alignment: FractionalOffset.center,
-                transform: perspective.scaled(1.0, 1.0, 1.0)
-                  ..rotateX(pi - 200 * pi / 180)
-                  ..rotateY(0.0)
-                  ..rotateZ(0.0),
-                child: CreditCardWidget(
-                  cardNumber: cardNumber,
-                  expiryDate: expiryDate,
-                  cardHolderName: cardHolderName,
-                  cvvCode: cvvCode,
-                  showBackView: isCvvFocused,
-                  obscureCardNumber: false,
-                  obscureCardCvv: false,
-                  isHolderNameVisible: true,
-                  backgroundImage: 'assets/images/gradient_blue_background.png',
-                  cardBgColor: Colors.white.withOpacity(0.5),
-                  isSwipeGestureEnabled: true,
-                  onCreditCardWidgetChange:
-                      (CreditCardBrand creditCardBrand) {},
-                  customCardTypeIcons: <CustomCardTypeIcon>[
-                    CustomCardTypeIcon(
-                      cardType: CardType.mastercard,
-                      cardImage: Image.asset(
-                        'assets/images/master_card_logo.png',
-                        height: 48,
-                        width: 48,
+                Transform(
+                  alignment: FractionalOffset.center,
+                  transform: perspective.scaled(1.0, 1.0, 1.0)
+                    ..rotateX(pi - 200 * pi / 180)
+                    ..rotateY(0.0)
+                    ..rotateZ(0.0),
+                  child: CreditCardWidget(
+                    height:190,
+                    cardNumber: cardNumber,
+                    expiryDate: expiryDate,
+                    cardHolderName: cardHolderName,
+                    cvvCode: cvvCode,
+                    showBackView: isCvvFocused,
+                    obscureCardNumber: false,
+                    obscureCardCvv: false,
+                    isHolderNameVisible: true,
+                    backgroundImage:
+                        'assets/images/gradient_blue_background.png',
+                    cardBgColor: Colors.white.withOpacity(0.5),
+                    isSwipeGestureEnabled: true,
+                    onCreditCardWidgetChange:
+                        (CreditCardBrand creditCardBrand) {},
+                    customCardTypeIcons: <CustomCardTypeIcon>[
+                      CustomCardTypeIcon(
+                        cardType: CardType.mastercard,
+                        cardImage: Image.asset(
+                          'assets/images/master_card_logo.png',
+                          height: 48,
+                          width: 48,
+                        ),
                       ),
-                    ),
-                    CustomCardTypeIcon(
-                      cardType: CardType.visa,
-                      cardImage: Image.asset(
-                        'assets/images/visa_logo.png',
-                        height: 48,
-                        width: 48,
+                      CustomCardTypeIcon(
+                        cardType: CardType.visa,
+                        cardImage: Image.asset(
+                          'assets/images/visa_logo.png',
+                          height: 48,
+                          width: 48,
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
-              ),
-              Expanded(
-                child: SingleChildScrollView(
+                SingleChildScrollView(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: <Widget>[
@@ -324,8 +310,8 @@ class _AddCardScreenState extends State<AddCardScreen> {
                     ],
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
