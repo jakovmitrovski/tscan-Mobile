@@ -7,7 +7,6 @@ import 'package:squick/widgets/fab.dart';
 import 'package:squick/widgets/menu.dart';
 
 class HomeScreen extends StatefulWidget {
-
   static const String id = "/";
 
   const HomeScreen({Key? key}) : super(key: key);
@@ -17,48 +16,51 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-
   int currentIndex = 1;
-  bool isExplore = false, isMap = true, isTransactions = false, isWallet = false;
+  bool isExplore = false,
+      isMap = true,
+      isTransactions = false,
+      isWallet = false;
   Widget screen = MapScreen();
 
-  updateUI(int index){
-
-
+  updateUI(int index) {
     setState(() {
-
       currentIndex = index;
 
-      switch(index) {
-        case 0: {
-          isExplore = true;
-          isMap = false;
-          isTransactions = false;
-          isWallet = false;
-        }
-        break;
+      switch (index) {
+        case 0:
+          {
+            isExplore = true;
+            isMap = false;
+            isTransactions = false;
+            isWallet = false;
+          }
+          break;
 
-        case 1: {
-          isExplore = false;
-          isMap = true;
-          isTransactions = false;
-          isWallet = false;
-        }
-        break;
-        case 2: {
-          isExplore = false;
-          isMap = false;
-          isTransactions = true;
-          isWallet = false;
-        }
-        break;
-        default: {
-          isExplore = false;
-          isMap = false;
-          isTransactions = false;
-          isWallet = true;
-        }
-        break;
+        case 1:
+          {
+            isExplore = false;
+            isMap = true;
+            isTransactions = false;
+            isWallet = false;
+          }
+          break;
+        case 2:
+          {
+            isExplore = false;
+            isMap = false;
+            isTransactions = true;
+            isWallet = false;
+          }
+          break;
+        default:
+          {
+            isExplore = false;
+            isMap = false;
+            isTransactions = false;
+            isWallet = true;
+          }
+          break;
       }
     });
   }
@@ -68,7 +70,7 @@ class _HomeScreenState extends State<HomeScreen> {
     return SafeArea(
       child: Scaffold(
         body: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 25.0),
+          padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 15),
           child: IndexedStack(
             children: [
               ExploreScreen(),

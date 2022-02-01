@@ -16,12 +16,14 @@ class _MapScreenState extends State<MapScreen> {
 
   @override
   Widget build(BuildContext context) {
-
     return Container(
       child: Column(
-        children: [
-          Center(child: Text('Map Screen')),
-        ]
+          children: [
+            Center(child: Text('Map Screen')),
+            SquickButton(buttonText: 'buttonText', onTap: () {
+              print('hi');
+            },)
+          ]
       ),
     );
   }
