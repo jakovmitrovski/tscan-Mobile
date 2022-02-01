@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 
 class FloatingMenuButton extends StatelessWidget {
-  const FloatingMenuButton({Key? key}) : super(key: key);
+
+  final VoidCallback onPressed;
+  FloatingMenuButton({required this.onPressed});
 
   @override
   Widget build(BuildContext context) {
@@ -11,7 +13,7 @@ class FloatingMenuButton extends StatelessWidget {
       child: FittedBox(
         child: FloatingActionButton(
           elevation: 0,
-          onPressed: () {},
+          onPressed: onPressed,
           child: Image.asset('assets/images/scan_ticket.png'),
         ),
       ),

@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:squick/constants/app_constants.dart';
+import 'package:squick/models/ticket_info.dart';
 import 'package:squick/modules/explore/screen/explore_screen.dart';
 import 'package:squick/modules/map/screen/map_screen.dart';
 import 'package:squick/modules/past_transactions/screen/past_transactions_screen.dart';
+import 'package:squick/modules/ticket_information/screen/ticket_information_screen.dart';
 import 'package:squick/modules/wallet/screen/wallet_screen.dart';
+import 'package:squick/utils/helpers/scanner.dart';
 import 'package:squick/widgets/fab.dart';
 import 'package:squick/widgets/menu.dart';
 
@@ -22,6 +27,7 @@ class _HomeScreenState extends State<HomeScreen> {
       isTransactions = false,
       isWallet = false;
   Widget screen = MapScreen();
+  bool loading = false;
 
   updateUI(int index) {
     setState(() {
@@ -65,12 +71,38 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
+  void _navigateWithLoader() async {
+    setState(() {
+      loading = true;
+    });
+
+    final ticketInfo = await Scanner.scan(context);
+
+    setState(() {
+      loading = false;
+    });
+
+    if (ticketInfo == -1) {
+      print("Cancel pressed");
+      return;
+    }
+
+    Navigator.pushNamed(
+        context,
+        TicketInformation.id,
+        arguments: ticketInfo
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        body: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 15),
+        body: loading ? SpinKitDoubleBounce(
+          color: colorBlueLight,
+          size: 100.0,
+        ) : Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 25.0),
           child: IndexedStack(
             children: [
               ExploreScreen(),
@@ -82,7 +114,11 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ),
         floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-        floatingActionButton: const FloatingMenuButton(),
+        floatingActionButton: FloatingMenuButton(
+          onPressed: () {
+            _navigateWithLoader();
+          }
+        ),
         bottomNavigationBar: Menu(
           explore: isExplore,
           map: isMap,

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:squick/modules/completed_transaction/screen/completed_transaction.dart';
 import 'package:squick/modules/explore/screen/explore_screen.dart';
 import 'package:squick/modules/home/model/database.dart';
 import 'package:squick/modules/home/screen/home_screen.dart';
@@ -31,14 +32,15 @@ class MyApp extends StatelessWidget {
         ),
         initialRoute: HomeScreen.id,
         routes: {
-          HomeScreen.id: (context) => const HomeScreen(),
-          MapScreen.id: (context) => const MapScreen(),
-          ExploreScreen.id: (context) => const ExploreScreen(),
-          TransactionsScreen.id: (context) => const TransactionsScreen(),
-          ScanScreen.id: (context) => const ScanScreen(),
-          TicketInformation.id: (context) => const TicketInformation(),
-          WalletScreen.id: (context) => const WalletScreen(),
-          AddCardScreen.id: (context) => const AddCardScreen(),
+          HomeScreen.id: (context) => HomeScreen(),
+          MapScreen.id: (context) => MapScreen(),
+          ExploreScreen.id: (context) => ExploreScreen(),
+          TransactionsScreen.id: (context) => TransactionsScreen(),
+          ScanScreen.id: (context) => ScanScreen(),
+          TicketInformation.id: (context) => TicketInformation(),
+          WalletScreen.id: (context) => WalletScreen(),
+          CompletedTransactionScreen.id: (context) => CompletedTransactionScreen(),
+          AddCardScreen.id: (context) => AddCardScreen(),
         },
       ),
     );
