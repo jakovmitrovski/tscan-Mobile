@@ -3,10 +3,8 @@ import 'package:squick/models/parking.dart';
 class TicketInfo {
   String ticketValue;
   Parking parking;
-  // DateTime entered;
-  // DateTime exited;
-  String entered;
-  String exited;
+  DateTime entered;
+  DateTime exited;
   int price;
 
   TicketInfo({

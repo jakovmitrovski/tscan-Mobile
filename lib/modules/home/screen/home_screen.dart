@@ -96,8 +96,8 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        body: loading ? const SpinKitDoubleBounce(
-          color: colorBlueDark,
+        body: loading ? SpinKitDoubleBounce(
+          color: colorBlueLight,
           size: 100.0,
         ) : Padding(
           padding: const EdgeInsets.symmetric(horizontal: 25.0),

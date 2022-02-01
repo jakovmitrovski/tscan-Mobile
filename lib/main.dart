@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:squick/modules/completed_transaction/screen/completed_transaction.dart';
 import 'package:squick/modules/explore/screen/explore_screen.dart';
 import 'package:squick/modules/home/screen/home_screen.dart';
 import 'package:squick/modules/map/screen/map_screen.dart';
@@ -30,6 +31,7 @@ class MyApp extends StatelessWidget {
         ScanScreen.id: (context) => ScanScreen(),
         TicketInformation.id: (context) => TicketInformation(),
         WalletScreen.id: (context) => WalletScreen(),
+        CompletedTransactionScreen.id: (context) => CompletedTransactionScreen(),
       },
     );
   }
