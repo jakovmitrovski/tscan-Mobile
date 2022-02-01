@@ -2,21 +2,35 @@
 class Assets {
   Assets._();
 
-  static const String fontsRobotoBlack = 'assets/fonts/Roboto-Black.ttf';
-  static const String fontsRobotoBold = 'assets/fonts/Roboto-Bold.ttf';
-  static const String fontsRobotoLight = 'assets/fonts/Roboto-Light.ttf';
-  static const String fontsRobotoMedium = 'assets/fonts/Roboto-Medium.ttf';
-  static const String fontsRobotoRegular = 'assets/fonts/Roboto-Regular.ttf';
-  static const String fontsRobotoThin = 'assets/fonts/Roboto-Thin.ttf';
+  static const String fontsRobotoBlack = 'assets/fonts/Roboto_Black.ttf';
+  static const String fontsRobotoBold = 'assets/fonts/Roboto_Bold.ttf';
+  static const String fontsRobotoLight = 'assets/fonts/Roboto_Light.ttf';
+  static const String fontsRobotoMedium = 'assets/fonts/Roboto_Medium.ttf';
+  static const String fontsRobotoRegular = 'assets/fonts/Roboto_Regular.ttf';
+  static const String fontsRobotoThin = 'assets/fonts/Roboto_Thin.ttf';
+  static const String imagesCardDesign0 = 'assets/images/card_design_0.png';
+  static const String imagesCardDesign1 = 'assets/images/card_design_1.png';
+  static const String imagesCardDesign2 = 'assets/images/card_design_2.png';
+  static const String imagesCardDesign3 = 'assets/images/card_design_3.png';
+  static const String imagesCardDesign4 = 'assets/images/card_design_4.png';
+  static const String imagesCardDesign5 = 'assets/images/card_design_5.png';
+  static const String imagesCardDesign6 = 'assets/images/card_design_6.png';
+  static const String imagesDeleteGif = 'assets/images/delete_gif.gif';
   static const String imagesExploreActive = 'assets/images/explore_active.png';
   static const String imagesExploreInactive = 'assets/images/explore_inactive.png';
-  static const String imagesLogoWhite = 'assets/images/logo-white.png';
+  static const String imagesGradientBlueBackground = 'assets/images/gradient_blue_background.png';
+  static const String imagesLogoWhite = 'assets/images/logo_white.png';
   static const String imagesMapActive = 'assets/images/map_active.png';
   static const String imagesMapInactive = 'assets/images/map_inactive.png';
+  static const String imagesMasterCardLogo = 'assets/images/master_card_logo.png';
+  static const String imagesNotPrimaryCard = 'assets/images/not_primary_card.png';
+  static const String imagesPlusIcon = 'assets/images/plus_icon.png';
+  static const String imagesPrimaryCard = 'assets/images/primary_card.png';
   static const String imagesScanTicket = 'assets/images/scan_ticket.png';
   static const String imagesSplash = 'assets/images/splash.png';
   static const String imagesTransactionsActive = 'assets/images/transactions_active.png';
   static const String imagesTransactionsInactive = 'assets/images/transactions_inactive.png';
+  static const String imagesVisaLogo = 'assets/images/visa_logo.png';
   static const String imagesWalletActive = 'assets/images/wallet_active.png';
   static const String imagesWalletInactive = 'assets/images/wallet_inactive.png';
 
