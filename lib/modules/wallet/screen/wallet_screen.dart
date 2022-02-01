@@ -1,16 +1,14 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_credit_card/credit_card_brand.dart';
-import 'package:flutter_credit_card/credit_card_widget.dart';
-import 'package:flutter_credit_card/custom_card_type_icon.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:provider/provider.dart';
+import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:squick/constants/app_constants.dart';
 import 'package:squick/modules/home/model/database.dart';
 import 'package:squick/modules/wallet/model/credit_card.dart';
+import 'package:squick/modules/wallet/model/credit_card_widget.dart';
 import 'package:squick/modules/wallet/screen/add_new_card_screen.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
-import 'package:giffy_dialog/giffy_dialog.dart';
-import 'package:getwidget/getwidget.dart';
 import 'package:squick/widgets/alert_dialog.dart';
 
 class WalletScreen extends StatefulWidget {
@@ -110,118 +108,92 @@ class _WalletScreenState extends State<WalletScreen> {
                       itemBuilder: (BuildContext context, int index) {
                         CreditCard card = snapshot.data![index];
                         return Slidable(
-                          endActionPane: ActionPane(
-                            extentRatio: 0.2,
-                            motion: const BehindMotion(),
-                            children: [
-                              ElevatedButton(
-                                onPressed: card.isPrimary == 0
-                                    ? () {
-                                        showDialog(
-                                            context: context,
-                                            builder: (_) => NetworkGiffyDialog(
-                                                  image: Image.asset(
-                                                      "assets/images/delete_gif.gif"),
-                                                  title: Text(
-                                                    'Are you sure you want to delete this card?',
-                                                    textAlign: TextAlign.center,
-                                                    style:
-                                                        font22Medium.copyWith(
-                                                      color: Colors.black54,
-                                                    ),
+                            endActionPane: ActionPane(
+                              extentRatio: 0.3,
+                              motion: const ScrollMotion(),
+                              children: [
+                                ElevatedButton(
+                                  onPressed: card.isPrimary == 0
+                                      ? () {
+                                          Alert(
+                                              context: context,
+                                              type: AlertType.warning,
+                                              title:
+                                                  'Are you sure you want to delete this card?',
+                                              desc:
+                                                  'If you remove this card it will be permanently deleted.',
+                                              buttons: [
+                                                DialogButton(
+                                                  child: const Text(
+                                                    "Cancel",
+                                                    style: TextStyle(
+                                                        color: Colors.white,
+                                                        fontSize: 16),
                                                   ),
-                                                  description: const Text(
-                                                    'If you remove this card it will be permanently deleted.',
-                                                    textAlign: TextAlign.center,
+                                                  onPressed: () =>
+                                                      Navigator.pop(context),
+                                                  color: Colors.grey.shade400,
+                                                ),
+                                                DialogButton(
+                                                  child: const Text(
+                                                    "Delete card",
+                                                    style: TextStyle(
+                                                        color: Colors.white,
+                                                        fontSize: 16),
                                                   ),
-                                                  entryAnimation:
-                                                      EntryAnimation.BOTTOM,
-                                                  onOkButtonPressed: () {
+                                                  onPressed: () {
                                                     setState(() {
                                                       Provider.of<DatabaseProvider>(
-                                                              context,
-                                                              listen: false)
+                                                              context, listen:false)
                                                           .deleteCreditCard(
                                                               card.cardNumber);
                                                     });
                                                     Navigator.pop(context);
                                                   },
-                                                ));
-                                      }
-                                    : null,
-                                style: ButtonStyle(
-                                    fixedSize: MaterialStateProperty.all<Size>(
-                                      const Size(65, 65),
-                                    ),
-                                    backgroundColor: card.isPrimary == 1
-                                        ? MaterialStateProperty.all<Color>(
-                                            Colors.grey)
-                                        : MaterialStateProperty.all<Color>(
-                                            const Color(0xc8E32216),
-                                          ),
-                                    shape: MaterialStateProperty.all<
-                                            RoundedRectangleBorder>(
-                                        RoundedRectangleBorder(
-                                      borderRadius:
-                                          BorderRadius.circular(100.0),
-                                    ))),
-                                child: const Icon(
-                                  Icons.delete_forever,
-                                  color: Colors.white,
-                                  size: 30.0,
-                                ),
-                              ),
-                            ],
-                          ),
-                          child: Container(
-                            height: 220,
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(16)),
-                            child: CreditCardWidget(
-                              showPrimary: true,
-                              isPrimary: card.isPrimary,
-                              height: 190,
-                              cardNumber: card.cardNumber,
-                              expiryDate: card.expiryDate,
-                              cardHolderName: card.cardholderName,
-                              cvvCode: card.cvv,
-                              isHolderNameVisible: true,
-                              cardBgColor: colorGray,
-                              isChipVisible: false,
-                              backgroundImage: card.imageUrl,
-                              isSwipeGestureEnabled: false,
-                              onCreditCardWidgetChange:
-                                  (CreditCardBrand creditCardBrand) {},
-                              showBackView: false,
-                              customCardTypeIcons: <CustomCardTypeIcon>[
-                                CustomCardTypeIcon(
-                                  cardType: CardType.mastercard,
-                                  cardImage: Image.asset(
-                                    'assets/images/master_card_logo.png',
-                                    height: 48,
-                                    width: 48,
-                                  ),
-                                ),
-                                CustomCardTypeIcon(
-                                  cardType: CardType.visa,
-                                  cardImage: Image.asset(
-                                    'assets/images/visa_logo.png',
-                                    height: 48,
-                                    width: 48,
+                                                  color: colorBlueDarkLight,
+                                                )
+                                              ]).show();
+                                        }
+                                      : null,
+                                  style: ButtonStyle(
+                                      fixedSize:
+                                          MaterialStateProperty.all<Size>(
+                                        const Size(65, 65),
+                                      ),
+                                      backgroundColor: card.isPrimary == 1
+                                          ? MaterialStateProperty.all<Color>(
+                                              Colors.grey)
+                                          : MaterialStateProperty.all<Color>(
+                                              const Color(0xc8E32216),
+                                            ),
+                                      shape: MaterialStateProperty.all<
+                                              RoundedRectangleBorder>(
+                                          RoundedRectangleBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(100.0),
+                                      ))),
+                                  child: const Icon(
+                                    Icons.delete_forever,
+                                    color: Colors.white,
+                                    size: 30.0,
                                   ),
                                 ),
                               ],
                             ),
-                          ),
-                        );
+                            child: CustomCreditCardWidget(
+                              creditCard: CreditCard(card.imageUrl,
+                                  cardNumber: card.cardNumber,
+                                  expiryDate: card.expiryDate,
+                                  cvv: card.cvv,
+                                  cardholderName: card.cardholderName,
+                                  isPrimary: card.isPrimary),
+                            ));
                       },
                     );
                   } else {
-                    return const GFLoader(
-                      type: GFLoaderType.circle,
-                      loaderColorOne: colorBlueLight,
-                      loaderColorTwo: colorBlueLight,
-                      loaderColorThree: colorBlueLight,
+                    return const SpinKitDoubleBounce(
+                      color: colorBlueLight,
+                      size: 100.0,
                     );
                   }
                 },

@@ -63,6 +63,8 @@ class DatabaseProvider extends ChangeNotifier {
   }
 
   int getLastCreditCardImageNumber() {
+    if(_creditCards.isEmpty)
+      return 0;
     var imgUrlParts = _creditCards[count - 1].imageUrl.split("_");
     return int.parse(imgUrlParts[2].split(".")[0]);
   }
