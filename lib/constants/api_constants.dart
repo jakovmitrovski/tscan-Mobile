@@ -1,0 +1,1 @@
+const baseEndpoint = 'https://squick.herokuapp.com/api';
