@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:squick/utils/helpers/utils.dart';
 
 // BLUE
@@ -27,6 +28,8 @@ const creditCardLabelStyle = TextStyle(
   fontSize: 14.0,
   color: colorGrayDark,
 );
+
+const LatLng kCenterLocation = LatLng(41.98374140000001, 21.4369859);
 
 // TEXT CONSTANTS
 // FONT 36

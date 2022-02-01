@@ -150,6 +150,14 @@ class TicketContent extends StatelessWidget {
               child: Image.network(
                 ticket.parking.imageUrl,
               ),
+              Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: Image.network(
+                  ticket.parking.imageUrl,
+                ),
+              ),
+            ]
+          ),
             ),
           ]),
         ),
