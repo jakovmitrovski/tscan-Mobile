@@ -18,8 +18,13 @@ class CustomCreditCardWidget extends StatefulWidget {
 }
 
 class _CreditCardWidgetState extends State<CustomCreditCardWidget> {
+
   @override
   Widget build(BuildContext context) {
+
+    var height = MediaQuery.of(context).size.height;
+    var width = MediaQuery.of(context).size.width;
+
     return Stack(
       children: <Widget>[
         CreditCardWidget(
@@ -55,33 +60,33 @@ class _CreditCardWidgetState extends State<CustomCreditCardWidget> {
             ),
           ],
         ),
-        Positioned(
-          top: 30,
-          left: 30,
-          width: 40,
-          height: 40,
-          child: InkWell(
-            onTap: () {
-              setState(() {
-                widget.creditCard.isPrimary = 1;
-                CreditCard newCard = CreditCard(
-                    widget.creditCard.imageUrl.toString(),
-                    cardNumber: widget.creditCard.cardNumber,
-                    expiryDate: widget.creditCard.expiryDate,
-                    cvv: widget.creditCard.cvv,
-                    cardholderName: widget.creditCard.cardholderName,
-                    isPrimary: widget.creditCard.isPrimary);
-                Provider.of<DatabaseProvider>(context, listen: false)
-                    .updateCreditCard(newCard);
-              });
-            },
-            child: widget.creditCard.isPrimary == 1
-                ? Image.asset(
-                    'assets/images/primary_card.png',
-                  )
-                : Image.asset(
-                    'assets/images/not_primary_card.png',
-                  ),
+        Align(
+          alignment: Alignment.topLeft,
+          child: Padding(
+            padding: EdgeInsets.only(left: (width/12), top: (width/12)),
+            child: InkWell(
+              onTap: () {
+                setState(() {
+                  widget.creditCard.isPrimary = 1;
+                  CreditCard newCard = CreditCard(
+                      widget.creditCard.imageUrl.toString(),
+                      cardNumber: widget.creditCard.cardNumber,
+                      expiryDate: widget.creditCard.expiryDate,
+                      cvv: widget.creditCard.cvv,
+                      cardholderName: widget.creditCard.cardholderName,
+                      isPrimary: widget.creditCard.isPrimary);
+                  Provider.of<DatabaseProvider>(context, listen: false)
+                      .updateCreditCard(newCard);
+                });
+              },
+              child: widget.creditCard.isPrimary == 1
+                  ? Image.asset(
+                      'assets/images/primary_card.png',
+                    )
+                  : Image.asset(
+                      'assets/images/not_primary_card.png',
+                    ),
+            ),
           ),
         ),
       ],

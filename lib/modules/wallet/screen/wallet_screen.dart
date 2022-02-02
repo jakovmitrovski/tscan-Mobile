@@ -43,8 +43,8 @@ class _WalletScreenState extends State<WalletScreen> {
                     style: font32Black.copyWith(color: colorBlueDark),
                   ),
                   SizedBox(
-                      width: 44.23,
-                      height: 44.0,
+                      width: (MediaQuery.of(context).size.width - 50) / 7.03,
+                      height: (MediaQuery.of(context).size.width - 50) / 7.04,
                       child: Material(
                         color: colorBlue,
                         borderRadius: BorderRadius.circular(10),
@@ -85,9 +85,9 @@ class _WalletScreenState extends State<WalletScreen> {
                               Navigator.pushNamed(context, AddCardScreen.id);
                             }
                           },
-                          child: const Icon(
+                          child: Icon(
                             Icons.add,
-                            size: 25,
+                            size: ((MediaQuery.of(context).size.width) / 14.04),
                             color: Colors.white,
                           ),
                         ),
@@ -144,7 +144,8 @@ class _WalletScreenState extends State<WalletScreen> {
                                                   onPressed: () {
                                                     setState(() {
                                                       Provider.of<DatabaseProvider>(
-                                                              context, listen:false)
+                                                              context,
+                                                              listen: false)
                                                           .deleteCreditCard(
                                                               card.cardNumber);
                                                     });
@@ -158,7 +159,15 @@ class _WalletScreenState extends State<WalletScreen> {
                                   style: ButtonStyle(
                                       fixedSize:
                                           MaterialStateProperty.all<Size>(
-                                        const Size(65, 65),
+                                        Size(
+                                            ((MediaQuery.of(context)
+                                                    .size
+                                                    .width) /
+                                                5.538),
+                                            ((MediaQuery.of(context)
+                                                    .size
+                                                    .width) /
+                                                5.538)),
                                       ),
                                       backgroundColor: card.isPrimary == 1
                                           ? MaterialStateProperty.all<Color>(
@@ -172,10 +181,11 @@ class _WalletScreenState extends State<WalletScreen> {
                                         borderRadius:
                                             BorderRadius.circular(100.0),
                                       ))),
-                                  child: const Icon(
+                                  child: Icon(
                                     Icons.delete_forever,
                                     color: Colors.white,
-                                    size: 30.0,
+                                    size: ((MediaQuery.of(context).size.width) /
+                                        12),
                                   ),
                                 ),
                               ],

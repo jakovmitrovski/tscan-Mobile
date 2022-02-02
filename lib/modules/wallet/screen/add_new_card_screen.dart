@@ -10,6 +10,7 @@ import 'package:squick/modules/home/model/database.dart';
 import 'package:squick/modules/wallet/model/credit_card.dart';
 import 'package:squick/widgets/alert_dialog.dart';
 import 'package:squick/widgets/squick_button.dart';
+import 'package:iconly/iconly.dart';
 
 class AddCardScreen extends StatefulWidget {
   static String id = '/add-card';
@@ -81,81 +82,80 @@ class _AddCardScreenState extends State<AddCardScreen> {
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.only(left: 10, right: 10),
-          child: SingleChildScrollView(
-            child: Column(
-              children: <Widget>[
-                Padding(
-                  padding: const EdgeInsets.only(top: 20,left: 10, right: 10),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Expanded(
-                        flex: 1,
-                        child: InkWell(
-                          onTap: () {
-                            Navigator.pop(context);
-                          },
-                          child: Image.asset(
-                              'assets/images/back_button_ticket_info.png'),
-                        ),
+          child: Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(top: 15,left: 10, right: 10),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Expanded(
+                      flex: 1,
+                      child: IconButton(
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
+                        icon: const Icon(IconlyLight.arrow_left_2),
                       ),
-                      Expanded(
-                        flex: 8,
-                        child: Text(
-                          'Додади картичка',
-                          style: font20Medium.copyWith(color: colorBlueDark),
-                          textAlign: TextAlign.center,
-                        ),
+                    ),
+                    Expanded(
+                      flex: 12,
+                      child: Text(
+                        'Додади картичка',
+                        style: font20Medium.copyWith(color: colorBlueDark),
+                        textAlign: TextAlign.center,
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
-                Transform(
-                  alignment: FractionalOffset.center,
-                  transform: perspective.scaled(1.0, 1.0, 1.0)
-                    ..rotateX(pi - 200 * pi / 180)
-                    ..rotateY(0.0)
-                    ..rotateZ(0.0),
-                  child: CreditCardWidget(
-                    height:190,
-                    cardNumber: cardNumber,
-                    expiryDate: expiryDate,
-                    cardHolderName: cardHolderName,
-                    cvvCode: cvvCode,
-                    showBackView: isCvvFocused,
-                    obscureCardNumber: false,
-                    obscureCardCvv: false,
-                    isHolderNameVisible: true,
-                    backgroundImage:
-                        'assets/images/gradient_blue_background.png',
-                    cardBgColor: Colors.white.withOpacity(0.5),
-                    isSwipeGestureEnabled: true,
-                    onCreditCardWidgetChange:
-                        (CreditCardBrand creditCardBrand) {},
-                    customCardTypeIcons: <CustomCardTypeIcon>[
-                      CustomCardTypeIcon(
-                        cardType: CardType.mastercard,
-                        cardImage: Image.asset(
-                          'assets/images/master_card_logo.png',
-                          height: 48,
-                          width: 48,
-                        ),
+              ),
+              Transform(
+                alignment: FractionalOffset.center,
+                transform: perspective.scaled(1.0, 1.0, 1.0)
+                  ..rotateX(pi - 200 * pi / 180)
+                  ..rotateY(0.0)
+                  ..rotateZ(0.0),
+                child: CreditCardWidget(
+                  height: 200,
+                  cardNumber: cardNumber,
+                  expiryDate: expiryDate,
+                  cardHolderName: cardHolderName,
+                  cvvCode: cvvCode,
+                  showBackView: isCvvFocused,
+                  obscureCardNumber: false,
+                  obscureCardCvv: false,
+                  isHolderNameVisible: true,
+                  backgroundImage:
+                      'assets/images/gradient_blue_background.png',
+                  cardBgColor: Colors.white.withOpacity(1),
+                  isSwipeGestureEnabled: true,
+                  onCreditCardWidgetChange:
+                      (CreditCardBrand creditCardBrand) {},
+                  customCardTypeIcons: <CustomCardTypeIcon>[
+                    CustomCardTypeIcon(
+                      cardType: CardType.mastercard,
+                      cardImage: Image.asset(
+                        'assets/images/master_card_logo.png',
+                        height: 48,
+                        width: 48,
                       ),
-                      CustomCardTypeIcon(
-                        cardType: CardType.visa,
-                        cardImage: Image.asset(
-                          'assets/images/visa_logo.png',
-                          height: 48,
-                          width: 48,
-                        ),
+                    ),
+                    CustomCardTypeIcon(
+                      cardType: CardType.visa,
+                      cardImage: Image.asset(
+                        'assets/images/visa_logo.png',
+                        height: 48,
+                        width: 48,
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
-                SingleChildScrollView(
+              ),
+              Expanded(
+                child: SingleChildScrollView(
                   child: Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: <Widget>[
+                    children: [
                       CreditCardForm(
                         formKey: formKey,
                         obscureCvv: false,
@@ -170,6 +170,7 @@ class _AddCardScreenState extends State<AddCardScreen> {
                         textColor: colorBlueDark,
                         cursorColor: colorBlueDark,
                         cardNumberDecoration: InputDecoration(
+                          contentPadding: const EdgeInsets.all(8.0),
                           labelText: 'Број на картичка',
                           hintText: 'XXXX XXXX XXXX XXXX',
                           filled: true,
@@ -180,6 +181,7 @@ class _AddCardScreenState extends State<AddCardScreen> {
                           enabledBorder: border,
                         ),
                         expiryDateDecoration: InputDecoration(
+                          contentPadding: const EdgeInsets.all(8.0),
                           hintStyle: creditCardLabelStyle,
                           labelStyle: creditCardLabelStyle,
                           filled: true,
@@ -190,6 +192,7 @@ class _AddCardScreenState extends State<AddCardScreen> {
                           hintText: 'XX/XX',
                         ),
                         cvvCodeDecoration: InputDecoration(
+                          contentPadding: const EdgeInsets.all(8.0),
                           label: const Text('CVV'),
                           hintStyle: creditCardLabelStyle,
                           labelStyle: creditCardLabelStyle,
@@ -200,6 +203,7 @@ class _AddCardScreenState extends State<AddCardScreen> {
                           hintText: 'XXX',
                         ),
                         cardHolderDecoration: InputDecoration(
+                          contentPadding: const EdgeInsets.all(8.0),
                           hintStyle: creditCardLabelStyle,
                           labelStyle: creditCardLabelStyle,
                           filled: true,
@@ -216,7 +220,8 @@ class _AddCardScreenState extends State<AddCardScreen> {
                         children: [
                           Text(
                             'Примарна',
-                            style: font14Regular.copyWith(color: colorBlueDark),
+                            style:
+                            font14Regular.copyWith(color: colorBlueDark),
                           ),
                           Switch(
                             value: isPrimary,
@@ -245,64 +250,64 @@ class _AddCardScreenState extends State<AddCardScreen> {
                                 isPrimary: isPrimary ? 1 : 0,
                               );
                               Provider.of<DatabaseProvider>(context,
-                                      listen: false)
+                                  listen: false)
                                   .insertCreditCard(card)
                                   .then(
-                                    (element) => Provider.of<DatabaseProvider>(
-                                                context,
-                                                listen: false)
-                                            .isValid
-                                        ? Navigator.pop(context)
-                                        : showDialog(
-                                            context: context,
-                                            builder: (_) => CustomAlertDialog(
-                                                alertTitle: 'Oops!',
-                                                alertContent:
-                                                    'Looks like you already have this card in your wallet.',
-                                                actions: [
-                                                  TextButton(
-                                                    child: Text(
-                                                      'Go back',
-                                                      style:
-                                                          font12Medium.copyWith(
-                                                        color: colorBlueDark,
-                                                      ),
-                                                    ),
-                                                    style: ButtonStyle(
-                                                      backgroundColor:
-                                                          MaterialStateProperty
-                                                              .all<Color>(
-                                                                  colorGrayDark),
-                                                    ),
-                                                    onPressed: () {
-                                                      Navigator.of(context)
-                                                          .pop();
-                                                      Navigator.of(context)
-                                                          .pop();
-                                                    },
-                                                  ),
-                                                  TextButton(
-                                                    child: Text(
-                                                      'Modify card',
-                                                      style:
-                                                          font12Medium.copyWith(
-                                                              color:
-                                                                  Colors.white),
-                                                    ),
-                                                    style: ButtonStyle(
-                                                      backgroundColor:
-                                                          MaterialStateProperty
-                                                              .all<Color>(
-                                                                  colorBlueDark),
-                                                    ),
-                                                    onPressed: () {
-                                                      Navigator.of(context)
-                                                          .pop();
-                                                    },
-                                                  )
-                                                ]),
+                                    (element) => Provider.of<
+                                    DatabaseProvider>(context,
+                                    listen: false)
+                                    .isValid
+                                    ? Navigator.pop(context)
+                                    : showDialog(
+                                  context: context,
+                                  builder: (_) => CustomAlertDialog(
+                                      alertTitle: 'Oops!',
+                                      alertContent:
+                                      'Looks like you already have this card in your wallet.',
+                                      actions: [
+                                        TextButton(
+                                          child: Text(
+                                            'Go back',
+                                            style: font12Medium
+                                                .copyWith(
+                                              color: colorBlueDark,
+                                            ),
                                           ),
-                                  );
+                                          style: ButtonStyle(
+                                            backgroundColor:
+                                            MaterialStateProperty
+                                                .all<Color>(
+                                                colorGrayDark),
+                                          ),
+                                          onPressed: () {
+                                            Navigator.of(context)
+                                                .pop();
+                                            Navigator.of(context)
+                                                .pop();
+                                          },
+                                        ),
+                                        TextButton(
+                                          child: Text(
+                                            'Modify card',
+                                            style: font12Medium
+                                                .copyWith(
+                                                color: Colors
+                                                    .white),
+                                          ),
+                                          style: ButtonStyle(
+                                            backgroundColor:
+                                            MaterialStateProperty
+                                                .all<Color>(
+                                                colorBlueDark),
+                                          ),
+                                          onPressed: () {
+                                            Navigator.of(context)
+                                                .pop();
+                                          },
+                                        )
+                                      ]),
+                                ),
+                              );
                             }
                           },
                         ),
@@ -310,8 +315,8 @@ class _AddCardScreenState extends State<AddCardScreen> {
                     ],
                   ),
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ),

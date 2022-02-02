@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:iconly/iconly.dart';
 import 'package:squick/constants/app_constants.dart';
 import 'package:squick/models/ticket_info.dart';
 import 'package:squick/modules/completed_transaction/screen/completed_transaction.dart';
@@ -17,7 +18,6 @@ class TicketInformation extends StatefulWidget {
 class _TicketInformationState extends State<TicketInformation> {
   @override
   Widget build(BuildContext context) {
-
     final ticket = ModalRoute.of(context)!.settings.arguments as TicketInfo;
 
     return SafeArea(
@@ -33,21 +33,32 @@ class _TicketInformationState extends State<TicketInformation> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Expanded(
-                      flex: 1,
+                      flex: 2,
                       child: Padding(
-                        padding: const EdgeInsets.only(right: 15.0, top: 15.0, bottom: 15.0),
+                        padding: const EdgeInsets.only(
+                            right: 15.0, top: 15.0, bottom: 15.0),
                         child: GestureDetector(
                           onTap: () {
                             Navigator.pop(context);
                           },
-                          child: Image.asset(
-                              'assets/images/back_button_ticket_info.png'
+                          child: Material(
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
+                              side: const BorderSide(color: colorBlueDark),
+                            ),
+                            child: IconButton(
+                              padding: const EdgeInsets.all(2),
+                              onPressed: () {
+                                Navigator.pop(context);
+                              },
+                              icon: const Icon(IconlyLight.arrow_left_2),
+                            ),
                           ),
                         ),
                       ),
                     ),
                     Expanded(
-                      flex: 5,
+                      flex: 8,
                       child: Text(
                         'Информации за билет',
                         style: font20Bold.copyWith(color: colorBlueDarkLight),
@@ -68,9 +79,7 @@ class _TicketInformationState extends State<TicketInformation> {
                     width: 1500.0,
                     height: 1500.0,
                     isCornerRounded: true,
-                    child: TicketContent(
-                      ticket: ticket
-                    ),
+                    child: TicketContent(ticket: ticket),
                   ),
                 ),
               ),
@@ -86,7 +95,9 @@ class _TicketInformationState extends State<TicketInformation> {
                         onTap: () {
                           //TODO: PAYMENT and API CALL to insert in transactions!
                           bool transactionSuccessful = false;
-                          Navigator.pushReplacementNamed(context, CompletedTransactionScreen.id, arguments: transactionSuccessful);
+                          Navigator.pushReplacementNamed(
+                              context, CompletedTransactionScreen.id,
+                              arguments: transactionSuccessful);
                         },
                         backgroundColor: colorOrange,
                       ),
@@ -111,4 +122,3 @@ class _TicketInformationState extends State<TicketInformation> {
     );
   }
 }
-
