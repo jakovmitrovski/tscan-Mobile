@@ -18,11 +18,8 @@ class CustomCreditCardWidget extends StatefulWidget {
 }
 
 class _CreditCardWidgetState extends State<CustomCreditCardWidget> {
-
   @override
   Widget build(BuildContext context) {
-
-    var height = MediaQuery.of(context).size.height;
     var width = MediaQuery.of(context).size.width;
 
     return Stack(
@@ -63,7 +60,7 @@ class _CreditCardWidgetState extends State<CustomCreditCardWidget> {
         Align(
           alignment: Alignment.topLeft,
           child: Padding(
-            padding: EdgeInsets.only(left: (width/12), top: (width/12)),
+            padding: EdgeInsets.only(left: (width / 12), top: (width / 12)),
             child: InkWell(
               onTap: () {
                 setState(() {
