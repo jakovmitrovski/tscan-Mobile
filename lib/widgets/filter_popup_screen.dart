@@ -81,7 +81,10 @@ class _FilterPopupState extends State<FilterPopup> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text('20ден', style: font10Light.copyWith(color: colorGrayDark),),
-                        Text('250ден', style: font10Light.copyWith(color: colorGrayDark),)
+                        Padding(
+                          padding: EdgeInsets.only(right: (250 - price)),
+                          child: Text('${price ~/ 1}ден', style: font10Light.copyWith(color: colorGrayDark),),
+                        )
                       ],
                     ),
                     Row(
