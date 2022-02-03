@@ -5,6 +5,38 @@ import 'package:intl/intl.dart';
 import 'package:sprintf/sprintf.dart';
 
 class ParseUtils {
+
+  static parseParkingData(dynamic parkingData) {
+    List<Parking> parkings = [];
+
+    for (dynamic parking in parkingData) {
+
+      List<WorkingHours> parkingWorkingHours = [];
+      for(dynamic workingHour in parking["workingHours"]) {
+        WorkingHours pWorkingHour = WorkingHours(id: workingHour["id"], timeFrom: workingHour["timeFrom"], timeTo: workingHour["timeTo"], dayOfWeek: workingHour["dayOfWeek"]);
+        parkingWorkingHours.add(pWorkingHour);
+      }
+
+      parkings.add(Parking(
+          id: parking["id"],
+          name: parking["name"],
+          locationAddress: parking["locationAddress"],
+          longitude: parking["longitude"],
+          latitude: parking["latitude"],
+          hourlyPrice: parking["hourlyPrice"],
+          monthlyPrice: parking["monthlyPrice"],
+          yearlyPrice: parking["yearlyPrice"],
+          capacity: parking["capacity"],
+          numberOfFreeSpaces: parking["numberOfFreeSpaces"],
+          imageUrl: parking["imageUrl"],
+          workingHours: parkingWorkingHours
+        )
+      );
+    }
+
+    return parkings;
+  }
+
   static parseTicketInfo(dynamic ticketInfo, String ticketValue) {
     List<WorkingHours> parkingWorkingHours = [];
 

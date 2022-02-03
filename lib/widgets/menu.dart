@@ -36,6 +36,8 @@ class _MenuState extends State<Menu> {
         : 'assets/images/wallet_inactive.png';
 
 
+    var height = MediaQuery.of(context).size.height;
+
     return Container(
       decoration: BoxDecoration(
         boxShadow: [
@@ -49,7 +51,7 @@ class _MenuState extends State<Menu> {
         elevation: 5,
         child: Container(
           color: Colors.white60,
-          height: 60,
+          height: 0.1 * height,
           child: Row(
             mainAxisSize: MainAxisSize.max,
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,

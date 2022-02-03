@@ -14,6 +14,7 @@ class Parking {
   int numberOfFreeSpaces;
   String imageUrl;
   List<WorkingHours> workingHours;
+  String distance = "";
 
   Parking({
       required this.id,

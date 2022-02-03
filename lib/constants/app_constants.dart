@@ -22,6 +22,8 @@ const Color colorRed = Color(0xffE32216);
 const Color colorGray = Color(0xffF7F7F7);
 const Color colorGrayDark = Color(0xffC4C4C4);
 
+const Color colorGrayTransparent = Color.fromRGBO(220, 220, 220, 0.7);
+
 const creditCardLabelStyle = TextStyle(
   fontFamily: 'Roboto',
   fontWeight: FontWeight.w400,
