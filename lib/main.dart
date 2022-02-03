@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:squick/models/filter_data_model.dart';
+import 'package:squick/models/maps_provider.dart';
+import 'package:squick/models/selected_parking_provider.dart';
 import 'package:squick/modules/completed_transaction/screen/completed_transaction.dart';
 import 'package:squick/modules/explore/screen/explore_screen.dart';
 import 'package:squick/modules/home/model/database.dart';
@@ -23,8 +26,13 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (_) => DatabaseProvider(),
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => DatabaseProvider()),
+        ChangeNotifierProvider(create: (_) => FilterDataModel()),
+        ChangeNotifierProvider(create: (_) => MapsProvider()),
+        ChangeNotifierProvider(create: (_) => SelectedParkingProvider()),
+      ],
       child: MaterialApp(
         title: 'Squick',
         theme: ThemeData(
