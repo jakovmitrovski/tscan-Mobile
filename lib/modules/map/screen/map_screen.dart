@@ -1,22 +1,19 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:iconly/iconly.dart';
-import 'package:provider/src/provider.dart';
-import 'package:squick/constants/api_constants.dart';
+import 'package:provider/provider.dart';
 import 'package:squick/constants/app_constants.dart';
 import 'package:squick/models/filter_data_model.dart';
 import 'package:squick/models/parking.dart';
 import 'package:squick/models/maps_provider.dart';
-import 'package:squick/utils/helpers/distance.dart';
+import 'package:squick/models/selected_parking_provider.dart';
 import 'package:squick/utils/helpers/location.dart';
-import 'package:squick/utils/helpers/networking.dart';
-import 'package:squick/utils/helpers/parse_utils.dart';
 import 'package:squick/widgets/filter_popup_screen.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:flutter/services.dart' show rootBundle;
-import 'package:squick/widgets/parking_details_sheet.dart';
+import 'package:squick/widgets/parking_short_details_sheet.dart';
+import 'package:squick/widgets/search_bar.dart';
 
 class MapScreen extends StatefulWidget {
   static const String id = "/map";
@@ -39,22 +36,24 @@ class _MapScreenState extends State<MapScreen> {
   late BitmapDescriptor freeSpacesUnavailablePin;
   late BitmapDescriptor selectedPin;
   bool shouldLoad = true;
+  late SelectedParkingProvider selectedParkingProvider;
+  PersistentBottomSheetController? bottomSheetController;
 
   void loadFreeSpacesAvailablePin() async {
     freeSpacesAvailablePin = await BitmapDescriptor.fromAssetImage(
-        ImageConfiguration(devicePixelRatio: 8.5),
+        const ImageConfiguration(devicePixelRatio: 8.5),
         'assets/images/free_spaces_car.png');
   }
 
   void loadFreeSpacesUnavailablePin() async {
     freeSpacesUnavailablePin = await BitmapDescriptor.fromAssetImage(
-        ImageConfiguration(devicePixelRatio: 2.5),
+        const ImageConfiguration(devicePixelRatio: 2.5),
         'assets/images/no_free_spaces_car.png');
   }
 
   void loadSelectedPin() async {
     selectedPin = await BitmapDescriptor.fromAssetImage(
-        ImageConfiguration(devicePixelRatio: 2.5),
+        const ImageConfiguration(devicePixelRatio: 2.5),
         'assets/images/selected_pin_car.png');
   }
 
@@ -91,7 +90,7 @@ class _MapScreenState extends State<MapScreen> {
   }
 
   BitmapDescriptor resolveIcon(Parking parking) {
-    if (selectedParking == parking.id) return selectedPin;
+    if (selectedParkingProvider.selected == parking.id) return selectedPin;
     return parking.numberOfFreeSpaces == 0 ? freeSpacesUnavailablePin : freeSpacesAvailablePin;
   }
 
@@ -104,39 +103,35 @@ class _MapScreenState extends State<MapScreen> {
       final marker = Marker(
           markerId: MarkerId(parking.id.toString()),
           position: LatLng(parking.latitude, parking.longitude),
-          infoWindow: InfoWindow(
-            title: "Растојание",
-            snippet: parking.distance,
-          ),
           icon: resolveIcon(parking),
           onTap: () {
-            setState(() {
-              // if (shouldLoad) selectedParking = parking.id;
 
-              if (selectedParking != parking.id) {
-                selectedParking = parking.id;
-              } else {
-                selectedParking = -1;
+              if (selectedParkingProvider.selected != parking.id) {
+                selectedParkingProvider.updateValue(parking.id);
+
+                bottomSheetController = showBottomSheet(
+                    context: context,
+                    builder: (context) =>
+                        Container(
+                          height: 0.30 * MediaQuery
+                              .of(context)
+                              .size
+                              .height,
+                          padding: EdgeInsets.only(bottom: MediaQuery
+                              .of(context)
+                              .viewInsets
+                              .bottom),
+                          child: ParkingShortDetailsSheet(parking: parking, position: _currentPosition!),
+                        )
+                );
+                bottomSheetController!.closed.whenComplete(() => selectedParkingProvider.updateValue(-1));
               }
-              shouldLoad = false;
-            });
-            if (selectedParking != -1) {
-              showBottomSheet(
-                  context: context,
-                  builder: (context) =>
-                      Container(
-                        height: 0.30 * MediaQuery
-                            .of(context)
-                            .size
-                            .height,
-                        padding: EdgeInsets.only(bottom: MediaQuery
-                            .of(context)
-                            .viewInsets
-                            .bottom),
-                        child: ParkingDetailsSheet(), //TODO: ADD PROVIDER THAT WILL LISTEN FOR THE FILTER VALUES.
-                      )
-              );
-            }
+
+              setState(() {
+                shouldLoad = false;
+              });
+
+
           }
       );
 
@@ -153,9 +148,10 @@ class _MapScreenState extends State<MapScreen> {
 
     var mapsProvider = Provider.of<MapsProvider>(context);
     var filter = Provider.of<FilterDataModel>(context);
+    selectedParkingProvider = Provider.of<SelectedParkingProvider>(context);
 
     if (_currentPosition == null) {
-      return SafeArea(child: const SpinKitDoubleBounce(
+      return const SafeArea(child: SpinKitDoubleBounce(
         color: colorBlueLight,
         size: 100.0,
       )
@@ -163,7 +159,7 @@ class _MapScreenState extends State<MapScreen> {
     }
 
     return SafeArea(
-      child: Container(
+      child: SizedBox(
               width: width,
               height: height,
               child: Stack(
@@ -191,6 +187,7 @@ class _MapScreenState extends State<MapScreen> {
                               myLocationButtonEnabled: false,
                               zoomGesturesEnabled: true,
                               zoomControlsEnabled: false,
+                              mapToolbarEnabled: false,
                               mapType: MapType.normal,
                               markers: getMarkers(snapshot.data as List<Parking>),
                           );
@@ -215,120 +212,78 @@ class _MapScreenState extends State<MapScreen> {
                           myLocationButtonEnabled: false,
                           zoomGesturesEnabled: true,
                           zoomControlsEnabled: false,
+                          mapToolbarEnabled: false,
                           mapType: MapType.normal,
                           markers: getMarkers(_parkings),
                      ),
                     Align(
                       alignment: Alignment.topCenter,
-                      child: Container(
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(10.0),
-                          color: Colors.white,
-                        ),
-                        margin: const EdgeInsets.only(top: 20.0),
-                        width: 0.85 * width,
-                        height: 50,
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.stretch,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Expanded(
-                              flex: 1,
-                              child: Icon(
-                                  IconlyLight.search,
-                                  color: colorGrayDark
-                              ),
-                            ),
-                            Expanded(
-                              flex: 4,
-                              child: TextField(
-                                onSubmitted: (value) {
-                                  if (value.isNotEmpty) {
-                                    setState(() {
-                                      keyword = value;
-                                      shouldLoad = true;
-                                    });
-                                  }else {
-                                    setState(() {
-                                      keyword = null;
-                                    });
+                      child: SearchBar(
+                        width: width,
+                        onSearchBarTap: () {
+                          if (selectedParkingProvider.selected != -1 && bottomSheetController != null) {
+                              bottomSheetController!.close();
+                              selectedParkingProvider.updateValue(-1);
+                          }
+                        },
+                        onSearch: (value) {
+                          if (selectedParkingProvider.selected != -1 && bottomSheetController != null) {
+                            bottomSheetController!.close();
+                            selectedParkingProvider.updateValue(-1);
+                          }
+                          if (value.isNotEmpty) {
+                            setState(() {
+                              keyword = value;
+                              shouldLoad = true;
+                            });
+                          }else {
+                            setState(() {
+                              keyword = null;
+                            });
+                          }
+                        },
+                        onFilterPressed: () {
+                          shouldLoad = true;
+                          showModalBottomSheet(
+                              context: context,
+                              isScrollControlled: true,
+                              builder: (context) => Container(
+                                height: 0.60*height,
+                                padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+                                child: FilterPopup(onTap: (price, openNow, freeSpaces) {
+                                  if (selectedParkingProvider.selected != -1 && bottomSheetController != null) {
+                                    bottomSheetController!.close();
+                                    selectedParkingProvider.updateValue(-1);
                                   }
-                                },
-                                textInputAction: TextInputAction.done,
-                                decoration: InputDecoration(
-                                    border: InputBorder.none,
-                                    focusedBorder: InputBorder.none,
-                                    enabledBorder: InputBorder.none,
-                                    errorBorder: InputBorder.none,
-                                    disabledBorder: InputBorder.none,
-                                    contentPadding: EdgeInsets.symmetric(vertical: 10.0),
-                                    hintText: "Пребарај паркинг"),
-                              ),
-                            ),
-                            Expanded(
-                                flex: 1,
-                                child: Padding(
-                                  padding: const EdgeInsets.all(4.0),
-                                  child: Container(
-                                    decoration: BoxDecoration(
-                                      color: colorBlueLight,
-                                      borderRadius: BorderRadius.circular(10.0),
-                                    ),
-                                    child: IconButton(
-                                      icon: Icon(IconlyLight.filter),
-                                      color: Colors.white,
-                                      onPressed: () {
-                                        shouldLoad = true;
-                                        showModalBottomSheet(
-                                            context: context,
-                                            isScrollControlled: true,
-                                            builder: (context) => Container(
-                                              height: 0.60*height,
-                                              padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
-                                              child: FilterPopup(), //TODO: ADD PROVIDER THAT WILL LISTEN FOR THE FILTER VALUES.
-                                            )
-                                        );
-                                      },
-                                    ),
-                                  ),
-                                )
-                            )
-                          ],
-                        ),
+                                  filter.changeAllValues(price, openNow, freeSpaces);
+                                  Navigator.pop(context);
+                                }),
+                              )
+                          );
+                        },
                       ),
                     ),
                     Align(
-                      alignment: Alignment.bottomLeft,
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        children: [
-                          Container(
-                            height: width / 6,
-                            width: width / 6,
-                            padding: const EdgeInsets.all(10.0),
-                            child: FloatingActionButton(
-                              backgroundColor: Colors.white,
-                              heroTag: 'recenter',
-                              onPressed: () async {
-                                updateCamera(await LocationHelper().getCurrentLocation());
-                              },
-                              child: Icon(
-                                Icons.my_location,
-                                size: width / 18,
-                                color: colorBlueLight,
-                              ),
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(10.0),
-                                  side: BorderSide(color: Color(0xFFECEDF1))),
-                            ),
+                      alignment: selectedParkingProvider.selected == -1 ? Alignment.bottomRight : Alignment.centerRight,
+                      child: Container(
+                        height: width / 6,
+                        width: width / 6,
+                        padding: const EdgeInsets.all(10.0),
+                        child: FloatingActionButton(
+                          backgroundColor: Colors.white,
+                          heroTag: 'recenter',
+                          onPressed: () async {
+                            updateCamera(await LocationHelper().getCurrentLocation());
+                          },
+                          child: Icon(
+                            Icons.my_location,
+                            size: width / 18,
+                            color: colorBlueLight,
                           ),
-                          // selectedParking != -1 ? Container(
-                          //   height: height / 5,
-                          //   width: width,
-                          //   color: Colors.green
-                          // ) : Container()
-                        ],
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10.0),
+                              side: const BorderSide(color: Color(0xFFECEDF1))),
+                        ),
                       ),
                     ),
                   ]

@@ -8,9 +8,9 @@ class NetworkHelper {
   NetworkHelper(this.url);
 
   scanTicket() async {
-    http.Response response = await http.get(url);
+    http.Response response = await http.get(url, headers: {'Content-Type': 'application/json; charset=utf-8'});
     if (response.statusCode == 200) {
-      return jsonDecode(response.body);
+      return jsonDecode(utf8.decode(response.bodyBytes));
     }else{
       //TODO: HANDLE ERROR
       print(response.statusCode);

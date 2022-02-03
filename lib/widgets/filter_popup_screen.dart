@@ -3,10 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:squick/constants/app_constants.dart';
 import 'package:squick/models/filter_data_model.dart';
+import 'package:squick/models/selected_parking_provider.dart';
 import 'package:squick/widgets/squick_button.dart';
 
 class FilterPopup extends StatefulWidget {
-  const FilterPopup({Key? key}) : super(key: key);
+
+  Function onTap;
+
+  FilterPopup({required this.onTap});
 
   @override
   _FilterPopupState createState() => _FilterPopupState();
@@ -148,10 +152,7 @@ class _FilterPopupState extends State<FilterPopup> {
                 ),
               SquickButton(
                 buttonText: 'Филтрирај',
-                onTap: () {
-                  filter.changeAllValues(price, openNow, freeSpaces);
-                  Navigator.pop(context);
-                },
+                onTap: () {widget.onTap(price, openNow, freeSpaces);}
               ),
               changed()? Consumer<FilterDataModel>(
                 builder: (context, filter, child) {
