@@ -5,6 +5,8 @@ import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart';
 import 'package:squick/constants/app_constants.dart';
 import 'package:squick/modules/wallet/model/credit_card.dart';
+import 'package:squick/modules/wallet/model/credit_card.dart';
+import 'package:squick/modules/wallet/model/credit_card.dart';
 
 class DatabaseProvider extends ChangeNotifier {
   DatabaseProvider._();
@@ -29,15 +31,15 @@ class DatabaseProvider extends ChangeNotifier {
     String path = join(documentsDirectory.path, "cards.db");
     return await openDatabase(path, version: 1, onOpen: (db) {},
         onCreate: (Database db, int version) async {
-      await db.execute("CREATE TABLE CreditCard ("
-          "cardNumber TEXT PRIMARY KEY,"
-          "expiryDate TEXT,"
-          "cvv TEXT,"
-          "cardHolder TEXT,"
-          "isPrimary BIT,"
-          "imageUrl TEXT"
-          ")");
-    });
+          await db.execute("CREATE TABLE CreditCard ("
+              "cardNumber TEXT PRIMARY KEY"
+              "expiryDate TEXT,"
+              "cvv TEXT,"
+              "cardHolder TEXT,"
+              "isPrimary BIT,"
+              "imageUrl TEXT"
+              ")");
+        });
   }
 
   bool get isValid {
@@ -48,12 +50,16 @@ class DatabaseProvider extends ChangeNotifier {
     return _creditCards.length;
   }
 
+  List<CreditCard> get getLoadedCards {
+    return _creditCards;
+  }
+
   getAllCreditCards() async {
     final db = await database;
     var res = await db.query("CreditCard");
 
     List<CreditCard> list =
-        res.isNotEmpty ? res.map((c) => CreditCard.fromMap(c)).toList() : [];
+    res.isNotEmpty ? res.map((c) => CreditCard.fromMap(c)).toList() : [];
 
     _creditCards = list;
 
@@ -63,10 +69,18 @@ class DatabaseProvider extends ChangeNotifier {
   }
 
   int getLastCreditCardImageNumber() {
-    if(_creditCards.isEmpty)
-      return 0;
+    if (_creditCards.isEmpty) return 0;
     var imgUrlParts = _creditCards[count - 1].imageUrl.split("_");
     return int.parse(imgUrlParts[2].split(".")[0]);
+  }
+
+  int getPrimaryCard() {
+    for (var element in _creditCards) {
+      if (element.isPrimary == 1) {
+        return _creditCards.indexOf(element);
+      }
+    }
+    return -1;
   }
 
   insertCreditCard(CreditCard card) async {
@@ -83,7 +97,9 @@ class DatabaseProvider extends ChangeNotifier {
 
     final db = await database;
     var res = await db.rawInsert(
-        "INSERT Into CreditCard (cardNumber, expiryDate, cvv,cardHolder, isPrimary, imageUrl) VALUES (\"${card.cardNumber}\", \"${card.expiryDate}\", \"${card.cvv}\", \"${card.cardholderName}\", ${card.isPrimary}, \"${card.imageUrl}\")");
+        "INSERT Into CreditCard (cardNumber, expiryDate, cvv,cardHolder, isPrimary, imageUrl) VALUES (\"${card
+            .cardNumber}\", \"${card.expiryDate}\", \"${card.cvv}\", \"${card
+            .cardholderName}\", ${card.isPrimary}, \"${card.imageUrl}\")");
 
     _creditCards.add(card);
     notifyListeners();
@@ -95,7 +111,7 @@ class DatabaseProvider extends ChangeNotifier {
     bool flag = false;
 
     _creditCards.forEach((element) {
-      if (element.cardNumber == cardNumber || element.cvv == cvv) {
+      if (element.cardNumber == cardNumber && element.cvv == cvv) {
         flag = true;
       }
     });

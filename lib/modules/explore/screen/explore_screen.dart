@@ -48,9 +48,13 @@ class _ExploreScreenState extends State<ExploreScreen> {
 
   List<Widget> getParkingList(List<Parking> parkings) {
     List<Widget> ret = [];
-    for (int i=0; i<parkings.length; i++) {
+    for (int i = 0; i < parkings.length; i++) {
       Parking parking = parkings[i];
-      Widget parkingWidget = ParkingWidget(height: height, parking: parking, position: _currentPosition!,);
+      Widget parkingWidget = ParkingWidget(
+        height: height,
+        parking: parking,
+        position: _currentPosition!,
+      );
       ret.add(parkingWidget);
     }
 
@@ -59,122 +63,148 @@ class _ExploreScreenState extends State<ExploreScreen> {
 
   @override
   Widget build(BuildContext context) {
-
     mapsProvider = Provider.of<MapsProvider>(context);
     filter = Provider.of<FilterDataModel>(context);
     height = MediaQuery.of(context).size.height;
     var width = MediaQuery.of(context).size.width;
 
     if (_currentPosition == null) {
-      return const SafeArea(child: SpinKitDoubleBounce(
+      return const SafeArea(
+          child: SpinKitDoubleBounce(
         color: colorBlueLight,
         size: 100.0,
-      )
-      );
+      ));
     }
 
-    return Column(
-      children: [
-        Expanded(
-          flex: 1,
-          child: Container(
-            width: width,
-            //TODO: CHANGE THIS WITH GRADIENT
-            color: colorBlueLightest,
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 25.0, vertical: 20.0),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  SizedBox(
-                    width: 0.7 * width,
-                    child: Text(
-                      'Пронајди паркинг брзо и лесно',
-                      style: font24Bold.copyWith(color: Colors.white)
-                      ,),
-                  ),
-                  SearchBar(
-                      width: width,
-                      onSearchBarTap: () {
-
-                      },
-                      onSearch: (value) {
-                        setState(() {
-                          keyword = value;
-                        });
-
-                      },
-                      onFilterPressed: () {
-                        showModalBottomSheet(
-                            context: context,
-                            isScrollControlled: true,
-                            builder: (context) => Container(
-                              height: 0.60*height,
-                              padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
-                              child: FilterPopup(onTap: (price, openNow, freeSpaces) {
-                                filter.changeAllValues(price, openNow, freeSpaces);
-                                Navigator.pop(context);
-                              }),
-                            )
-                        );
-                      }
-                  )
-                ]
+    return Container(
+      decoration: const BoxDecoration(
+          gradient: LinearGradient(
+        begin: Alignment.center,
+        end: Alignment.topRight,
+        colors: [
+          Color(0xC9149AC3),
+          Color(0xC941D2FF),
+        ],
+      )),
+      child: Column(
+        children: [
+          Expanded(
+            flex: 1,
+            child: Container(
+              width: width,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(
+                    horizontal: 25.0, vertical: 20.0),
+                child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      SizedBox(
+                        width: 0.7 * width,
+                        child: Text(
+                          'Пронајди паркинг брзо и лесно',
+                          style: font24Bold.copyWith(color: Colors.white),
+                        ),
+                      ),
+                      SearchBar(
+                          width: width,
+                          onSearchBarTap: () {},
+                          onSearch: (value) {
+                            setState(() {
+                              keyword = value;
+                            });
+                          },
+                          onFilterPressed: () {
+                            showModalBottomSheet(
+                                context: context,
+                                isScrollControlled: true,
+                                builder: (context) => Container(
+                                      height: 0.60 * height,
+                                      padding: EdgeInsets.only(
+                                          bottom: MediaQuery.of(context)
+                                              .viewInsets
+                                              .bottom),
+                                      child: FilterPopup(
+                                          onTap: (price, openNow, freeSpaces) {
+                                        filter.changeAllValues(
+                                            price, openNow, freeSpaces);
+                                        Navigator.pop(context);
+                                      }),
+                                    ));
+                          })
+                    ]),
               ),
             ),
           ),
-        ),
-        Expanded(
-          flex: 2,
-          child: Container(
-            color: colorBlueLightest,
+          Expanded(
+            flex: 2,
             child: Container(
-              decoration: const BoxDecoration(
-                  color: colorGray,
-                  borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(20.0),
-                      topRight: Radius.circular(20.0)
-                  )
-              ),
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 25.0, vertical: 20.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Паркинзи во близина',
-                      style: font12Regular.copyWith(color: colorBlueDark),
-                    ),
-                    Expanded(
-                      child: Container(
-                        margin: const EdgeInsets.only(top: 20.0),
-                        child: FutureBuilder(
-                          future: mapsProvider.getParkingsFromApi(filter.getValue('price'), filter.getValue('openNow'), filter.getValue('freeSpaces'), _currentPosition!, keyword: keyword),
-                          builder: (BuildContext context, AsyncSnapshot snapshot) {
-                            if (snapshot.hasData &&
-                            snapshot.data != null &&
-                            snapshot.connectionState == ConnectionState.done) {
-                              return ListView(
-                                children: getParkingList(snapshot.data as List<Parking>),
-                              );
-                            }else {
-                              return const SpinKitDoubleBounce(
-                                color: colorBlueLight,
-                                size: 100.0,
-                              );
-                            }
-                          }
+              color: Colors.transparent,
+              child: Container(
+                decoration: const BoxDecoration(
+                    color: colorGray,
+                    borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(20.0),
+                        topRight: Radius.circular(20.0))),
+                child: Padding(
+                  padding:
+                      const EdgeInsets.only(left: 25.0, right: 25, top: 20.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Паркинзи во близина',
+                        style: font12Regular.copyWith(color: colorBlueDark),
+                      ),
+                      Expanded(
+                        child: Container(
+                          margin: const EdgeInsets.only(top: 20.0),
+                          child: FutureBuilder(
+                              future: mapsProvider.getParkingsFromApi(
+                                  context,
+                                  filter.getValue('price'),
+                                  filter.getValue('openNow'),
+                                  filter.getValue('freeSpaces'),
+                                  _currentPosition!,
+                                  keyword: keyword),
+                              builder: (BuildContext context,
+                                  AsyncSnapshot snapshot) {
+                                if (snapshot.hasData &&
+                                    snapshot.data != null &&
+                                    snapshot.connectionState ==
+                                        ConnectionState.done) {
+                                  if (getParkingList(
+                                          snapshot.data as List<Parking>)
+                                      .isEmpty) {
+                                    return Center(
+                                      child: Text(
+                                        'Не се пронајдени податоци',
+                                        style: font14Medium.copyWith(
+                                            color: colorBlueDark),
+                                      ),
+                                    );
+                                  }
+                                  return ListView(
+                                    children: getParkingList(
+                                        snapshot.data as List<Parking>),
+                                  );
+                                } else {
+                                  return const SpinKitDoubleBounce(
+                                    color: colorBlueLight,
+                                    size: 100.0,
+                                  );
+                                }
+                              }),
                         ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
             ),
-          ),
-        )
-      ],
+          )
+        ],
+      ),
     );
   }
 }

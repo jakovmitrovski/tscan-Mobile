@@ -1,19 +1,21 @@
 import 'package:squick/models/parking.dart';
-import 'package:squick/models/ticket_info.dart';
+import 'package:squick/modules/ticket_information/model/ticket_info.dart';
 import 'package:squick/models/working_hours.dart';
 import 'package:intl/intl.dart';
 import 'package:sprintf/sprintf.dart';
 
 class ParseUtils {
-
   static parseParkingData(dynamic parkingData) {
     List<Parking> parkings = [];
 
     for (dynamic parking in parkingData) {
-
       List<WorkingHours> parkingWorkingHours = [];
-      for(dynamic workingHour in parking["workingHours"]) {
-        WorkingHours pWorkingHour = WorkingHours(id: workingHour["id"], timeFrom: workingHour["timeFrom"], timeTo: workingHour["timeTo"], dayOfWeek: workingHour["dayOfWeek"]);
+      for (dynamic workingHour in parking["workingHours"]) {
+        WorkingHours pWorkingHour = WorkingHours(
+            id: workingHour["id"],
+            timeFrom: workingHour["timeFrom"],
+            timeTo: workingHour["timeTo"],
+            dayOfWeek: workingHour["dayOfWeek"]);
         parkingWorkingHours.add(pWorkingHour);
       }
 
@@ -28,10 +30,10 @@ class ParseUtils {
           yearlyPrice: parking["yearlyPrice"],
           capacity: parking["capacity"],
           numberOfFreeSpaces: parking["numberOfFreeSpaces"],
-          imageUrl: parking["imageUrl"],
-          workingHours: parkingWorkingHours
-        )
-      );
+          imageUrlSmall: parking["imageUrlSmall"],
+          imageUrlMedium: parking["imageUrlMedium"],
+          imageUrlLarge: parking["imageUrlLarge"],
+          workingHours: parkingWorkingHours));
     }
 
     return parkings;
@@ -40,12 +42,19 @@ class ParseUtils {
   static parseTicketInfo(dynamic ticketInfo, String ticketValue) {
     List<WorkingHours> parkingWorkingHours = [];
 
-    for(dynamic workingHour in ticketInfo["parking"]["workingHours"]) {
-      WorkingHours pWorkingHour = WorkingHours(id: workingHour["id"], timeFrom: workingHour["timeFrom"], timeTo: workingHour["timeTo"], dayOfWeek: workingHour["dayOfWeek"]);
+    print(ticketInfo);
+
+    for (dynamic workingHour in ticketInfo["parking"]["workingHours"]) {
+      WorkingHours pWorkingHour = WorkingHours(
+          id: workingHour["id"],
+          timeFrom: workingHour["timeFrom"],
+          timeTo: workingHour["timeTo"],
+          dayOfWeek: workingHour["dayOfWeek"]);
       parkingWorkingHours.add(pWorkingHour);
     }
 
-    Parking parking = Parking(id: ticketInfo["parking"]["id"],
+    Parking parking = Parking(
+        id: ticketInfo["parking"]["id"],
         name: ticketInfo["parking"]["name"],
         locationAddress: ticketInfo["parking"]["locationAddress"],
         longitude: ticketInfo["parking"]["longitude"],
@@ -55,13 +64,23 @@ class ParseUtils {
         yearlyPrice: ticketInfo["parking"]["yearlyPrice"],
         capacity: ticketInfo["parking"]["capacity"],
         numberOfFreeSpaces: ticketInfo["parking"]["numberOfFreeSpaces"],
-        imageUrl: ticketInfo["parking"]["imageUrl"],
+        imageUrlSmall: ticketInfo["parking"]["imageUrlSmall"],
+        imageUrlMedium: ticketInfo["parking"]["imageUrlMedium"],
+        imageUrlLarge: ticketInfo["parking"]["imageUrlLarge"],
         workingHours: parkingWorkingHours);
 
-    DateTime entered = DateFormat("dd.MM.yyyy HH:mm:ss").parse(ticketInfo["entered"]);
-    DateTime exited = DateFormat("dd.MM.yyyy HH:mm:ss").parse(ticketInfo["exited"]);
+    DateTime entered =
+        DateFormat("dd.MM.yyyy HH:mm:ss").parse(ticketInfo["entered"]);
+    DateTime exited =
+        DateFormat("dd.MM.yyyy HH:mm:ss").parse(ticketInfo["exited"]);
 
-    return TicketInfo(ticketValue: ticketValue, parking: parking, entered: entered, exited: exited, price: ticketInfo["price"]);
+    return TicketInfo(
+        id: ticketInfo["id"],
+        ticketValue: ticketValue,
+        parking: parking,
+        entered: entered,
+        exited: exited,
+        price: ticketInfo["price"]);
   }
 
   static String parseDateToStr(DateTime d) {
@@ -72,23 +91,22 @@ class ParseUtils {
     return sprintf("%02i:%02i", [d.hour, d.minute]);
   }
 
-  static int getDifferenceInSeconds (DateTime d1, DateTime d2) {
+  static int getDifferenceInSeconds(DateTime d1, DateTime d2) {
     return d2.difference(d1).inSeconds;
   }
 
-  static String parseDifferenceToString (DateTime d1, DateTime d2) {
-
+  static String parseDifferenceToString(DateTime d1, DateTime d2) {
     int difference = getDifferenceInSeconds(d1, d2);
 
     int hour = difference ~/ 3600;
     int sec = difference % 60;
-    int min = (difference ~/ 60) % 60 ;
+    int min = (difference ~/ 60) % 60;
 
     if (hour == 0 && min == 0) {
       return sprintf("%2iсекунди", [sec]);
-    }else if (hour == 0) {
+    } else if (hour == 0) {
       return sprintf("%2iминути", [min]);
-    }else {
+    } else {
       return sprintf("%iчаса %02iмин", [hour, min]);
     }
   }

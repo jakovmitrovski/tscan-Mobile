@@ -261,14 +261,15 @@ class _AddCardScreenState extends State<AddCardScreen> {
                                     : showDialog(
                                   context: context,
                                   builder: (_) => CustomAlertDialog(
+                                    //TODO: Change this to macedonian
                                       alertTitle: 'Oops!',
                                       alertContent:
                                       'Looks like you already have this card in your wallet.',
                                       actions: [
                                         TextButton(
                                           child: Text(
-                                            'Go back',
-                                            style: font12Medium
+                                            'Назад',
+                                            style: font14Medium
                                                 .copyWith(
                                               color: colorBlueDark,
                                             ),
@@ -288,8 +289,8 @@ class _AddCardScreenState extends State<AddCardScreen> {
                                         ),
                                         TextButton(
                                           child: Text(
-                                            'Modify card',
-                                            style: font12Medium
+                                            'Измени картичка',
+                                            style: font14Medium
                                                 .copyWith(
                                                 color: Colors
                                                     .white),

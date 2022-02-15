@@ -19,8 +19,7 @@ class CreditCard {
   final String imageUrl;
   int isPrimary = 0;
 
-  CreditCard(
-      this.imageUrl,
+  CreditCard(this.imageUrl,
       {required this.cardNumber,
       required this.expiryDate,
       required this.cvv,

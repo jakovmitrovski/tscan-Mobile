@@ -17,20 +17,21 @@ class Assets {
   static const String imagesCardDesign4 = 'assets/images/card_design_4.png';
   static const String imagesCardDesign5 = 'assets/images/card_design_5.png';
   static const String imagesCardDesign6 = 'assets/images/card_design_6.png';
-  static const String imagesDeleteGif = 'assets/images/delete_gif.gif';
   static const String imagesExploreActive = 'assets/images/explore_active.png';
   static const String imagesExploreInactive = 'assets/images/explore_inactive.png';
+  static const String imagesFreeParkingSpaces = 'assets/images/free_parking_spaces.png';
+  static const String imagesFreeSpacesCar = 'assets/images/free_spaces_car.png';
   static const String imagesGradientBlueBackground = 'assets/images/gradient_blue_background.png';
   static const String imagesLogoWhite = 'assets/images/logo_white.png';
   static const String imagesMapActive = 'assets/images/map_active.png';
   static const String imagesMapInactive = 'assets/images/map_inactive.png';
   static const String imagesMasterCardLogo = 'assets/images/master_card_logo.png';
-  static const String imagesNotPrimaryCard = 'assets/images/not_primary_card.png';
+  static const String imagesNoFreeSpacesCar = 'assets/images/no_free_spaces_car.png';
   static const String imagesParkedCar = 'assets/images/parked_car.png';
   static const String imagesParkingLogo = 'assets/images/parking_logo.png';
   static const String imagesPlusIcon = 'assets/images/plus_icon.png';
-  static const String imagesPrimaryCard = 'assets/images/primary_card.png';
   static const String imagesScanTicket = 'assets/images/scan_ticket.png';
+  static const String imagesSelectedPinCar = 'assets/images/selected_pin_car.png';
   static const String imagesSplash = 'assets/images/splash.png';
   static const String imagesSuccessfulTransaction = 'assets/images/successful_transaction.png';
   static const String imagesTransactionsActive = 'assets/images/transactions_active.png';
@@ -39,5 +40,6 @@ class Assets {
   static const String imagesVisaLogo = 'assets/images/visa_logo.png';
   static const String imagesWalletActive = 'assets/images/wallet_active.png';
   static const String imagesWalletInactive = 'assets/images/wallet_inactive.png';
+  static const String mapMapStyle = 'assets/map/map_style.txt';
 
 }

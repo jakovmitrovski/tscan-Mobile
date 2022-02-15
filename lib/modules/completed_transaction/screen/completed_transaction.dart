@@ -76,6 +76,7 @@ class CompletedTransactionScreen extends StatelessWidget {
                             textColor: success ? Colors.white : colorBlueDark,
                             backgroundColor: success ? colorBlueDark : Colors.white,
                             onTap: () {
+                              //TODO: UpdateMapScreen when transaction is successful
                                 Navigator.pop(context);
                             },
                           ),

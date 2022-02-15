@@ -32,7 +32,9 @@ class CustomAlertDialog extends StatelessWidget {
       ),
       actions: [
         Row(
-          mainAxisAlignment: actions.length==1 ? MainAxisAlignment.center : MainAxisAlignment.spaceBetween,
+          mainAxisAlignment: actions.length == 1
+              ? MainAxisAlignment.center
+              : MainAxisAlignment.spaceEvenly,
           children: actions,
         ),
       ],

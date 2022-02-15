@@ -6,7 +6,7 @@ import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:squick/constants/app_constants.dart';
 import 'package:squick/modules/home/model/database.dart';
 import 'package:squick/modules/wallet/model/credit_card.dart';
-import 'package:squick/modules/wallet/model/credit_card_widget.dart';
+import 'package:squick/modules/wallet/widget/credit_card_widget.dart';
 import 'package:squick/modules/wallet/screen/add_new_card_screen.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:squick/widgets/alert_dialog.dart';
@@ -58,9 +58,9 @@ class _WalletScreenState extends State<WalletScreen> {
                                   context: context,
                                   builder: (_) => CustomAlertDialog(
                                           alertTitle:
-                                              'Number of credit cards limit reached!',
+                                              'Го достигнавте лимитот за број на картички!',
                                           alertContent:
-                                              'You have reached the maximum number of credit cards. If you wish to add another card, please delete one of your existing cards and try again.',
+                                              'Доколку сакате да додате нова картичка, ве молиме избришете некоја од тековните и обидете се повторно.',
                                           actions: [
                                             Center(
                                               child: TextButton(
@@ -119,13 +119,19 @@ class _WalletScreenState extends State<WalletScreen> {
                                               context: context,
                                               type: AlertType.warning,
                                               title:
-                                                  'Are you sure you want to delete this card?',
-                                              desc:
-                                                  'If you remove this card it will be permanently deleted.',
+                                                  'Дали сте сигурни дека сакате да ја избришете картичката?',
+                                              style: AlertStyle(
+                                                  titleStyle: font16Medium
+                                                      .copyWith(
+                                                          color: colorBlueDark),
+                                                  descStyle:
+                                                      font14Regular.copyWith(
+                                                          color:
+                                                              colorBlueDarkLight)),
                                               buttons: [
                                                 DialogButton(
                                                   child: const Text(
-                                                    "Cancel",
+                                                    "Откажи",
                                                     style: TextStyle(
                                                         color: Colors.white,
                                                         fontSize: 16),
@@ -136,7 +142,7 @@ class _WalletScreenState extends State<WalletScreen> {
                                                 ),
                                                 DialogButton(
                                                   child: const Text(
-                                                    "Delete card",
+                                                    "Избриши",
                                                     style: TextStyle(
                                                         color: Colors.white,
                                                         fontSize: 16),

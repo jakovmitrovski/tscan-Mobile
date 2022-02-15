@@ -3,7 +3,6 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:provider/provider.dart';
 import 'package:squick/constants/app_constants.dart';
 import 'package:squick/models/selected_parking_provider.dart';
-import 'package:squick/models/ticket_info.dart';
 import 'package:squick/modules/explore/screen/explore_screen.dart';
 import 'package:squick/modules/map/screen/map_screen.dart';
 import 'package:squick/modules/past_transactions/screen/past_transactions_screen.dart';
@@ -84,56 +83,57 @@ class _HomeScreenState extends State<HomeScreen> {
       loading = false;
     });
 
-    if (ticketInfo == -1) {
-      print("Cancel pressed");
+    if (ticketInfo == null) {
       return;
     }
 
-    Navigator.pushNamed(
-        context,
-        TicketInformation.id,
-        arguments: ticketInfo
-    );
+    Navigator.pushNamed(context, TicketInformation.id, arguments: ticketInfo);
   }
 
   @override
   Widget build(BuildContext context) {
-
     var selectedParkingProvider = Provider.of<SelectedParkingProvider>(context);
 
     return SafeArea(
       child: Scaffold(
         resizeToAvoidBottomInset: false,
-        body: loading ? SpinKitDoubleBounce(
-          color: colorBlueLight,
-          size: 100.0,
-        ) : Padding(
-          padding: isMap || isExplore? const EdgeInsets.symmetric(horizontal: 0.0) : const EdgeInsets.symmetric(horizontal: 25.0),
-          child: IndexedStack(
-            children: [
-              ExploreScreen(),
-              MapScreen(),
-              TransactionsScreen(),
-              WalletScreen()
-            ],
-            index: currentIndex,
-          ),
-        ),
+        body: loading
+            ? const SpinKitDoubleBounce(
+                color: colorBlueLight,
+                size: 100.0,
+              )
+            : Padding(
+                padding: isMap || isExplore
+                    ? const EdgeInsets.symmetric(horizontal: 0.0)
+                    : const EdgeInsets.symmetric(horizontal: 25.0),
+                child: IndexedStack(
+                  children: [
+                    ExploreScreen(),
+                    MapScreen(),
+                    TransactionsScreen(),
+                    WalletScreen()
+                  ],
+                  index: currentIndex,
+                ),
+              ),
         floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-        floatingActionButton: (MediaQuery.of(context).viewInsets.bottom != 0 || (isMap && selectedParkingProvider.selected != -1)) ? null : FloatingMenuButton(
-          onPressed: () {
-            _navigateWithLoader();
-          }
-        ),
-        bottomNavigationBar: (isMap && selectedParkingProvider.selected != -1)? null : Menu(
-          explore: isExplore,
-          map: isMap,
-          transactions: isTransactions,
-          wallet: isWallet,
-          notify: (index) {
-            updateUI(index);
-          },
-        ),
+        floatingActionButton: (MediaQuery.of(context).viewInsets.bottom != 0 ||
+                (isMap && selectedParkingProvider.selected != -1))
+            ? null
+            : FloatingMenuButton(onPressed: () {
+                _navigateWithLoader();
+              }),
+        bottomNavigationBar: (isMap && selectedParkingProvider.selected != -1)
+            ? null
+            : Menu(
+                explore: isExplore,
+                map: isMap,
+                transactions: isTransactions,
+                wallet: isWallet,
+                notify: (index) {
+                  updateUI(index);
+                },
+              ),
       ),
     );
   }

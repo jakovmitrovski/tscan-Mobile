@@ -1,7 +1,7 @@
 import 'package:barcode_widget/barcode_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:squick/constants/app_constants.dart';
-import 'package:squick/models/ticket_info.dart';
+import 'package:squick/modules/ticket_information/model/ticket_info.dart';
 import 'package:squick/utils/helpers/parse_utils.dart';
 import 'package:squick/widgets/enter_exit_timestamp.dart';
 import 'package:squick/widgets/vertical_dashed_line.dart';
@@ -148,7 +148,7 @@ class TicketContent extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.all(10.0),
               child: Image.network(
-                ticket.parking.imageUrl,
+                ticket.parking.imageUrlSmall,
               ),
             ),
           ]),

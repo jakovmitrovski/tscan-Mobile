@@ -1,6 +1,7 @@
 import 'package:squick/models/parking.dart';
 
 class TicketInfo {
+  int id;
   String ticketValue;
   Parking parking;
   DateTime entered;
@@ -8,6 +9,7 @@ class TicketInfo {
   int price;
 
   TicketInfo({
+    required this.id,
     required this.ticketValue,
     required this.parking,
     required this.entered,

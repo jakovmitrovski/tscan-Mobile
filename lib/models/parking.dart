@@ -1,7 +1,6 @@
 import 'package:squick/models/working_hours.dart';
 
 class Parking {
-
   int id;
   String name;
   String locationAddress;
@@ -12,12 +11,14 @@ class Parking {
   int yearlyPrice;
   int capacity;
   int numberOfFreeSpaces;
-  String imageUrl;
+  String imageUrlSmall;
+  String imageUrlMedium;
+  String imageUrlLarge;
   List<WorkingHours> workingHours;
   String distance = "";
 
-  Parking({
-      required this.id,
+  Parking(
+      {required this.id,
       required this.name,
       required this.locationAddress,
       required this.longitude,
@@ -27,7 +28,8 @@ class Parking {
       required this.yearlyPrice,
       required this.capacity,
       required this.numberOfFreeSpaces,
-      required this.imageUrl,
-      required this.workingHours}
-      );
+      required this.imageUrlSmall,
+      required this.imageUrlMedium,
+      required this.imageUrlLarge,
+      required this.workingHours});
 }
