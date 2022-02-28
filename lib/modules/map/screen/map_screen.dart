@@ -8,6 +8,7 @@ import 'package:squick/models/parking.dart';
 import 'package:squick/models/maps_provider.dart';
 import 'package:squick/models/selected_parking_provider.dart';
 import 'package:squick/utils/helpers/location.dart';
+import 'package:squick/utils/helpers/open_hours.dart';
 import 'package:squick/widgets/filter_popup_screen.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -40,7 +41,7 @@ class _MapScreenState extends State<MapScreen> {
 
   void loadFreeSpacesAvailablePin() async {
     freeSpacesAvailablePin = await BitmapDescriptor.fromAssetImage(
-        const ImageConfiguration(devicePixelRatio: 8.5),
+        const ImageConfiguration(devicePixelRatio: 2.5),
         'assets/images/free_spaces_car.png');
   }
 
@@ -86,9 +87,10 @@ class _MapScreenState extends State<MapScreen> {
     loadSelectedPin();
   }
 
-  BitmapDescriptor resolveIcon(Parking parking) {
+  BitmapDescriptor resolveIcon(Parking parking, bool isOpen) {
     if (selectedParkingProvider.selected == parking.id) return selectedPin;
-    return parking.numberOfFreeSpaces == 0
+
+    return (parking.numberOfFreeSpaces == 0 || !isOpen)
         ? freeSpacesUnavailablePin
         : freeSpacesAvailablePin;
   }
@@ -99,10 +101,11 @@ class _MapScreenState extends State<MapScreen> {
 
     for (int i = 0; i < parkings.length; i++) {
       Parking parking = parkings[i];
+      bool isOpen = OpenHoursHelper.isOpen(parking);
       final marker = Marker(
           markerId: MarkerId(parking.id.toString()),
           position: LatLng(parking.latitude, parking.longitude),
-          icon: resolveIcon(parking),
+          icon: resolveIcon(parking, isOpen),
           onTap: () {
             if (selectedParkingProvider.selected != parking.id) {
               selectedParkingProvider.updateValue(parking.id);

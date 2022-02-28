@@ -23,7 +23,7 @@ class ParkingShortDetailsSheet extends StatelessWidget {
         context: context,
         isScrollControlled: true,
         builder: (context) => Container(
-            height: 0.85 * height,
+            height: 0.87 * height,
             padding: EdgeInsets.only(
                 bottom: MediaQuery.of(context).viewInsets.bottom),
             child:
@@ -33,6 +33,8 @@ class ParkingShortDetailsSheet extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     height = MediaQuery.of(context).size.height;
+
+    bool isOpen = OpenHoursHelper.isOpen(parking);
 
     return Container(
       color: const Color(0xFFf5f5f5),
@@ -114,13 +116,14 @@ class ParkingShortDetailsSheet extends StatelessWidget {
                                     padding: const EdgeInsets.only(right: 5.0),
                                     child: Container(
                                       decoration: BoxDecoration(
-                                        color: parking.numberOfFreeSpaces == 0
+                                        color: (parking.numberOfFreeSpaces == 0 || !isOpen)
                                             ? colorRed
                                             : colorGreen,
                                         borderRadius:
                                             BorderRadius.circular(5.0),
                                       ),
                                       child: AvailableSpacesIcon(
+                                        isOpen: isOpen,
                                         numberOfFreeSpaces:
                                             parking.numberOfFreeSpaces,
                                         size: 15,
@@ -128,16 +131,17 @@ class ParkingShortDetailsSheet extends StatelessWidget {
                                     ),
                                   ),
                                   Text(
+                                      !isOpen ? 'Моментално затворен' :
                                       parking.numberOfFreeSpaces == 0
                                           ? 'Нема слободни места'
                                           : (parking.numberOfFreeSpaces % 10 ==
                                                       1 &&
                                                   parking.numberOfFreeSpaces !=
                                                       11)
-                                              ? '${parking.numberOfFreeSpaces} слободно местo'
+                                              ? '${parking.numberOfFreeSpaces} слободно место'
                                               : '${parking.numberOfFreeSpaces} слободни места',
                                       style: font12Regular.copyWith(
-                                          color: parking.numberOfFreeSpaces == 0
+                                          color: (parking.numberOfFreeSpaces == 0 || !isOpen)
                                               ? colorRed
                                               : colorGreen)),
                                 ],
@@ -166,50 +170,21 @@ class ParkingShortDetailsSheet extends StatelessWidget {
                               )
                             ],
                           ),
-                          Row(
-                            children: [
-                              Padding(
-                                padding: const EdgeInsets.only(right: 5.0),
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                    color: colorBlueDarkLight,
-                                    borderRadius: BorderRadius.circular(5.0),
-                                  ),
-                                  child: const Icon(
-                                    IconlyLight.time_circle,
-                                    size: 15,
-                                    color: Colors.white,
-                                  ),
-                                ),
-                              ),
-                              Text(
-                                  OpenHoursHelper.isOpen(parking)
-                                      ? 'Моментално отворед'
-                                      : 'Моментално затворен',
-                                  style: font10Regular.copyWith(
-                                      color: OpenHoursHelper.isOpen(parking)
-                                          ? colorGreen
-                                          : colorRed)),
-                            ],
-                          )
                         ],
                       ),
                     ),
                   ],
                 ),
               ),
-              Container(
-                margin: EdgeInsets.only(top: 25),
-                child: SquickButton(
-                  buttonText: 'Насоки',
-                  backgroundColor: colorBlueDark,
-                  textColor: Colors.white,
-                  onTap: () async {
-                    final url =
-                        'https://www.google.com/maps/dir/?api=1&origin=${position.latitude},${position.longitude}&destination=${parking.latitude},${parking.longitude}&travelmode=driving&dir_action=navigate';
-                    await launch(url);
-                  },
-                ),
+              SquickButton(
+                buttonText: 'Насоки',
+                backgroundColor: colorBlueDark,
+                textColor: Colors.white,
+                onTap: () async {
+                  final url =
+                      'https://www.google.com/maps/dir/?api=1&origin=${position.latitude},${position.longitude}&destination=${parking.latitude},${parking.longitude}&travelmode=driving&dir_action=navigate';
+                  await launch(url);
+                },
               ),
             ]),
           ),

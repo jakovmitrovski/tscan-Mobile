@@ -34,7 +34,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => SelectedParkingProvider()),
       ],
       child: MaterialApp(
-        title: 'Squick',
+        title: 'TScan',
         theme: ThemeData(
           primarySwatch: Colors.blue,
         ),

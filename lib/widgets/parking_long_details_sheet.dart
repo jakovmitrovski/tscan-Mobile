@@ -18,6 +18,9 @@ class ParkingLongDetailsSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
+    bool isOpen = OpenHoursHelper.isOpen(parking);
+
     return Container(
         color: const Color(0xff757575),
         child: Container(
@@ -111,12 +114,13 @@ class ParkingLongDetailsSheet extends StatelessWidget {
                               padding: const EdgeInsets.only(right: 5.0),
                               child: Container(
                                 decoration: BoxDecoration(
-                                  color: parking.numberOfFreeSpaces == 0
+                                  color: (parking.numberOfFreeSpaces == 0 || !isOpen)
                                       ? colorRed
                                       : colorGreen,
                                   borderRadius: BorderRadius.circular(5.0),
                                 ),
                                 child: AvailableSpacesIcon(
+                                  isOpen: isOpen,
                                   numberOfFreeSpaces:
                                       parking.numberOfFreeSpaces,
                                   size: 20,
@@ -124,14 +128,15 @@ class ParkingLongDetailsSheet extends StatelessWidget {
                               ),
                             ),
                             Text(
+                                !isOpen ? 'Моментално затворен' :
                                 parking.numberOfFreeSpaces == 0
                                     ? 'Нема слободни места'
                                     : (parking.numberOfFreeSpaces % 10 == 1 &&
                                             parking.numberOfFreeSpaces != 11)
-                                        ? '${parking.numberOfFreeSpaces} слободни местo'
+                                        ? '${parking.numberOfFreeSpaces} слободно место'
                                         : '${parking.numberOfFreeSpaces} слободни места',
                                 style: font14Regular.copyWith(
-                                    color: parking.numberOfFreeSpaces == 0
+                                    color: (parking.numberOfFreeSpaces == 0 || !isOpen)
                                         ? colorRed
                                         : colorGreen)),
                           ],
