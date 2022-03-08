@@ -117,6 +117,8 @@ class _TicketInformationState extends State<TicketInformation> {
                               bool result = await networkHelper.newTransaction(
                                   transaction, context);
 
+                              // TODO: IMPLEMENT WITH PAYMENT PROVIDER
+
                               Navigator.pushReplacementNamed(
                                   context, CompletedTransactionScreen.id,
                                   arguments: result);

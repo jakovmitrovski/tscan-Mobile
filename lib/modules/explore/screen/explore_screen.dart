@@ -12,6 +12,7 @@ import 'package:squick/utils/helpers/location.dart';
 import 'package:squick/widgets/filter_popup_screen.dart';
 import 'package:squick/widgets/parking_widget.dart';
 import 'package:squick/widgets/search_bar.dart';
+import 'dart:math';
 
 class ExploreScreen extends StatefulWidget {
   static const String id = "/explore";
@@ -48,7 +49,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
 
   List<Widget> getParkingList(List<Parking> parkings) {
     List<Widget> ret = [];
-    for (int i = 0; i < parkings.length; i++) {
+    for (int i = 0; i < min(parkings.length, 10); i++) {
       Parking parking = parkings[i];
       Widget parkingWidget = ParkingWidget(
         height: height,

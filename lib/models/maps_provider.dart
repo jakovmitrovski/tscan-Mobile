@@ -39,13 +39,27 @@ class MapsProvider extends ChangeNotifier {
     if (parkingsData != null) {
       _parkings = await ParseUtils.parseParkingData(parkingsData);
       for (int i = 0; i < _parkings.length; i++) {
-        _parkings[i].distance = await DistanceHelper().getDistAsString(
+        _parkings[i].sortingDistance = await DistanceHelper().getDistance(
             currentLocation.latitude,
             currentLocation.longitude,
             _parkings[i].latitude,
             _parkings[i].longitude);
+        _parkings[i].distance = DistanceHelper().getDistAsString(_parkings[i].sortingDistance);
       }
     }
+
+    _parkings.sort((a, b) {
+      double p1 = a.sortingDistance;
+      double p2 = b.sortingDistance;
+      if (p1 > p2) {
+        return 1;
+      } else if (p1 < p2) {
+        return -1;
+      } else {
+        return 0;
+      }
+    });
+
     return _parkings;
   }
 

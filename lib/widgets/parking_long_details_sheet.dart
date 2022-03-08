@@ -1,9 +1,10 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:iconly/iconly.dart';
 import 'package:squick/constants/app_constants.dart';
 import 'package:squick/models/parking.dart';
+import 'package:squick/models/working_hours.dart';
 import 'package:squick/utils/helpers/open_hours.dart';
 import 'package:squick/widgets/squick_button.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -16,6 +17,88 @@ class ParkingLongDetailsSheet extends StatelessWidget {
 
   ParkingLongDetailsSheet({required this.parking, required this.position});
 
+
+  String resolveWorkingHours() {
+    String day = OpenHoursHelper.mapDayToString(DateTime.now().weekday);
+
+    for (WorkingHours hours in parking.workingHours) {
+      if (hours.dayOfWeek == day) {
+        return hours.timeFrom.substring(0, 5) + " - " + hours.timeTo.substring(0, 5) + " (Денес)";
+      }
+    }
+    return "Не работи (Денес)";
+  }
+
+  List<Widget> _getWorkingHoursList() {
+    List<Widget> ret = [];
+
+    for (WorkingHours hours in parking.workingHours) {
+      String day = OpenHoursHelper.mapDayToMacedonianDay(hours.dayOfWeek);
+      String working = hours.timeFrom.substring(0, 5) + " - " + hours.timeTo.substring(0, 5);
+
+      ret.add(
+        Padding(
+          padding: const EdgeInsets.all(3.0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Row(
+               mainAxisAlignment: MainAxisAlignment.start,
+               children: [
+                 const Padding(
+                   padding: EdgeInsets.only(right: 2.0),
+                   child: Icon(Icons.timer, color: colorBlueDark),
+                 ),
+                 Text(day + ": ", style: font16Medium.copyWith(color: colorBlueDark),),
+               ],
+              ),
+              Text(working, style: font16Regular.copyWith(color: colorBlueDark),)
+            ],
+          ),
+        )
+      );
+    }
+
+    if (ret.isEmpty) {
+      ret.add(const Text("Нема податоци"));
+    }
+
+    return ret;
+  }
+
+  Future<void> _showDialog(BuildContext context) async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: true, // user must tap button!
+      builder: (BuildContext context) {
+      return AlertDialog(
+        shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(25.0))),
+        title: Center(
+            child: Text('Работно Време',
+              style: font18Bold.copyWith(color: colorBlueDark),
+            ),
+        ),
+        content: SingleChildScrollView(
+          child: ListBody(
+            children: _getWorkingHoursList()
+          ),
+        ),
+        actions: <Widget>[
+          Padding(
+            padding: const EdgeInsets.all(21.0),
+            child: SquickButton(
+              buttonText: "Затвори",
+              onTap: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          )
+        ],
+      );
+    },
+  );
+}
+
   @override
   Widget build(BuildContext context) {
 
@@ -24,7 +107,7 @@ class ParkingLongDetailsSheet extends StatelessWidget {
     return Container(
         color: const Color(0xff757575),
         child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 30.0, vertical: 10.0),
+          padding: kModalSheetsPadding,
           decoration: const BoxDecoration(
               color: Colors.white,
               borderRadius: BorderRadius.only(
@@ -34,14 +117,12 @@ class ParkingLongDetailsSheet extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Expanded(
-                flex: 1,
-                child: Center(
-                  child: Container(
-                    width: 60,
-                    height: 2,
-                    color: colorGrayDark,
-                  ),
+              Center(
+                child: Container(
+                  margin: const EdgeInsets.only(bottom: 15),
+                  width: 60,
+                  height: 2,
+                  color: colorGrayDark,
                 ),
               ),
               Expanded(
@@ -80,7 +161,7 @@ class ParkingLongDetailsSheet extends StatelessWidget {
                 ),
               ),
               Expanded(
-                flex: 4,
+                flex: isOpen ? 4 : 3,
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -108,13 +189,13 @@ class ParkingLongDetailsSheet extends StatelessWidget {
                         const SizedBox(
                           height: 5.0,
                         ),
-                        Row(
+                        if (isOpen) Row(
                           children: [
                             Padding(
                               padding: const EdgeInsets.only(right: 5.0),
                               child: Container(
                                 decoration: BoxDecoration(
-                                  color: (parking.numberOfFreeSpaces == 0 || !isOpen)
+                                  color: (parking.numberOfFreeSpaces == 0)
                                       ? colorRed
                                       : colorGreen,
                                   borderRadius: BorderRadius.circular(5.0),
@@ -128,20 +209,19 @@ class ParkingLongDetailsSheet extends StatelessWidget {
                               ),
                             ),
                             Text(
-                                !isOpen ? 'Моментално затворен' :
                                 parking.numberOfFreeSpaces == 0
                                     ? 'Нема слободни места'
                                     : (parking.numberOfFreeSpaces % 10 == 1 &&
                                             parking.numberOfFreeSpaces != 11)
                                         ? '${parking.numberOfFreeSpaces} слободно место'
                                         : '${parking.numberOfFreeSpaces} слободни места',
-                                style: font14Regular.copyWith(
-                                    color: (parking.numberOfFreeSpaces == 0 || !isOpen)
+                                style: font14Medium.copyWith(
+                                    color: (parking.numberOfFreeSpaces == 0)
                                         ? colorRed
                                         : colorGreen)),
                           ],
                         ),
-                        const SizedBox(
+                        if (isOpen) const SizedBox(
                           height: 5.0,
                         ),
                         Row(
@@ -203,7 +283,7 @@ class ParkingLongDetailsSheet extends StatelessWidget {
                 child: Padding(
                   padding: const EdgeInsets.only(top: 10),
                   child: Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Row(
@@ -219,27 +299,38 @@ class ParkingLongDetailsSheet extends StatelessWidget {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text(parking.workingHours.isEmpty ? '/' : 'Пон-Пет',
-                              style: font14Bold.copyWith(color: colorBlueDark)),
-                          Text(
-                            parking.workingHours.isEmpty
-                                ? '/'
-                                : '${parking.workingHours[0].timeFrom.substring(0, 5)}-${parking.workingHours[0].timeTo.substring(0, 5)}',
-                            style: font14Bold.copyWith(color: colorBlueDark),
+                          GestureDetector(
+                            onTap: () {
+                              _showDialog(context);
+                            },
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                Text(resolveWorkingHours(),
+                                    style: font14Bold.copyWith(color: colorBlueDark)),
+                                const Icon(
+                                  Icons.keyboard_arrow_down_sharp,
+                                  color: colorBlueDarkLightest,
+                                )
+                              ],
+                            ),
                           ),
-                        ],
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          Text(
-                              OpenHoursHelper.isOpen(parking)
-                                  ? 'Моментално отворен'
-                                  : 'Моментално затворен',
-                              style: font10Regular.copyWith(
-                                  color: OpenHoursHelper.isOpen(parking)
-                                      ? colorGreen
-                                      : colorRed)),
+                          Container(
+                            decoration: BoxDecoration(
+                              color: OpenHoursHelper.isOpen(parking) ? colorGreen : colorRed,
+                              borderRadius: const BorderRadius.all(Radius.circular(5.0))
+                            ),
+                            child: Padding(
+                              padding: const EdgeInsets.only(left: 8.0, right: 8.0, bottom: 2.0),
+                              child: Center(
+                                child: Text(
+                                  OpenHoursHelper.isOpen(parking) ? "отворен" : "затворен",
+                                  textAlign: TextAlign.center,
+                                  style: const TextStyle(color: Colors.white),
+                                ),
+                              ),
+                            ),
+                          )
                         ],
                       ),
                     ],

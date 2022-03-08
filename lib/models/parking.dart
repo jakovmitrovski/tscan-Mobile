@@ -16,6 +16,7 @@ class Parking {
   String imageUrlLarge;
   List<WorkingHours> workingHours;
   String distance = "";
+  double sortingDistance = 1000000.0;
 
   Parking(
       {required this.id,

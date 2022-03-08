@@ -50,13 +50,14 @@ class ParkingShortDetailsSheet extends StatelessWidget {
           },
           child: Container(
             padding:
-                const EdgeInsets.symmetric(horizontal: 25.0, vertical: 10.0),
+                kModalSheetsPadding,
             decoration: const BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.only(
                     topLeft: Radius.circular(20.0),
                     topRight: Radius.circular(20.0))),
-            child: Column(children: [
+            child: Column(
+                children: [
               Container(
                 margin: const EdgeInsets.only(bottom: 5),
                 width: 60,

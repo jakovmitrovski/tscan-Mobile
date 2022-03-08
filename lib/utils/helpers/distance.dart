@@ -12,7 +12,7 @@ class DistanceHelper {
     return 12742 * asin(sqrt(a));
   }
 
-  Future<double> _getDistance(double lat1, double lon1, double lat2, double lon2) async {
+  Future<double> getDistance(double lat1, double lon1, double lat2, double lon2) async {
 
 
     PolylinePoints polylinePoints = PolylinePoints();
@@ -51,9 +51,7 @@ class DistanceHelper {
     return totalDistance;
   }
 
-  Future<String> getDistAsString(double lat1, double lon1, double lat2, double lon2) async {
-    double dist = await _getDistance(lat1, lon1, lat2, lon2);
-
+  String getDistAsString(double dist) {
     if (dist < 1) {
       return '${(dist * 1000) ~/ 1}м';
     }else {

@@ -23,6 +23,27 @@ class OpenHoursHelper {
     }
   }
 
+  static String mapDayToMacedonianDay(String day) {
+    switch(day) {
+      case "MONDAY":
+        return "Понеделник";
+      case "TUESDAY":
+        return "Вторник";
+      case "WEDNESDAY":
+        return "Среда";
+      case "THURSDAY":
+        return "Четврток";
+      case "FRIDAY":
+        return "Петок";
+      case "SATURDAY":
+        return "Сабота";
+      case "SUNDAY":
+        return "Недела";
+      default:
+        return "";
+    }
+  }
+
   static bool isOpen(Parking parking) {
     bool flag = false;
     var parser = DateFormat('hh:mm:ss');

@@ -201,7 +201,7 @@ class _CreditCardViewState extends State<CreditCardView> {
 
                       bool result = await networkHelper.newTransaction(
                           transaction, context);
-
+                      Navigator.pop(context);
                       Navigator.pushReplacementNamed(
                           context, CompletedTransactionScreen.id,
                           arguments: result);

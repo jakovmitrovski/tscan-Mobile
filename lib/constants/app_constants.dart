@@ -187,3 +187,5 @@ const kCreditCardTextStyle = TextStyle(
 );
 
 const kMaxNumberOfCreditCards = 4;
+
+const kModalSheetsPadding = EdgeInsets.only(left: 25.0, right: 25.0, top: 10.0, bottom: 25.0);

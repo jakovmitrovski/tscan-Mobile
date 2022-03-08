@@ -83,7 +83,7 @@ class _HomeScreenState extends State<HomeScreen> {
       loading = false;
     });
 
-    if (ticketInfo == null) {
+    if (ticketInfo == null || ticketInfo == -1) {
       return;
     }
 
