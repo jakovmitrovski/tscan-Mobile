@@ -28,10 +28,10 @@ class DatabaseProvider extends ChangeNotifier {
 
   initDB() async {
     Directory documentsDirectory = await getApplicationDocumentsDirectory();
-    String path = join(documentsDirectory.path, "creditCardsTScanTest.db");
+    String path = join(documentsDirectory.path, "TScanCreditCard.db");
     return await openDatabase(path, version: 1, onOpen: (db) {},
         onCreate: (Database db, int version) async {
-      await db.execute("CREATE TABLE TScanCardTest ("
+      await db.execute("CREATE TABLE TScanCard ("
           "Id INTEGER PRIMARY KEY,"
           "cardNumber TEXT,"
           "expiryDate TEXT,"
@@ -57,7 +57,7 @@ class DatabaseProvider extends ChangeNotifier {
 
   getAllCreditCards() async {
     final db = await database;
-    var res = await db.query("TScanCardTest");
+    var res = await db.query("TScanCard");
 
     List<CreditCard> list =
         res.isNotEmpty ? res.map((c) => CreditCard.fromMap(c)).toList() : [];
@@ -98,7 +98,7 @@ class DatabaseProvider extends ChangeNotifier {
 
     final db = await database;
     var res = await db.rawInsert(
-        "INSERT Into TScanCardTest (cardNumber, expiryDate, cvv,cardHolder, isPrimary, imageUrl) VALUES (\"${card.cardNumber}\", \"${card.expiryDate}\", \"${card.cvv}\", \"${card.cardholderName}\", ${card.isPrimary}, \"${card.imageUrl}\")");
+        "INSERT Into TScanCard (cardNumber, expiryDate, cvv,cardHolder, isPrimary, imageUrl) VALUES (\"${card.cardNumber}\", \"${card.expiryDate}\", \"${card.cvv}\", \"${card.cardholderName}\", ${card.isPrimary}, \"${card.imageUrl}\")");
 
     _creditCards.add(card);
 
@@ -121,7 +121,7 @@ class DatabaseProvider extends ChangeNotifier {
     if (_creditCards.length == 1) newCard.isPrimary = 1;
 
     final db = await database;
-    var res = await db.update("TScanCardTest", newCard.toMap(),
+    var res = await db.update("TScanCard", newCard.toMap(),
         where: "cardNumber = ? and cvv = ?",
         whereArgs: [newCard.cardNumber, newCard.cvv]);
 
@@ -137,7 +137,7 @@ class DatabaseProvider extends ChangeNotifier {
         } else if (element.isPrimary == 1 &&
             (element.cardNumber != newCard.cardNumber || (element.cardNumber == newCard.cardNumber && element.cvv!=newCard.cvv))) {
           element.isPrimary = 0;
-          res = await db.update("TScanCardTest", element.toMap(),
+          res = await db.update("TScanCard", element.toMap(),
               where: "cardNumber = ? and cvv = ?", whereArgs: [element.cardNumber, element.cvv]);
         }
       });
@@ -156,7 +156,7 @@ class DatabaseProvider extends ChangeNotifier {
         return;
       }
     }
-    db.delete("TScanCardTest",
+    db.delete("TScanCard",
         where: "cardNumber = ? and cvv = ?", whereArgs: [cardNumber, cardCvv]);
     _creditCards.removeWhere((element) => element.cardNumber == cardNumber);
     notifyListeners();
