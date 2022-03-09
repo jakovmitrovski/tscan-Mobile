@@ -19,7 +19,6 @@ class Assets {
   static const String imagesCardDesign6 = 'assets/images/card_design_6.png';
   static const String imagesExploreActive = 'assets/images/explore_active.png';
   static const String imagesExploreInactive = 'assets/images/explore_inactive.png';
-  static const String imagesFreeParkingSpaces = 'assets/images/free_parking_spaces.png';
   static const String imagesFreeSpacesCar = 'assets/images/free_spaces_car.png';
   static const String imagesGradientBlueBackground = 'assets/images/gradient_blue_background.png';
   static const String imagesLogoWhite = 'assets/images/logo_white.png';

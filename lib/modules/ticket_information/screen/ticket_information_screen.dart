@@ -10,6 +10,7 @@ import 'package:squick/modules/ticket_information/model/ticket_info.dart';
 import 'package:squick/modules/home/model/database.dart';
 import 'package:squick/modules/ticket_information/model/transaction_dto.dart';
 import 'package:squick/modules/ticket_information/widget/credit_card_view.dart';
+import 'package:squick/modules/wallet/screen/add_new_card_screen.dart';
 import 'package:squick/utils/helpers/networking.dart';
 import 'package:squick/widgets/flutter_ticket.dart';
 import 'package:squick/widgets/squick_button.dart';
@@ -103,43 +104,59 @@ class _TicketInformationState extends State<TicketInformation> {
                         padding: const EdgeInsets.only(top: 10.0),
                         child: SquickButton(
                             buttonText: 'Плати',
-                            onTap: () async {
-                              AndroidDeviceInfo androidInfo =
-                                  await deviceInfo.androidInfo;
-                              String? userId = androidInfo.id;
+                            onTap: Provider.of<DatabaseProvider>(context)
+                                        .count ==
+                                    0
+                                ? null
+                                : () async {
+                                    AndroidDeviceInfo androidInfo =
+                                        await deviceInfo.androidInfo;
+                                    String? userId = androidInfo.id;
 
-                              TransactionDto transaction = TransactionDto(
-                                  userId.toString(),
-                                  ticket.id,
-                                  ticket.price,
-                                  PaymentStatus.SUCCESSFUL.toString().split(".")[1]);
+                                    TransactionDto transaction = TransactionDto(
+                                        userId.toString(),
+                                        ticket.id,
+                                        ticket.price,
+                                        PaymentStatus.SUCCESSFUL
+                                            .toString()
+                                            .split(".")[1]);
 
-                              bool result = await networkHelper.newTransaction(
-                                  transaction, context);
+                                    bool result = await networkHelper
+                                        .newTransaction(transaction, context);
 
-                              // TODO: IMPLEMENT WITH PAYMENT PROVIDER
+                                    // TODO: IMPLEMENT WITH PAYMENT PROVIDER
 
-                              Navigator.pushReplacementNamed(
-                                  context, CompletedTransactionScreen.id,
-                                  arguments: result);
-                            })),
+                                    Navigator.pushReplacementNamed(
+                                        context, CompletedTransactionScreen.id,
+                                        arguments: result);
+                                  })),
                     TextButton(
                       child: Text(
-                        'Промени Картичка',
+                        Provider.of<DatabaseProvider>(context).count == 0
+                            ? 'Додади картичка'
+                            : 'Промени Картичка',
                         style: font12Regular.copyWith(color: Colors.black),
                       ),
-                      onPressed: () {
-                        showModalBottomSheet(
-                          context: context,
-                          builder: (_) => CreditCardView(
-                            primaryIndex: Provider.of<DatabaseProvider>(context,
-                                    listen: false)
-                                .getPrimaryCard(),
-                            ticket: ticket,
-                            deviceInfo: deviceInfo,
-                          ),
-                        );
-                      },
+                      onPressed:
+                          Provider.of<DatabaseProvider>(context).count == 0
+                              ? () {
+                                  var backToPayment = true;
+                                  Navigator.pushNamed(context, AddCardScreen.id,
+                                      arguments: backToPayment);
+                                }
+                              : () {
+                                  showModalBottomSheet(
+                                    context: context,
+                                    builder: (_) => CreditCardView(
+                                      primaryIndex:
+                                          Provider.of<DatabaseProvider>(context,
+                                                  listen: false)
+                                              .getPrimaryCard(),
+                                      ticket: ticket,
+                                      deviceInfo: deviceInfo,
+                                    ),
+                                  );
+                                },
                     )
                   ],
                 ),

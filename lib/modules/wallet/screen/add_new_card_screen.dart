@@ -81,7 +81,7 @@ class _AddCardScreenState extends State<AddCardScreen> {
     return Scaffold(
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.only(left: 10, right: 10),
+          padding: const EdgeInsets.only(left: 10, right: 10, bottom: 25),
           child: Column(
             children: [
               Padding(
@@ -261,10 +261,9 @@ class _AddCardScreenState extends State<AddCardScreen> {
                                     : showDialog(
                                   context: context,
                                   builder: (_) => CustomAlertDialog(
-                                    //TODO: Change this to macedonian
-                                      alertTitle: 'Oops!',
+                                      alertTitle: 'Грешка!',
                                       alertContent:
-                                      'Looks like you already have this card in your wallet.',
+                                      'Картичката веќе постои',
                                       actions: [
                                         TextButton(
                                           child: Text(

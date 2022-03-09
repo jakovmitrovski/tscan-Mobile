@@ -153,7 +153,7 @@ class _WalletScreenState extends State<WalletScreen> {
                                                               context,
                                                               listen: false)
                                                           .deleteCreditCard(
-                                                              card.cardNumber);
+                                                              card.cardNumber, card.cvv);
                                                     });
                                                     Navigator.pop(context);
                                                   },

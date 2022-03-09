@@ -28,18 +28,19 @@ class DatabaseProvider extends ChangeNotifier {
 
   initDB() async {
     Directory documentsDirectory = await getApplicationDocumentsDirectory();
-    String path = join(documentsDirectory.path, "cards.db");
+    String path = join(documentsDirectory.path, "creditCardsTScanTest.db");
     return await openDatabase(path, version: 1, onOpen: (db) {},
         onCreate: (Database db, int version) async {
-          await db.execute("CREATE TABLE CreditCard ("
-              "cardNumber TEXT PRIMARY KEY"
-              "expiryDate TEXT,"
-              "cvv TEXT,"
-              "cardHolder TEXT,"
-              "isPrimary BIT,"
-              "imageUrl TEXT"
-              ")");
-        });
+      await db.execute("CREATE TABLE TScanCardTest ("
+          "Id INTEGER PRIMARY KEY,"
+          "cardNumber TEXT,"
+          "expiryDate TEXT,"
+          "cvv TEXT,"
+          "cardHolder TEXT,"
+          "isPrimary BIT,"
+          "imageUrl TEXT"
+          ")");
+    });
   }
 
   bool get isValid {
@@ -56,10 +57,10 @@ class DatabaseProvider extends ChangeNotifier {
 
   getAllCreditCards() async {
     final db = await database;
-    var res = await db.query("CreditCard");
+    var res = await db.query("TScanCardTest");
 
     List<CreditCard> list =
-    res.isNotEmpty ? res.map((c) => CreditCard.fromMap(c)).toList() : [];
+        res.isNotEmpty ? res.map((c) => CreditCard.fromMap(c)).toList() : [];
 
     _creditCards = list;
 
@@ -97,12 +98,9 @@ class DatabaseProvider extends ChangeNotifier {
 
     final db = await database;
     var res = await db.rawInsert(
-        "INSERT Into CreditCard (cardNumber, expiryDate, cvv,cardHolder, isPrimary, imageUrl) VALUES (\"${card
-            .cardNumber}\", \"${card.expiryDate}\", \"${card.cvv}\", \"${card
-            .cardholderName}\", ${card.isPrimary}, \"${card.imageUrl}\")");
+        "INSERT Into TScanCardTest (cardNumber, expiryDate, cvv,cardHolder, isPrimary, imageUrl) VALUES (\"${card.cardNumber}\", \"${card.expiryDate}\", \"${card.cvv}\", \"${card.cardholderName}\", ${card.isPrimary}, \"${card.imageUrl}\")");
 
     _creditCards.add(card);
-    notifyListeners();
 
     return await updateRemainingCards(card, res, db);
   }
@@ -123,8 +121,9 @@ class DatabaseProvider extends ChangeNotifier {
     if (_creditCards.length == 1) newCard.isPrimary = 1;
 
     final db = await database;
-    var res = await db.update("CreditCard", newCard.toMap(),
-        where: "cardNumber = ?", whereArgs: [newCard.cardNumber]);
+    var res = await db.update("TScanCardTest", newCard.toMap(),
+        where: "cardNumber = ? and cvv = ?",
+        whereArgs: [newCard.cardNumber, newCard.cvv]);
 
     return await updateRemainingCards(newCard, res, db);
   }
@@ -132,31 +131,33 @@ class DatabaseProvider extends ChangeNotifier {
   updateRemainingCards(CreditCard newCard, var res, var db) async {
     if (newCard.isPrimary == 1) {
       _creditCards.forEach((element) async {
-        if (element.cardNumber == newCard.cardNumber) {
+        if (element.cardNumber == newCard.cardNumber &&
+            element.cvv == newCard.cvv) {
           element.isPrimary = 1;
         } else if (element.isPrimary == 1 &&
-            element.cardNumber != newCard.cardNumber) {
+            (element.cardNumber != newCard.cardNumber || (element.cardNumber == newCard.cardNumber && element.cvv!=newCard.cvv))) {
           element.isPrimary = 0;
-          res = await db.update("CreditCard", element.toMap(),
-              where: "cardNumber = ?", whereArgs: [element.cardNumber]);
+          res = await db.update("TScanCardTest", element.toMap(),
+              where: "cardNumber = ? and cvv = ?", whereArgs: [element.cardNumber, element.cvv]);
         }
       });
     }
 
     notifyListeners();
-
     return res;
   }
 
-  deleteCreditCard(String cardNumber) async {
+  deleteCreditCard(String cardNumber, String cardCvv) async {
     final db = await database;
     for (int i = 0; i < _creditCards.length; i++) {
       if (_creditCards[i].cardNumber == cardNumber &&
+          _creditCards[i].cvv==cardCvv &&
           _creditCards[i].isPrimary == 1) {
         return;
       }
     }
-    db.delete("CreditCard", where: "cardNumber = ?", whereArgs: [cardNumber]);
+    db.delete("TScanCardTest",
+        where: "cardNumber = ? and cvv = ?", whereArgs: [cardNumber, cardCvv]);
     _creditCards.removeWhere((element) => element.cardNumber == cardNumber);
     notifyListeners();
   }

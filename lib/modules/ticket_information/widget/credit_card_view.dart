@@ -188,7 +188,8 @@ class _CreditCardViewState extends State<CreditCardView> {
                   child: SquickButton(
                     buttonText: 'Плати',
                     backgroundColor: colorOrange,
-                    onTap: () async {
+                    onTap: Provider.of<DatabaseProvider>(context)
+                        .count == 0 ? null : () async {
                       AndroidDeviceInfo androidInfo =
                           await widget.deviceInfo.androidInfo;
                       String? userId = androidInfo.id;

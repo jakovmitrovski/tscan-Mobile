@@ -17,12 +17,32 @@ class NetworkHelper {
         .get(url, headers: {'Content-Type': 'application/json; charset=utf-8'});
     if (response.statusCode == 200) {
       return jsonDecode(utf8.decode(response.bodyBytes));
-    } else {
+    } else if(response.statusCode == 404) {
       Alert(
           context: context,
           type: AlertType.error,
           title: 'Невалиден билет!',
           desc: 'Билетот кој го скениравте е невалиден.',
+          style: AlertStyle(
+              titleStyle: font16Medium.copyWith(color: colorBlueDark),
+              descStyle: font14Regular.copyWith(color: colorBlueDarkLight)),
+          buttons: [
+            DialogButton(
+              child: const Text(
+                "Назад",
+                style: TextStyle(color: Colors.white, fontSize: 14),
+              ),
+              onPressed: () => Navigator.pop(context),
+              color: Colors.grey.shade400,
+            ),
+          ]).show();
+    }
+    else if(response.statusCode == 400) {
+      Alert(
+          context: context,
+          type: AlertType.error,
+          title: 'Грешка!',
+          desc: 'Билетот кој го скениравте е веќе платен.',
           style: AlertStyle(
               titleStyle: font16Medium.copyWith(color: colorBlueDark),
               descStyle: font14Regular.copyWith(color: colorBlueDarkLight)),
