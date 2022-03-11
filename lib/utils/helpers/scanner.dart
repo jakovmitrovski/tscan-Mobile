@@ -31,7 +31,7 @@ class Scanner {
 
     if(apiTicketData!=null) {
       TicketInfo ticketInfo =
-      ParseUtils.parseTicketInfo(apiTicketData, barcodeScanRes);
+      ParseUtils.parseTicketInfo(apiTicketData, barcodeScanRes, true);
 
       return ticketInfo;
     }

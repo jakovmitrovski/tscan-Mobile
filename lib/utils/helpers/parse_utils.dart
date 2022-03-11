@@ -1,8 +1,10 @@
 import 'package:squick/models/parking.dart';
+import 'package:squick/modules/ticket_information/model/payment_status.dart';
 import 'package:squick/modules/ticket_information/model/ticket_info.dart';
 import 'package:squick/models/working_hours.dart';
 import 'package:intl/intl.dart';
 import 'package:sprintf/sprintf.dart';
+import 'package:squick/modules/past_transactions/model/transaction.dart';
 
 class ParseUtils {
   static parseParkingData(dynamic parkingData) {
@@ -39,10 +41,8 @@ class ParseUtils {
     return parkings;
   }
 
-  static parseTicketInfo(dynamic ticketInfo, String ticketValue) {
+  static parseTicketInfo(dynamic ticketInfo, String ticketValue, bool needEnter) {
     List<WorkingHours> parkingWorkingHours = [];
-
-    print(ticketInfo);
 
     for (dynamic workingHour in ticketInfo["parking"]["workingHours"]) {
       WorkingHours pWorkingHour = WorkingHours(
@@ -69,10 +69,15 @@ class ParseUtils {
         imageUrlLarge: ticketInfo["parking"]["imageUrlLarge"],
         workingHours: parkingWorkingHours);
 
-    DateTime entered =
-        DateFormat("dd.MM.yyyy HH:mm:ss").parse(ticketInfo["entered"]);
-    DateTime exited =
-        DateFormat("dd.MM.yyyy HH:mm:ss").parse(ticketInfo["exited"]);
+    DateTime entered, exited;
+
+    if (needEnter) {
+      entered = DateFormat("dd.MM.yyyy HH:mm:ss").parse(ticketInfo["entered"]);
+      exited = DateFormat("dd.MM.yyyy HH:mm:ss").parse(ticketInfo["exited"]);
+    } else {
+      entered = DateTime.now();
+      exited = DateTime.now();
+    }
 
     return TicketInfo(
         id: ticketInfo["id"],
@@ -109,5 +114,23 @@ class ParseUtils {
     } else {
       return sprintf("%iчаса %02iмин", [hour, min]);
     }
+  }
+
+  static List<SingleTransaction> parseTransactionData(dynamic transactionsData) {
+    List<SingleTransaction> transactions = [];
+
+    for (dynamic transaction in transactionsData['content']) {
+      SingleTransaction newTransaction = SingleTransaction(
+        id: transaction['id'],
+        userId: transaction['userId'],
+        ticket: ParseUtils.parseTicketInfo(transaction['ticket'], transaction['ticket']['value'].toString(), false),
+        price: transaction['price'],
+        paymentStatus: transaction['paymentStatus'] == 'SUCCESSFULL' ? PaymentStatus.SUCCESSFUL : PaymentStatus.UNSUCCESSFUL
+      );
+
+      transactions.add(newTransaction);
+    }
+
+    return transactions;
   }
 }

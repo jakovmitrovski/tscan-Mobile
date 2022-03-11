@@ -74,30 +74,46 @@ class NetworkHelper {
     }
   }
 
+  void _showErrorDialog(BuildContext context) {
+    Alert(
+        context: context,
+        type: AlertType.warning,
+        title: 'Настана грешка!',
+        desc: 'Ве молиме обидете се повторно подоцна.',
+        style: AlertStyle(
+            titleStyle: font16Medium.copyWith(color: colorBlueDark),
+            descStyle: font14Regular.copyWith(color: colorBlueDarkLight)),
+        buttons: [
+          DialogButton(
+            child: const Text(
+              "Назад",
+              style: TextStyle(color: Colors.white, fontSize: 14),
+            ),
+            onPressed: () => Navigator.pop(context),
+            color: Colors.grey.shade400,
+          ),
+        ]).show();
+  }
+
   Future<dynamic> getParkings(BuildContext context) async {
     http.Response response = await http
         .get(url, headers: {'Content-Type': 'application/json; charset=utf-8'});
     if (response.statusCode == 200) {
       return jsonDecode(utf8.decode(response.bodyBytes)) as List;
     } else {
-      Alert(
-          context: context,
-          type: AlertType.warning,
-          title: 'Настана грешка!',
-          desc: 'Ве молиме обидете се повторно подоцна.',
-          style: AlertStyle(
-              titleStyle: font16Medium.copyWith(color: colorBlueDark),
-              descStyle: font14Regular.copyWith(color: colorBlueDarkLight)),
-          buttons: [
-            DialogButton(
-              child: const Text(
-                "Назад",
-                style: TextStyle(color: Colors.white, fontSize: 14),
-              ),
-              onPressed: () => Navigator.pop(context),
-              color: Colors.grey.shade400,
-            ),
-          ]).show();
+     _showErrorDialog(context);
+     return null;
+    }
+  }
+
+  Future<dynamic> getTransactions(BuildContext context) async {
+    http.Response response = await http
+        .get(url, headers: {'Content-Type': 'application/json; charset=utf-8'});
+    if (response.statusCode == 200) {
+      return jsonDecode(utf8.decode(response.bodyBytes));
+    } else {
+      _showErrorDialog(context);
+      return null;
     }
   }
 }
