@@ -180,7 +180,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
                                     return Center(
                                       child: Text(
                                         'Не се пронајдени податоци',
-                                        style: font14Medium.copyWith(
+                                        style: font18Medium.copyWith(
                                             color: colorBlueDark),
                                       ),
                                     );

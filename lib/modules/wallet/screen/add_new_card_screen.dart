@@ -30,6 +30,7 @@ class _AddCardScreenState extends State<AddCardScreen> {
   bool isPrimary = false;
   OutlineInputBorder? border;
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
+  ScrollController _scrollController = ScrollController();
 
   Matrix4 perspective = _pmat(1.0);
 
@@ -54,6 +55,14 @@ class _AddCardScreenState extends State<AddCardScreen> {
     );
   }
 
+  void scrollDown() {
+    _scrollController.animateTo(
+        _scrollController.position.maxScrollExtent,
+        duration: const Duration(milliseconds: 500),
+        curve: Curves.ease
+    );
+  }
+
   @override
   void initState() {
     border = const OutlineInputBorder(
@@ -62,6 +71,9 @@ class _AddCardScreenState extends State<AddCardScreen> {
         width: 1.0,
       ),
     );
+
+    WidgetsBinding.instance!
+        .addPostFrameCallback((_) => scrollDown());
 
     super.initState();
   }
@@ -78,6 +90,7 @@ class _AddCardScreenState extends State<AddCardScreen> {
 
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       body: SafeArea(
         child: Padding(
@@ -154,6 +167,7 @@ class _AddCardScreenState extends State<AddCardScreen> {
               ),
               Expanded(
                 child: SingleChildScrollView(
+                  controller: _scrollController,
                   child: Column(
                     children: [
                       CreditCardForm(

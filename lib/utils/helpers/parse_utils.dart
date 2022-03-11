@@ -1,4 +1,7 @@
+import 'package:squick/models/pageable.dart';
+import 'package:squick/models/paging_response.dart';
 import 'package:squick/models/parking.dart';
+import 'package:squick/models/sort.dart';
 import 'package:squick/modules/ticket_information/model/payment_status.dart';
 import 'package:squick/modules/ticket_information/model/ticket_info.dart';
 import 'package:squick/models/working_hours.dart';
@@ -116,21 +119,50 @@ class ParseUtils {
     }
   }
 
-  static List<SingleTransaction> parseTransactionData(dynamic transactionsData) {
+  static PagingResponse parseTransactionData(dynamic transactionsData) {
+
     List<SingleTransaction> transactions = [];
 
     for (dynamic transaction in transactionsData['content']) {
+      DateTime createdAt = DateTime.parse(transaction['createdAt']);
       SingleTransaction newTransaction = SingleTransaction(
         id: transaction['id'],
         userId: transaction['userId'],
         ticket: ParseUtils.parseTicketInfo(transaction['ticket'], transaction['ticket']['value'].toString(), false),
+        createdAt: createdAt,
         price: transaction['price'],
         paymentStatus: transaction['paymentStatus'] == 'SUCCESSFULL' ? PaymentStatus.SUCCESSFUL : PaymentStatus.UNSUCCESSFUL
       );
-
       transactions.add(newTransaction);
     }
 
-    return transactions;
+    Sort sort = Sort(
+        sorted: transactionsData['pageable']['sort']['sorted'],
+        empty: transactionsData['pageable']['sort']['empty'],
+        unsorted: transactionsData['pageable']['sort']['unsorted']
+    );
+    Pageable pageable = Pageable(
+        sort: sort,
+        pageNumber: transactionsData['pageable']['pageNumber'],
+        pageSize: transactionsData['pageable']['pageSize'],
+        offset: transactionsData['pageable']['offset'],
+        paged: transactionsData['pageable']['paged'],
+        unpaged: transactionsData['pageable']['unpaged']);
+
+    PagingResponse pagingResponse = PagingResponse(
+        content: transactions,
+        pageable: pageable,
+        last: transactionsData['last'],
+        totalElements: transactionsData['totalElements'],
+        totalPages: transactionsData['totalPages'],
+        first: transactionsData['first'],
+        sort: sort,
+        size: transactionsData['size'],
+        number: transactionsData['number'],
+        numberOfElements: transactionsData['numberOfElements'],
+        empty: transactionsData['empty']
+    );
+
+    return pagingResponse;
   }
 }

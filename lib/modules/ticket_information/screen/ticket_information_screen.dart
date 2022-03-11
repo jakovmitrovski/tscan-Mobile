@@ -135,7 +135,7 @@ class _TicketInformationState extends State<TicketInformation> {
                         Provider.of<DatabaseProvider>(context).count == 0
                             ? 'Додади картичка'
                             : 'Промени Картичка',
-                        style: font12Regular.copyWith(color: Colors.black),
+                        style: Provider.of<DatabaseProvider>(context).count == 0 ? font14Bold.copyWith(color: Colors.black) : font12Regular.copyWith(color: Colors.black),
                       ),
                       onPressed:
                           Provider.of<DatabaseProvider>(context).count == 0

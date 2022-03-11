@@ -103,6 +103,17 @@ class _WalletScreenState extends State<WalletScreen> {
                   if (snapshot.hasData &&
                       snapshot.data != null &&
                       snapshot.connectionState == ConnectionState.done) {
+
+                    if (snapshot.data!.length == 0) {
+                      return Center(
+                        child: Text(
+                          'Немате внесено картички!',
+                          style: font18Medium.copyWith(
+                              color: colorBlueDark),
+                        ),
+                      );
+                    }
+
                     return ListView.builder(
                       itemCount: snapshot.data!.length,
                       itemBuilder: (BuildContext context, int index) {
@@ -113,7 +124,7 @@ class _WalletScreenState extends State<WalletScreen> {
                               motion: const ScrollMotion(),
                               children: [
                                 ElevatedButton(
-                                  onPressed: card.isPrimary == 0
+                                  onPressed: (card.isPrimary == 0 || snapshot.data!.length == 1)
                                       ? () {
                                           Alert(
                                               context: context,
@@ -175,7 +186,7 @@ class _WalletScreenState extends State<WalletScreen> {
                                                     .width) /
                                                 5.538)),
                                       ),
-                                      backgroundColor: card.isPrimary == 1
+                                      backgroundColor: (card.isPrimary == 1 && snapshot.data!.length != 1)
                                           ? MaterialStateProperty.all<Color>(
                                               Colors.grey)
                                           : MaterialStateProperty.all<Color>(

@@ -152,7 +152,7 @@ class DatabaseProvider extends ChangeNotifier {
     for (int i = 0; i < _creditCards.length; i++) {
       if (_creditCards[i].cardNumber == cardNumber &&
           _creditCards[i].cvv==cardCvv &&
-          _creditCards[i].isPrimary == 1) {
+          _creditCards[i].isPrimary == 1 && _creditCards.length != 1) {
         return;
       }
     }
