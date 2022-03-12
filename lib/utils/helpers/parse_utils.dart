@@ -88,8 +88,7 @@ class ParseUtils {
         parking: parking,
         entered: entered,
         exited: exited,
-        price: 30);
-        // price: ticketInfo["price"]);
+        price: needEnter ? ticketInfo["price"] : 0);
   }
 
   static String parseDateToStr(DateTime d) {

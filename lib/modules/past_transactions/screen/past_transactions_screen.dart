@@ -8,6 +8,8 @@ import 'package:squick/utils/helpers/parse_utils.dart';
 import 'package:squick/constants/app_constants.dart';
 import 'dart:async';
 
+import 'package:squick/widgets/transaction_widget.dart';
+
 class TransactionsScreen extends StatefulWidget {
   static const String id = "/transactions";
 
@@ -19,7 +21,7 @@ class TransactionsScreen extends StatefulWidget {
 
 class _TransactionsScreenState extends State<TransactionsScreen> {
   int _page = 0;
-  int _items = 10;
+  final int _items = 7;
   bool _hasNextPage = true;
   bool _isFirstLoadRunning = false;
   bool _isLoadMoreRunning = false;
@@ -27,7 +29,8 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
 
   late PagingResponse _transactionsPagingResponse;
   late DeviceInfoPlugin _deviceInfo;
-  late ScrollController _controller;
+  late ScrollController _controller;  late double height;
+
 
   Future<String> getUserId(DeviceInfoPlugin deviceInfo) async {
     AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
@@ -49,17 +52,13 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
     });
 
     String user = await getUserId(deviceInfo);
-    print("Bojan123242");
 
     Uri uri = Uri.parse(
         '$baseEndpoint/transactions/$user/all?start=$start&items=$items');
     NetworkHelper networkHelper = NetworkHelper(uri);
     final transactionsData = await networkHelper.getTransactions(context);
-    print("Bojan12");
 
     if (transactionsData != null) {
-      print("Bojan124");
-
       _transactionsPagingResponse =
           ParseUtils.parseTransactionData(transactionsData);
 
@@ -67,9 +66,6 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
         _isFirstLoadRunning = false;
         _transactions =
         _transactionsPagingResponse.content as List<SingleTransaction>;
-        print("Bojan");
-        print("Bojan");
-        print(_transactions);
       });
     } else {
       //TODO: unable to load data
@@ -100,8 +96,6 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
         setState(() {
           _transactions.addAll(
               _transactionsPagingResponse.content as List<SingleTransaction>);
-          print("Viktor");
-          print(_transactions);
         });
       } else {
         setState(() {
@@ -136,10 +130,7 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    print("Hello");
-    print(_transactions.length);
-    print(_transactions[0].id);
-    print(_transactions[0].ticket.id);
+    height = MediaQuery.of(context).size.height;
 
     return Scaffold(
       body: _isFirstLoadRunning
@@ -171,7 +162,7 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
 
               child: Container(
                   decoration: const BoxDecoration(
-                      color: colorBlue,
+                      color: Colors.white,
                       borderRadius: BorderRadius.only(
                           topLeft: Radius.circular(20.0),
                           topRight: Radius.circular(20.0))),
@@ -186,28 +177,22 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
                           padding: const EdgeInsets.fromLTRB(15.0, 15.0, 15.0, 0.0),
                           child: ListView.builder(
                             controller: _controller,
+                            padding: const EdgeInsets.only(bottom: 30.0),
                             itemCount: _transactions.length,
                             itemBuilder: (_, index) =>
-                                Card(
-                                  margin: const EdgeInsets.symmetric(
-                                      vertical: 8, horizontal: 10),
-                                  child: ListTile(
-                                    title: Text(_transactions[index].id.toString()),
-                                    subtitle: Text(
-                                        _transactions[index].ticket.id.toString()),
-                                  ),
-                                ),
+                              TransactionWidget(
+                                  transaction: _transactions[index],
+                                  height: height
+                              )
                           ),
                         )
                       ),
-                      // when the _loadMore function is running
+
                       if (_isLoadMoreRunning == true)
                         const Padding(
                           padding: EdgeInsets.only(top: 10, bottom: 40),
                           child: Center(
-                            child: CircularProgressIndicator(
-                              color: Colors.white,
-                            ),
+                            child: CircularProgressIndicator(),
                           ),
                         ),
                     ],
@@ -216,7 +201,6 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
             ),
           ),
 
-          // When nothing else to load
           if (_hasNextPage == false)
             Container(
               padding: const EdgeInsets.only(top: 30, bottom: 40),

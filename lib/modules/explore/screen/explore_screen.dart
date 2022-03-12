@@ -186,6 +186,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
                                     );
                                   }
                                   return ListView(
+                                    padding: const EdgeInsets.only(bottom: 30.0),
                                     children: getParkingList(
                                         snapshot.data as List<Parking>),
                                   );
