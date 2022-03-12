@@ -1,5 +1,6 @@
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:squick/models/paging_response.dart';
 import 'package:squick/modules/past_transactions/model/transaction.dart';
 import 'package:squick/utils/helpers/networking.dart';
@@ -76,7 +77,7 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
     if (_hasNextPage == true &&
         _isFirstLoadRunning == false &&
         _isLoadMoreRunning == false &&
-        _controller.position.extentAfter < 300) {
+        _controller.position.extentAfter < 50) {
       setState(() {
         _isLoadMoreRunning = true;
       });
@@ -188,7 +189,8 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
                         )
                       ),
 
-                      if (_isLoadMoreRunning == true)
+                      if (_isLoadMoreRunning &&
+                          _controller.position.userScrollDirection == ScrollDirection.reverse)
                         const Padding(
                           padding: EdgeInsets.only(top: 10, bottom: 40),
                           child: Center(
@@ -200,15 +202,15 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
               ),
             ),
           ),
-
-          if (_hasNextPage == false)
-            Container(
-              padding: const EdgeInsets.only(top: 30, bottom: 40),
-              color: Colors.amber,
-              child: const Center(
-                child: Text('You have fetched all of the content'),
-              ),
-            ),
+          //
+          // if (!_hasNextPage)
+          //   Container(
+          //     padding: const EdgeInsets.only(top: 30, bottom: 40),
+          //     color: Colors.amber,
+          //     child: const Center(
+          //       child: Text('You have fetched all of the content'),
+          //     ),
+          //   ),
         ],
       ),
     );
