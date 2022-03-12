@@ -103,7 +103,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 size: 100.0,
               )
             : Padding(
-                padding: isMap || isExplore
+                padding: isMap || isExplore || isTransactions
                     ? const EdgeInsets.symmetric(horizontal: 0.0)
                     : const EdgeInsets.symmetric(horizontal: 25.0),
                 child: IndexedStack(

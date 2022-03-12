@@ -88,7 +88,8 @@ class ParseUtils {
         parking: parking,
         entered: entered,
         exited: exited,
-        price: ticketInfo["price"]);
+        price: 30);
+        // price: ticketInfo["price"]);
   }
 
   static String parseDateToStr(DateTime d) {
@@ -131,7 +132,7 @@ class ParseUtils {
         ticket: ParseUtils.parseTicketInfo(transaction['ticket'], transaction['ticket']['value'].toString(), false),
         createdAt: createdAt,
         price: transaction['price'],
-        paymentStatus: transaction['paymentStatus'] == 'SUCCESSFULL' ? PaymentStatus.SUCCESSFUL : PaymentStatus.UNSUCCESSFUL
+        paymentStatus: transaction['paymentStatus'] == 'SUCCESSFUL' ? PaymentStatus.SUCCESSFUL : PaymentStatus.UNSUCCESSFUL
       );
       transactions.add(newTransaction);
     }
