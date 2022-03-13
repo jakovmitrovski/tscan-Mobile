@@ -57,6 +57,7 @@ dependencies:
   device_info_plus: ^3.2.1
   dotted_border: ^2.0.0+2
   blur: ^3.0.0
+  fl_chart: ^0.46.0
 
 dev_dependencies:
   flutter_test:

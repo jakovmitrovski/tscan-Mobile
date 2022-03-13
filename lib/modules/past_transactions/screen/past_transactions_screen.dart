@@ -7,6 +7,7 @@ import 'package:squick/utils/helpers/networking.dart';
 import 'package:squick/constants/api_constants.dart';
 import 'package:squick/utils/helpers/parse_utils.dart';
 import 'package:squick/constants/app_constants.dart';
+import 'package:squick/widgets/squick_button.dart';
 import 'dart:async';
 
 import 'package:squick/widgets/transaction_widget.dart';
@@ -30,8 +31,8 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
 
   late PagingResponse _transactionsPagingResponse;
   late DeviceInfoPlugin _deviceInfo;
-  late ScrollController _controller;  late double height;
-
+  late ScrollController _controller;
+  late double height;
 
   Future<String> getUserId(DeviceInfoPlugin deviceInfo) async {
     AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
@@ -74,10 +75,11 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
   }
 
   void _loadMore(DeviceInfoPlugin deviceInfo) async {
-    if (_hasNextPage == true &&
-        _isFirstLoadRunning == false &&
-        _isLoadMoreRunning == false &&
-        _controller.position.extentAfter < 50) {
+    if (_hasNextPage &&
+        !_isFirstLoadRunning &&
+        !_isLoadMoreRunning &&
+        _controller.position.userScrollDirection == ScrollDirection.reverse &&
+        _controller.position.extentAfter < 150) {
       setState(() {
         _isLoadMoreRunning = true;
       });
@@ -110,6 +112,24 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
     }
   }
 
+  _getMonths() {
+    List<Widget> widgets = [];
+    for (int i = 1; i < 12; i++) {
+      widgets.add(Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: SquickButton(
+          buttonText: 'Jan \'22',
+          width: 90.0,
+          onTap: () => {},
+        ),
+      ),
+      );
+  }
+
+    return
+    widgets;
+  }
+
   @override
   void initState() {
     _deviceInfo = DeviceInfoPlugin();
@@ -131,7 +151,10 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    height = MediaQuery.of(context).size.height;
+    height = MediaQuery
+        .of(context)
+        .size
+        .height;
 
     return Scaffold(
       body: _isFirstLoadRunning
@@ -145,60 +168,84 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
             child: Container(
               color: colorGray,
               width: double.infinity,
-
               child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Column(
-                    children: const [Text('Вкупно потрошено')],
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text(
+                          'Вкупно потрошено',
+                          style: font18Regular.copyWith(
+                              color: colorBlueDarkLightest),
+                        ),
+                      ),
+                      Text(
+                        '1850 денари',
+                        style: font36Bold.copyWith(color: colorBlueDark),
+                      ),
+                    ],
                   ),
                 ],
               ),
             ),
           ),
           Expanded(
-            flex: 2,
+            flex: 3,
             child: Container(
               color: colorGray,
               width: double.infinity,
-
               child: Container(
-                  decoration: const BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(20.0),
-                          topRight: Radius.circular(20.0))),
-                  child: Column(
-                    children: [
-                      Container(
-                        color: colorGray,
-                        width: double.infinity,
+                decoration: const BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(20.0),
+                        topRight: Radius.circular(20.0))),
+                child: Column(
+                  children: [
+                    Container(
+                      color: colorGray,
+                      width: double.infinity,
+                    ),
+                    SizedBox(
+                      height: 80.0,
+                      child: Padding(
+                        padding: const EdgeInsets.only(top: 20.0),
+                        child: ListView(
+                          scrollDirection: Axis.horizontal,
+                          children: _getMonths(),
+                        ),
                       ),
-                      Expanded(
+                    ),
+                    Expanded(
+                      flex: 5,
                         child: Padding(
-                          padding: const EdgeInsets.fromLTRB(15.0, 15.0, 15.0, 0.0),
+                          padding: const EdgeInsets.fromLTRB(
+                              15.0, 15.0, 15.0, 0.0),
                           child: ListView.builder(
-                            controller: _controller,
-                            padding: const EdgeInsets.only(bottom: 30.0),
-                            itemCount: _transactions.length,
-                            itemBuilder: (_, index) =>
-                              TransactionWidget(
-                                  transaction: _transactions[index],
-                                  height: height
-                              )
-                          ),
-                        )
-                      ),
-
-                      if (_isLoadMoreRunning &&
-                          _controller.position.userScrollDirection == ScrollDirection.reverse)
-                        const Padding(
-                          padding: EdgeInsets.only(top: 10, bottom: 40),
-                          child: Center(
-                            child: CircularProgressIndicator(),
+                              controller: _controller,
+                              padding: const EdgeInsets.only(bottom: 30.0),
+                              itemCount: _transactions.length,
+                              itemBuilder: (_, index) =>
+                                  TransactionWidget(
+                                      transaction: _transactions[index],
+                                      height: height)),
+                        )),
+                    if (_isLoadMoreRunning &&
+                        _controller.position.userScrollDirection ==
+                            ScrollDirection.reverse)
+                      const Padding(
+                        padding: EdgeInsets.only(top: 10.0, bottom: 40.0),
+                        child: Center(
+                          child: CircularProgressIndicator(
+                            color: colorBlueLight,
                           ),
                         ),
-                    ],
-                  ),
+                      ),
+                  ],
+                ),
               ),
             ),
           ),
@@ -216,69 +263,3 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
     );
   }
 }
-
-// return Scaffold(
-// body: Container(
-// child: const Text("HI"),
-// ),
-// );
-
-// return Scaffold(
-// body: _isFirstLoadRunning
-// ? const Center(
-// child: CircularProgressIndicator(),
-// )
-// : Column(
-// children: [
-// Container(
-// color: colorGray,
-// child: Column(
-// children: [
-// Column(
-// children: const [Text('Вкупно потрошено')],
-// ),
-// Column(
-// children: [
-// Container(
-// width: 60,
-// height: 2,
-// color: colorGrayDark,
-// ),
-// Expanded(
-// child: ListView.builder(
-// controller: _controller,
-// itemCount: _transactions.length,
-// itemBuilder: (_, index) => Card(
-// margin: const EdgeInsets.symmetric(
-// vertical: 8, horizontal: 10),
-// child: ListTile(
-// title: Text(_transactions[index].id.toString()),
-// ),
-// ),
-// ),
-// ),
-// if (_isLoadMoreRunning == true)
-// const Padding(
-// padding: EdgeInsets.only(top: 10, bottom: 40),
-// child: Center(
-// child: CircularProgressIndicator(),
-// ),
-// ),
-// if (_hasNextPage == false)
-// Container(
-// padding:
-// const EdgeInsets.only(top: 30, bottom: 40),
-// color: Colors.amber,
-// child: const Center(
-// child:
-// Text('You have fetched all of the content'),
-// ),
-// ),
-// ],
-// )
-// ],
-// ),
-// )
-// ],
-// ),
-// );

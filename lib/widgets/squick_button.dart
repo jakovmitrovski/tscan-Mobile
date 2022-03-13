@@ -7,18 +7,20 @@ class SquickButton extends StatelessWidget {
   final String buttonText;
   final VoidCallback? onTap;
   bool disabled = false;
+  double? width;
 
   SquickButton(
       {this.backgroundColor = colorBlueDark,
       this.textColor = Colors.white,
       required this.buttonText,
-      this.onTap});
+      this.onTap,
+      this.width});
 
   @override
   Widget build(BuildContext context) {
     disabled = (onTap == null);
     return SizedBox(
-      width: double.infinity,
+      width: width ?? double.infinity,
       height: 48,
       child: TextButton(
         style: ButtonStyle(
