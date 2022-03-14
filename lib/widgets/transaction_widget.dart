@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:squick/constants/app_constants.dart';
 import 'package:squick/modules/past_transactions/model/transaction.dart';
+import 'package:squick/utils/helpers/date.dart';
 
 class TransactionWidget extends StatelessWidget {
   double height;
@@ -10,9 +11,6 @@ class TransactionWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print("JAKOV");
-    print(transaction.id);
-
     return Container(
       height: 0.1 * height,
       margin: const EdgeInsets.symmetric(vertical: 5.0),
@@ -37,7 +35,7 @@ class TransactionWidget extends StatelessWidget {
                           style: font16Regular.copyWith(color: colorBlueDark),
                         ),
                         Text(
-                          transaction.createdAt.toString(),
+                          DateHelper.getFormattedDateForTransaction(transaction.createdAt),
                           style: font12Regular.copyWith(color: colorBlueDarkLightest),
                         )
                       ],
@@ -48,14 +46,17 @@ class TransactionWidget extends StatelessWidget {
             ],
           ),
           const Spacer(),
-          Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                '${transaction.price.toString()} ден.',
-                style: font16Bold.copyWith(color: colorBlueDark),
-              )
-            ],
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  '${transaction.price.toString()} ден.',
+                  style: font16Bold.copyWith(color: colorBlueDark),
+                )
+              ],
+            ),
           )
         ],
       ),

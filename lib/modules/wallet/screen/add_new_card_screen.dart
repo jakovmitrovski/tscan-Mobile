@@ -56,11 +56,13 @@ class _AddCardScreenState extends State<AddCardScreen> {
   }
 
   void scrollDown() {
-    _scrollController.animateTo(
-        _scrollController.position.maxScrollExtent,
-        duration: const Duration(milliseconds: 500),
-        curve: Curves.ease
-    );
+    if (_scrollController.hasClients) {
+      _scrollController.animateTo(
+          _scrollController.position.maxScrollExtent,
+          duration: const Duration(milliseconds: 500),
+          curve: Curves.ease
+      );
+    }
   }
 
   @override

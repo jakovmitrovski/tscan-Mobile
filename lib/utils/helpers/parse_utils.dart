@@ -119,6 +119,10 @@ class ParseUtils {
     }
   }
 
+  static int parseSumData(dynamic sumData) {
+    return sumData['sum'];
+  }
+
   static PagingResponse parseTransactionData(dynamic transactionsData) {
 
     List<SingleTransaction> transactions = [];

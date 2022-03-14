@@ -116,4 +116,15 @@ class NetworkHelper {
       return null;
     }
   }
+
+  Future<dynamic> getSum(BuildContext context) async {
+    http.Response response = await http
+        .get(url, headers: {'Content-Type': 'application/json; charset=utf-8'});
+    if (response.statusCode == 200) {
+      return jsonDecode(utf8.decode(response.bodyBytes));
+    } else {
+      _showErrorDialog(context);
+      return null;
+    }
+  }
 }

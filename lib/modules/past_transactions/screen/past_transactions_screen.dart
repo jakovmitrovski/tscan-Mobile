@@ -3,14 +3,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:squick/models/paging_response.dart';
 import 'package:squick/modules/past_transactions/model/transaction.dart';
+import 'package:squick/utils/helpers/date.dart';
 import 'package:squick/utils/helpers/networking.dart';
 import 'package:squick/constants/api_constants.dart';
 import 'package:squick/utils/helpers/parse_utils.dart';
 import 'package:squick/constants/app_constants.dart';
-import 'package:squick/widgets/squick_button.dart';
 import 'dart:async';
-
 import 'package:squick/widgets/transaction_widget.dart';
+import 'package:squick/widgets/transactions_month_button.dart';
+import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
 class TransactionsScreen extends StatefulWidget {
   static const String id = "/transactions";
@@ -24,11 +25,19 @@ class TransactionsScreen extends StatefulWidget {
 class _TransactionsScreenState extends State<TransactionsScreen> {
   int _page = 0;
   final int _items = 7;
+  static final DateTime _now = DateTime.now();
+  static final int _currentMonth = _now.month;
+  static final int _currentYear = _now.year;
+  final ScrollController _scrollController = ScrollController();
+  int _selectedYear = _currentYear;
+  int _selectedMonth = _currentMonth;
+  int _selectedIndex = 0;
+  int _totalSpent = 1850;
+
   bool _hasNextPage = true;
   bool _isFirstLoadRunning = false;
   bool _isLoadMoreRunning = false;
   List<SingleTransaction> _transactions = [];
-
   late PagingResponse _transactionsPagingResponse;
   late DeviceInfoPlugin _deviceInfo;
   late ScrollController _controller;
@@ -47,16 +56,19 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
     return userId;
   }
 
-  void getTransactions(DeviceInfoPlugin deviceInfo, int start,
-      int items) async {
-    setState(() {
-      _isFirstLoadRunning = true;
-    });
+  //TODO: Change values to const..??
+  void getTransactions(DeviceInfoPlugin deviceInfo, int start, int items,
+      {int month = 3, int year = 2022, bool fromButtonClick = false}) async {
+    if (!fromButtonClick) {
+      setState(() {
+        _isFirstLoadRunning = true;
+      });
+    }
 
     String user = await getUserId(deviceInfo);
 
     Uri uri = Uri.parse(
-        '$baseEndpoint/transactions/$user/all?start=$start&items=$items');
+        '$baseEndpoint/transactions/$user?year=$year&month=$month&start=$start&items=$items');
     NetworkHelper networkHelper = NetworkHelper(uri);
     final transactionsData = await networkHelper.getTransactions(context);
 
@@ -64,10 +76,31 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
       _transactionsPagingResponse =
           ParseUtils.parseTransactionData(transactionsData);
 
+      _getTotalSpent(deviceInfo, month: month, year: year);
+
       setState(() {
         _isFirstLoadRunning = false;
         _transactions =
-        _transactionsPagingResponse.content as List<SingleTransaction>;
+            _transactionsPagingResponse.content as List<SingleTransaction>;
+      });
+    } else {
+      //TODO: unable to load data
+    }
+  }
+
+  void _getTotalSpent(DeviceInfoPlugin deviceInfo,
+      {int month = 3, int year = 2022}) async {
+    String user = await getUserId(deviceInfo);
+
+    Uri uri = Uri.parse(
+      '$baseEndpoint/transactions/$user/sum?year=$year&month=$month');
+
+    NetworkHelper networkHelper = NetworkHelper(uri);
+    final sumData = await networkHelper.getSum(context);
+
+    if (sumData != null) {
+      setState(() {
+        _totalSpent = ParseUtils.parseSumData(sumData);
       });
     } else {
       //TODO: unable to load data
@@ -78,6 +111,7 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
     if (_hasNextPage &&
         !_isFirstLoadRunning &&
         !_isLoadMoreRunning &&
+        _transactions.isNotEmpty &&
         _controller.position.userScrollDirection == ScrollDirection.reverse &&
         _controller.position.extentAfter < 150) {
       setState(() {
@@ -88,7 +122,7 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
       String user = await getUserId(deviceInfo);
 
       Uri uri = Uri.parse(
-          '$baseEndpoint/transactions/$user/all?start=$_page&items=$_items');
+          '$baseEndpoint/transactions/$user?year=$_selectedYear&month=$_selectedMonth&start=$_page&items=$_items');
       NetworkHelper networkHelper = NetworkHelper(uri);
       final transactionsData = await networkHelper.getTransactions(context);
 
@@ -114,30 +148,66 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
 
   _getMonths() {
     List<Widget> widgets = [];
-    for (int i = 1; i < 12; i++) {
-      widgets.add(Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: SquickButton(
-          buttonText: 'Jan \'22',
-          width: 90.0,
-          onTap: () => {},
+    for (int i = 0, month = _currentMonth, year = _currentYear;
+        i < 12;
+        i++, month--) {
+
+      if (month == 0) {
+        month = 12;
+        year--;
+      }
+
+      widgets.add(
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: TransactionsMonthButton(
+            buttonText: DateHelper.getFormattedDate(year, month),
+            onTap: () => {
+              setState(() {
+                _hasNextPage = true;
+                _page = 0;
+                _isFirstLoadRunning = false;
+                _isLoadMoreRunning = false;
+                _selectedMonth = month;
+                _selectedYear = year;
+                _selectedIndex = i;
+                _transactions = [];
+              }),
+
+              _getTotalSpent(_deviceInfo, month: month, year: year),
+              getTransactions(_deviceInfo, 0, _items, month: month, year: year, fromButtonClick: true),
+
+              scrollRight(),
+            },
+
+            selected: i == _selectedIndex,
+          ),
         ),
-      ),
       );
+    }
+
+    return widgets;
   }
 
-    return
-    widgets;
+  void scrollRight() {
+    if (_scrollController.hasClients) {
+      double position = _selectedIndex * (90 + 2 * 8);
+      _scrollController.animateTo(
+          position,
+          duration: const Duration(milliseconds: 1500),
+          curve: Curves.fastOutSlowIn);
+    }
   }
 
   @override
   void initState() {
     _deviceInfo = DeviceInfoPlugin();
-    getTransactions(_deviceInfo, _page, _items);
+    getTransactions(_deviceInfo, 0, _items);
     _controller = ScrollController()
       ..addListener(() {
         _loadMore(_deviceInfo);
       });
+
     super.initState();
   }
 
@@ -151,115 +221,125 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    height = MediaQuery
-        .of(context)
-        .size
-        .height;
+    height = MediaQuery.of(context).size.height;
+    WidgetsBinding.instance!.addPostFrameCallback((_) => scrollRight());
 
     return Scaffold(
       body: _isFirstLoadRunning
           ? const Center(
-        child: CircularProgressIndicator(),
-      )
+              child: CircularProgressIndicator(),
+            )
           : Column(
-        children: [
-          Expanded(
-            flex: 1,
-            child: Container(
-              color: colorGray,
-              width: double.infinity,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Text(
-                          'Вкупно потрошено',
-                          style: font18Regular.copyWith(
-                              color: colorBlueDarkLightest),
+              children: [
+                Expanded(
+                  flex: 1,
+                  child: Container(
+                    color: colorGray,
+                    width: double.infinity,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text(
+                                'Вкупно потрошено',
+                                style: font18Regular.copyWith(
+                                    color: colorBlueDarkLightest),
+                              ),
+                            ),
+                            Text(
+                              '$_totalSpent денари',
+                              style: font36Bold.copyWith(color: colorBlueDark),
+                            ),
+                          ],
                         ),
-                      ),
-                      Text(
-                        '1850 денари',
-                        style: font36Bold.copyWith(color: colorBlueDark),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
-                ],
-              ),
-            ),
-          ),
-          Expanded(
-            flex: 3,
-            child: Container(
-              color: colorGray,
-              width: double.infinity,
-              child: Container(
-                decoration: const BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(20.0),
-                        topRight: Radius.circular(20.0))),
-                child: Column(
-                  children: [
-                    Container(
-                      color: colorGray,
-                      width: double.infinity,
-                    ),
-                    SizedBox(
-                      height: 80.0,
-                      child: Padding(
-                        padding: const EdgeInsets.only(top: 20.0),
-                        child: ListView(
-                          scrollDirection: Axis.horizontal,
-                          children: _getMonths(),
-                        ),
-                      ),
-                    ),
-                    Expanded(
-                      flex: 5,
-                        child: Padding(
-                          padding: const EdgeInsets.fromLTRB(
-                              15.0, 15.0, 15.0, 0.0),
-                          child: ListView.builder(
-                              controller: _controller,
-                              padding: const EdgeInsets.only(bottom: 30.0),
-                              itemCount: _transactions.length,
-                              itemBuilder: (_, index) =>
-                                  TransactionWidget(
-                                      transaction: _transactions[index],
-                                      height: height)),
-                        )),
-                    if (_isLoadMoreRunning &&
-                        _controller.position.userScrollDirection ==
-                            ScrollDirection.reverse)
-                      const Padding(
-                        padding: EdgeInsets.only(top: 10.0, bottom: 40.0),
-                        child: Center(
-                          child: CircularProgressIndicator(
-                            color: colorBlueLight,
-                          ),
-                        ),
-                      ),
-                  ],
                 ),
-              ),
+                Expanded(
+                  flex: 3,
+                  child: Container(
+                    color: colorGray,
+                    width: double.infinity,
+                    child: Container(
+                      decoration: const BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.only(
+                              topLeft: Radius.circular(20.0),
+                              topRight: Radius.circular(20.0))),
+                      child: Column(
+                        children: [
+                          Container(
+                            color: colorGray,
+                            width: double.infinity,
+                          ),
+                          SizedBox(
+                            height: 80.0,
+                            child: Padding(
+                              padding: const EdgeInsets.only(top: 20.0),
+                              child: ListView(
+                                controller: _scrollController,
+                                scrollDirection: Axis.horizontal,
+                                reverse: true,
+                                children: _getMonths(),
+                              ),
+                            ),
+                          ),
+                          Expanded(
+                              flex: 5,
+                              child: Padding(
+                                padding: const EdgeInsets.fromLTRB(
+                                    15.0, 15.0, 15.0, 0.0),
+                                child: _transactions.isNotEmpty
+                                    ? ListView.builder(
+                                        controller: _controller,
+                                        padding:
+                                            const EdgeInsets.only(bottom: 30.0),
+                                        itemCount: _transactions.length,
+                                        itemBuilder: (_, index) =>
+                                            TransactionWidget(
+                                                transaction:
+                                                    _transactions[index],
+                                                height: height))
+                                    : Center(
+                                        child: Text(
+                                          'Не се пронајдени податоци',
+                                          style: font18Medium.copyWith(
+                                              color: colorBlueDark),
+                                        ),
+                                      ),
+                              )),
+                          if (_isLoadMoreRunning &&
+                              _controller.position.userScrollDirection ==
+                                  ScrollDirection.reverse)
+                            const Padding(
+                              padding: EdgeInsets.only(top: 10.0, bottom: 40.0),
+                              child: Center(
+                                child: CircularProgressIndicator(
+                                  color: colorBlueLight,
+                                ),
+                              ),
+                            ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+                //
+                // if (!_hasNextPage)
+                //   Container(
+                //     padding: const EdgeInsets.only(top: 30, bottom: 40),
+                //     color: Colors.amber,
+                //     child: const Center(
+                //       child: Text('You have fetched all of the content'),
+                //     ),
+                //   ),
+              ],
             ),
-          ),
-          //
-          // if (!_hasNextPage)
-          //   Container(
-          //     padding: const EdgeInsets.only(top: 30, bottom: 40),
-          //     color: Colors.amber,
-          //     child: const Center(
-          //       child: Text('You have fetched all of the content'),
-          //     ),
-          //   ),
-        ],
-      ),
     );
   }
 }

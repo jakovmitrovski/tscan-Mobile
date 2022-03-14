@@ -20,7 +20,7 @@ class SquickButton extends StatelessWidget {
   Widget build(BuildContext context) {
     disabled = (onTap == null);
     return SizedBox(
-      width: width ?? double.infinity,
+      width: double.infinity,
       height: 48,
       child: TextButton(
         style: ButtonStyle(
