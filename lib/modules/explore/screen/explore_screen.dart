@@ -142,12 +142,14 @@ class _ExploreScreenState extends State<ExploreScreen> {
                         ),
                       ),
                       SearchBar(
+                          initialText: filter.getValue('keyword'),
                           width: width,
                           onSearchBarTap: () {},
                           onSearch: (value) {
-                            setState(() {
-                              keyword = value;
-                            });
+                            // setState(() {
+                            //   keyword = value;
+                            // });
+                            filter.change('keyword', value);
                           },
                           onFilterPressed: () {
                             showModalBottomSheet(
@@ -161,8 +163,8 @@ class _ExploreScreenState extends State<ExploreScreen> {
                                               .bottom),
                                       child: FilterPopup(
                                           onTap: (price, openNow, freeSpaces) {
-                                        filter.changeAllValues(
-                                            price, openNow, freeSpaces);
+                                        mapsProvider.updateShouldLoad(true);
+                                        filter.changeAllValues(price, openNow, freeSpaces);
                                         Navigator.pop(context);
                                       }),
                                     ));
@@ -201,7 +203,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
                                   filter.getValue('openNow'),
                                   filter.getValue('freeSpaces'),
                                   _currentPosition!,
-                                  keyword: keyword),
+                                  keyword: filter.getValue('keyword')),
                               builder: (BuildContext context,
                                   AsyncSnapshot snapshot) {
                                 if (snapshot.hasData &&

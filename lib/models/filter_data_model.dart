@@ -6,7 +6,7 @@ class FilterDataModel extends ChangeNotifier {
     "price": 250.0,
     "openNow": false,
     "freeSpaces": false,
-    "keyword": "%",
+    "keyword": null,
   };
 
   dynamic getValue(String key) {
@@ -33,6 +33,6 @@ class FilterDataModel extends ChangeNotifier {
   }
 
   bool hasFilters() {
-    return _items["price"] != 250.0 || _items["openNow"] != false || _items["freeSpaces"] != false;
+    return _items["price"] != 250.0 || _items["openNow"] != false || _items["freeSpaces"] != false || _items["keyword"] != null;
   }
 }

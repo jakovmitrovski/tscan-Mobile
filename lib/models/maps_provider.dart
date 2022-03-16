@@ -10,6 +10,12 @@ import 'package:squick/utils/helpers/parse_utils.dart';
 class MapsProvider extends ChangeNotifier {
   List<Parking> _parkings = [];
   Position? _currentPosition;
+  bool shouldLoad = true;
+
+  void updateShouldLoad(bool value) {
+    shouldLoad = value;
+    notifyListeners();
+  }
 
   Future<Position?> getCurrentPosition() async {
     if (_currentPosition == null) {

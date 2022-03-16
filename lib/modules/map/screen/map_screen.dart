@@ -167,9 +167,10 @@ class _MapScreenState extends State<MapScreen> {
                   .whenComplete(() => selectedParkingProvider.updateValue(-1));
             }
 
-            setState(() {
-              shouldLoad = false;
-            });
+            // setState(() {
+            //   shouldLoad = false;
+            // });
+            mapsProvider.updateShouldLoad(false);
           });
 
       markers.add(marker);
@@ -201,7 +202,7 @@ class _MapScreenState extends State<MapScreen> {
       width: width,
       height: height,
       child: Stack(children: [
-        shouldLoad
+        mapsProvider.shouldLoad
             ? FutureBuilder(
                 future: mapsProvider.getParkingsFromApi(
                     context,
@@ -209,7 +210,7 @@ class _MapScreenState extends State<MapScreen> {
                     filter.getValue('openNow'),
                     filter.getValue('freeSpaces'),
                     _currentPosition!,
-                    keyword: keyword),
+                    keyword: filter.getValue('keyword')),
                 builder: (BuildContext context, AsyncSnapshot snapshot) {
                   if (snapshot.hasData &&
                       snapshot.data != null &&
@@ -257,6 +258,7 @@ class _MapScreenState extends State<MapScreen> {
         Align(
           alignment: Alignment.topCenter,
           child: SearchBar(
+            initialText: filter.getValue('keyword'),
             width: width,
             onSearchBarTap: () {
               if (selectedParkingProvider.selected != -1 &&
@@ -272,18 +274,22 @@ class _MapScreenState extends State<MapScreen> {
                 selectedParkingProvider.updateValue(-1);
               }
               if (value.isNotEmpty) {
-                setState(() {
-                  keyword = value;
-                  shouldLoad = true;
-                });
+                // setState(() {
+                //   keyword = value;
+                //
+                //   // shouldLoad = true;
+                // });
+                filter.change('keyword', value);
+                mapsProvider.updateShouldLoad(true);
               } else {
-                setState(() {
-                  keyword = null;
-                });
+                // setState(() {
+                //   keyword = null;
+                // });
+                filter.change('keyword', null);
               }
             },
             onFilterPressed: () {
-              shouldLoad = true;
+
               showModalBottomSheet(
                   context: context,
                   isScrollControlled: true,
@@ -291,14 +297,16 @@ class _MapScreenState extends State<MapScreen> {
                         height: 0.60 * height,
                         padding: EdgeInsets.only(
                             bottom: MediaQuery.of(context).viewInsets.bottom),
-                        child: FilterPopup(onTap: (price, openNow, freeSpaces) {
-                          if (selectedParkingProvider.selected != -1 &&
-                              bottomSheetController != null) {
-                            bottomSheetController!.close();
-                            selectedParkingProvider.updateValue(-1);
-                          }
-                          filter.changeAllValues(price, openNow, freeSpaces);
-                          Navigator.pop(context);
+                        child: FilterPopup(
+                            onTap: (price, openNow, freeSpaces) {
+                              if (selectedParkingProvider.selected != -1 &&
+                                  bottomSheetController != null) {
+                                bottomSheetController!.close();
+                                selectedParkingProvider.updateValue(-1);
+                              }
+                              mapsProvider.updateShouldLoad(true);
+                              filter.changeAllValues(price, openNow, freeSpaces);
+                              Navigator.pop(context);
                         }),
                       ));
             },

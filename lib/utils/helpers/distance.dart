@@ -36,7 +36,7 @@ class DistanceHelper {
         polylineCoordinates.add(LatLng(point.latitude, point.longitude));
       });
     } else {
-      print(result.errorMessage);
+      // print(result.errorMessage);
     }
 
     double totalDistance = 0;
