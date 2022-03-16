@@ -88,7 +88,7 @@ class ParseUtils {
         parking: parking,
         entered: entered,
         exited: exited,
-        price: ticketInfo["price"]);
+        price: needEnter ? ticketInfo["price"] : 0);
   }
 
   static String parseDateToStr(DateTime d) {
@@ -119,6 +119,10 @@ class ParseUtils {
     }
   }
 
+  static int parseSumData(dynamic sumData) {
+    return sumData['sum'];
+  }
+
   static PagingResponse parseTransactionData(dynamic transactionsData) {
 
     List<SingleTransaction> transactions = [];
@@ -131,7 +135,7 @@ class ParseUtils {
         ticket: ParseUtils.parseTicketInfo(transaction['ticket'], transaction['ticket']['value'].toString(), false),
         createdAt: createdAt,
         price: transaction['price'],
-        paymentStatus: transaction['paymentStatus'] == 'SUCCESSFULL' ? PaymentStatus.SUCCESSFUL : PaymentStatus.UNSUCCESSFUL
+        paymentStatus: transaction['paymentStatus'] == 'SUCCESSFUL' ? PaymentStatus.SUCCESSFUL : PaymentStatus.UNSUCCESSFUL
       );
       transactions.add(newTransaction);
     }

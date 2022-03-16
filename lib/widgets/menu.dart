@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class Menu extends StatefulWidget {
 
@@ -23,17 +24,17 @@ class _MenuState extends State<Menu> {
   Widget build(BuildContext context) {
 
     final String exploreImage = widget.explore
-        ? 'assets/images/explore_active.png'
-        : 'assets/images/explore_inactive.png';
+        ? 'assets/images/explore_active.svg'
+        : 'assets/images/explore_inactive.svg';
     final String mapImage = widget.map
-    ? 'assets/images/map_active.png'
-        : 'assets/images/map_inactive.png';
+    ? 'assets/images/map_active.svg'
+        : 'assets/images/map_inactive.svg';
     final String transactionsImage = widget.transactions
-    ? 'assets/images/transactions_active.png'
-        : 'assets/images/transactions_inactive.png';
+    ? 'assets/images/transactions_active.svg'
+        : 'assets/images/transactions_inactive.svg';
     final String walletImage = widget.wallet
-    ? 'assets/images/wallet_active.png'
-        : 'assets/images/wallet_inactive.png';
+    ? 'assets/images/wallet_active.svg'
+        : 'assets/images/wallet_inactive.svg';
 
 
     var height = MediaQuery.of(context).size.height;
@@ -63,8 +64,8 @@ class _MenuState extends State<Menu> {
                       widget.notify(0);
                     }
                   },
-                  child: Image.asset(
-                    exploreImage,
+                  child: SvgPicture.asset(
+                    exploreImage
                   ),
                 ),
               ),
@@ -75,7 +76,7 @@ class _MenuState extends State<Menu> {
                       widget.notify(1);
                     }
                   },
-                  child: Image.asset(
+                  child: SvgPicture.asset(
                     mapImage
                   ),
                 ),
@@ -93,7 +94,7 @@ class _MenuState extends State<Menu> {
                       widget.notify(2);
                     }
                   },
-                  child: Image.asset(
+                  child: SvgPicture.asset(
                     transactionsImage
                   ),
                 ),
@@ -105,7 +106,7 @@ class _MenuState extends State<Menu> {
                       widget.notify(3);
                     }
                   },
-                  child: Image.asset(
+                  child: SvgPicture.asset(
                     walletImage
                   ),
                 ),

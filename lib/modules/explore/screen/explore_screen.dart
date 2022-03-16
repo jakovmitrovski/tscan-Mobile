@@ -4,10 +4,14 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:provider/provider.dart';
 import 'package:squick/constants/app_constants.dart';
+import 'package:squick/models/exceptions/location_services_off_exception.dart';
+import 'package:squick/models/exceptions/location_services_permission_denied_exception.dart';
+import 'package:squick/models/exceptions/location_services_permission_denied_forever_exception.dart';
 import 'package:squick/models/filter_data_model.dart';
 import 'package:squick/models/maps_provider.dart';
 import 'package:squick/models/parking.dart';
 import 'package:squick/modules/map/screen/map_screen.dart';
+import 'package:squick/utils/helpers/alert.dart';
 import 'package:squick/utils/helpers/location.dart';
 import 'package:squick/widgets/filter_popup_screen.dart';
 import 'package:squick/widgets/parking_widget.dart';
@@ -33,10 +37,19 @@ class _ExploreScreenState extends State<ExploreScreen> {
   late double height;
 
   _getCurrentPosition() async {
-    Position p = await LocationHelper().getCurrentLocation();
-    setState(() {
-      _currentPosition = p;
-    });
+    try {
+      Position p = await LocationHelper().getCurrentLocation();
+      setState(() {
+        _currentPosition = p;
+      });
+    } on LocationServicesOffException catch(e) {
+      AlertHelper.showAlert(context, e.toString(), 'Ве молиме вклучети ги истите во подесувања на телефонот.');
+    } on LocationServicesPermissionDeniedException catch(e) {
+      AlertHelper.showAlert(context, e.toString(), 'Ве молиме дадете и локациски пермисии на TScan за да работи соодветно');
+    } on LocationServicesPermissionDeniedForeverOffException catch(e) {
+      AlertHelper.showAlert(context, e.toString(), 'За TScan да работи соодветно, потребно е одново да ја инсталирате апликацијата.');
+    }
+
   }
 
   @override
@@ -186,6 +199,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
                                     );
                                   }
                                   return ListView(
+                                    padding: const EdgeInsets.only(bottom: 30.0),
                                     children: getParkingList(
                                         snapshot.data as List<Parking>),
                                   );

@@ -7,7 +7,6 @@ import 'package:squick/constants/app_constants.dart';
 import 'package:squick/models/parking.dart';
 import 'package:squick/utils/helpers/open_hours.dart';
 import 'package:squick/widgets/parking_long_details_sheet.dart';
-
 import 'available_spaces_icon.dart';
 
 class ParkingWidget extends StatelessWidget {
@@ -38,7 +37,7 @@ class ParkingWidget extends StatelessWidget {
     bool isOpen = OpenHoursHelper.isOpen(parking);
 
     return Container(
-      height: 0.18 * height,
+      height: 0.165 * height,
       margin: const EdgeInsets.only(bottom: 20.0),
       decoration: const BoxDecoration(
           color: Colors.white,

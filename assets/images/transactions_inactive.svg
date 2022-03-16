@@ -1,0 +1,56 @@
+<svg width="36" height="36" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+        <linearGradient id="c" x1="3.372" y1="32.697" x2="32.416" y2="4.893"
+            gradientUnits="userSpaceOnUse">
+            <stop stop-color="#DADADA" />
+            <stop offset="1" stop-color="#E7E7E7" />
+        </linearGradient>
+        <linearGradient id="d" x1="3.372" y1="4.26" x2="31.824" y2="32.683"
+            gradientUnits="userSpaceOnUse">
+            <stop stop-color="#fff" stop-opacity=".25" />
+            <stop offset="1" stop-color="#fff" stop-opacity="0" />
+        </linearGradient>
+        <linearGradient id="f" x1="17.708" y1="30.437" x2="40.353" y2="12.1"
+            gradientUnits="userSpaceOnUse">
+            <stop stop-color="#fff" />
+            <stop offset="1" stop-color="#fff" stop-opacity=".2" />
+        </linearGradient>
+        <filter id="b" x="-21.128" y="-20.24" width="77.438" height="77.438"
+            filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+            <feFlood flood-opacity="0" result="BackgroundImageFix" />
+            <feGaussianBlur in="BackgroundImage" stdDeviation="12" />
+            <feComposite in2="SourceAlpha" operator="in" result="effect1_backgroundBlur_678_814" />
+            <feBlend in="SourceGraphic" in2="effect1_backgroundBlur_678_814" result="shape" />
+        </filter>
+        <filter id="e" x="7.664" y="7.093" width="29.854" height="32.771"
+            filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+            <feFlood flood-opacity="0" result="BackgroundImageFix" />
+            <feColorMatrix in="SourceAlpha" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
+                result="hardAlpha" />
+            <feOffset dx="5" dy="5" />
+            <feGaussianBlur stdDeviation="4" />
+            <feColorMatrix
+                values="0 0 0 0 0.708333 0 0 0 0 0.708333 0 0 0 0 0.708333 0 0 0 0.5 0" />
+            <feBlend in2="BackgroundImageFix" result="effect1_dropShadow_678_814" />
+            <feBlend in="SourceGraphic" in2="effect1_dropShadow_678_814" result="shape" />
+        </filter>
+        <clipPath id="a">
+            <path fill="#fff" transform="translate(.091 .978)" d="M0 0h35v35H0z" />
+        </clipPath>
+    </defs>
+    <g clip-path="url(#a)">
+        <g filter="url(#b)" clip-rule="evenodd">
+            <path fill-rule="evenodd"
+                d="M17.657 4.26c2.678 0 4.778 0 6.443.18 1.7.184 3.077.567 4.253 1.421a8.384 8.384 0 0 1 1.855 1.855c.855 1.176 1.237 2.553 1.421 4.253.18 1.666.18 3.765.18 6.443v.133c0 2.678 0 4.777-.18 6.443-.184 1.7-.566 3.077-1.42 4.253a8.384 8.384 0 0 1-1.856 1.855c-1.176.854-2.553 1.237-4.253 1.42-1.665.181-3.765.181-6.443.181h-.132c-2.678 0-4.778 0-6.443-.18-1.7-.184-3.077-.567-4.253-1.421a8.385 8.385 0 0 1-1.855-1.855c-.854-1.176-1.237-2.554-1.421-4.253-.18-1.666-.18-3.765-.18-6.444v-.132c0-2.678 0-4.777.18-6.443.184-1.7.567-3.077 1.42-4.253A8.385 8.385 0 0 1 6.83 5.861c1.176-.854 2.553-1.237 4.253-1.42 1.665-.181 3.765-.181 6.443-.181h.132Z"
+                fill="url(#c)" />
+            <path
+                d="M17.657 4.26c2.678 0 4.778 0 6.443.18 1.7.184 3.077.567 4.253 1.421a8.384 8.384 0 0 1 1.855 1.855c.855 1.176 1.237 2.553 1.421 4.253.18 1.666.18 3.765.18 6.443v.133c0 2.678 0 4.777-.18 6.443-.184 1.7-.566 3.077-1.42 4.253a8.384 8.384 0 0 1-1.856 1.855c-1.176.854-2.553 1.237-4.253 1.42-1.665.181-3.765.181-6.443.181h-.132c-2.678 0-4.778 0-6.443-.18-1.7-.184-3.077-.567-4.253-1.421a8.385 8.385 0 0 1-1.855-1.855c-.854-1.176-1.237-2.554-1.421-4.253-.18-1.666-.18-3.765-.18-6.444v-.132c0-2.678 0-4.777.18-6.443.184-1.7.567-3.077 1.42-4.253A8.385 8.385 0 0 1 6.83 5.861c1.176-.854 2.553-1.237 4.253-1.42 1.665-.181 3.765-.181 6.443-.181h.132Z"
+                stroke="url(#d)" stroke-linecap="round" />
+        </g>
+        <g filter="url(#e)">
+            <path fill-rule="evenodd" clip-rule="evenodd"
+                d="M18.685 11.187a1.094 1.094 0 1 0-2.188 0V25.77a1.094 1.094 0 1 0 2.188 0V11.187Zm5.833 5.833a1.094 1.094 0 0 0-2.187 0v8.75a1.094 1.094 0 1 0 2.187 0v-8.75Zm-11.667 2.917a1.094 1.094 0 1 0-2.187 0v5.833a1.094 1.094 0 1 0 2.188 0v-5.833Z"
+                fill="url(#f)" />
+        </g>
+    </g>
+</svg>

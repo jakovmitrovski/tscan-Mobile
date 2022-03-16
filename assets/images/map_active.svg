@@ -1,0 +1,55 @@
+<svg width="36" height="36" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+        <linearGradient id="c" x1="6.742" y1="33.799" x2="36.559" y2="12.056"
+            gradientUnits="userSpaceOnUse">
+            <stop stop-color="#149AC3" />
+            <stop offset="1" stop-color="#41D2FF" />
+        </linearGradient>
+        <linearGradient id="d" x1="6.742" y1="3.166" x2="36.281" y2="25.643"
+            gradientUnits="userSpaceOnUse">
+            <stop stop-color="#fff" stop-opacity=".25" />
+            <stop offset="1" stop-color="#fff" stop-opacity="0" />
+        </linearGradient>
+        <linearGradient id="f" x1="18.483" y1="22.53" x2="30.559" y2="10.692"
+            gradientUnits="userSpaceOnUse">
+            <stop stop-color="#fff" />
+            <stop offset="1" stop-color="#fff" stop-opacity=".2" />
+        </linearGradient>
+        <filter id="b" x="-18.258" y="-21.834" width="73.333" height="80.633"
+            filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+            <feFlood flood-opacity="0" result="BackgroundImageFix" />
+            <feGaussianBlur in="BackgroundImage" stdDeviation="12" />
+            <feComposite in2="SourceAlpha" operator="in" result="effect1_backgroundBlur_678_545" />
+            <feBlend in="SourceGraphic" in2="effect1_backgroundBlur_678_545" result="shape" />
+        </filter>
+        <filter id="e" x="11.034" y="8.916" width="24.75" height="24.75"
+            filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+            <feFlood flood-opacity="0" result="BackgroundImageFix" />
+            <feColorMatrix in="SourceAlpha" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
+                result="hardAlpha" />
+            <feOffset dx="5" dy="5" />
+            <feGaussianBlur stdDeviation="4" />
+            <feColorMatrix
+                values="0 0 0 0 0.708333 0 0 0 0 0.708333 0 0 0 0 0.708333 0 0 0 0.5 0" />
+            <feBlend in2="BackgroundImageFix" result="effect1_dropShadow_678_545" />
+            <feBlend in="SourceGraphic" in2="effect1_dropShadow_678_545" result="shape" />
+        </filter>
+        <clipPath id="a">
+            <path fill="#fff" transform="translate(.909 .979)" d="M0 0h35v35H0z" />
+        </clipPath>
+    </defs>
+    <g clip-path="url(#a)">
+        <g filter="url(#b)">
+            <path fill-rule="evenodd" clip-rule="evenodd"
+                d="M22.464 30.438c3.369-4.296 7.612-10.536 7.612-14.718 0-6.933-5.224-12.554-11.667-12.554S6.742 8.786 6.742 15.72c0 4.182 4.243 10.422 7.612 14.717 1.757 2.241 2.636 3.362 4.055 3.362 1.42 0 2.298-1.12 4.055-3.361Z"
+                fill="url(#c)" />
+            <path
+                d="M22.858 30.746c1.691-2.157 3.611-4.813 5.11-7.464 1.488-2.63 2.608-5.333 2.608-7.562 0-7.174-5.414-13.054-12.167-13.054S6.242 8.546 6.242 15.72c0 2.23 1.12 4.931 2.608 7.562 1.499 2.65 3.418 5.307 5.11 7.464l.029.037c.854 1.09 1.535 1.957 2.183 2.546.677.614 1.366.97 2.237.97s1.56-.355 2.237-.97c.648-.589 1.329-1.457 2.183-2.546l.029-.037Z"
+                stroke="url(#d)" stroke-linecap="round" />
+        </g>
+        <g filter="url(#e)">
+            <path d="M18.409 20.666a4.375 4.375 0 1 1 0-8.75 4.375 4.375 0 0 1 0 8.75Z"
+                fill="url(#f)" />
+        </g>
+    </g>
+</svg>
