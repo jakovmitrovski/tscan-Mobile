@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:app_settings/app_settings.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:provider/provider.dart';
 import 'package:squick/constants/app_constants.dart';
 import 'package:squick/models/exceptions/location_services_off_exception.dart';
@@ -187,147 +186,138 @@ class _MapScreenState extends State<MapScreen> {
 
     if (_currentPosition == null) {
       _updateCurrentPosition(context);
-      return const SafeArea(
-          child: SpinKitDoubleBounce(
-        color: colorBlueLight,
-        size: 100.0,
-      ));
+      return kLoader;
     }
 
-    return SafeArea(
-        child: SizedBox(
+    return SizedBox(
       width: width,
       height: height,
       child: Stack(children: [
-        mapsProvider.shouldLoad
-            ? FutureBuilder(
-                future: mapsProvider.getParkingsFromApi(
-                    context,
-                    filter.getValue('price'),
-                    filter.getValue('openNow'),
-                    filter.getValue('freeSpaces'),
-                    _currentPosition!,
-                    keyword: filter.getValue('keyword')),
-                builder: (BuildContext context, AsyncSnapshot snapshot) {
-                  if (snapshot.hasData &&
-                      snapshot.data != null &&
-                      snapshot.connectionState == ConnectionState.done) {
-                    return GoogleMap(
-                      onMapCreated: (GoogleMapController controller) {
-                        mapController = controller;
-                        mapController.setMapStyle(_mapStyle);
-                      },
-                      initialCameraPosition: CameraPosition(
-                          target: LatLng(_currentPosition!.latitude, _currentPosition!.longitude),
-                          zoom: 14.0),
-                      myLocationEnabled: true,
-                      myLocationButtonEnabled: false,
-                      zoomGesturesEnabled: true,
-                      zoomControlsEnabled: false,
-                      mapToolbarEnabled: false,
-                      mapType: MapType.normal,
-                      markers: getMarkers(snapshot.data as List<Parking>),
-                    );
-                  } else {
-                    return const SpinKitDoubleBounce(
-                      color: colorBlueLight,
-                      size: 100.0,
-                    );
-                  }
-                })
-            : GoogleMap(
-                onMapCreated: (GoogleMapController controller) {
-                  mapController = controller;
-                  mapController.setMapStyle(_mapStyle);
-                },
-                initialCameraPosition: CameraPosition(
-                    target: selectedParkingProvider.selected == -1 ? LatLng(_currentPosition!.latitude,
-                        _currentPosition!.longitude) : LatLng(getParkingById(selectedParkingProvider.selected)!.latitude, getParkingById(selectedParkingProvider.selected)!.longitude),
-                    zoom: 14.0),
-                myLocationEnabled: true,
-                myLocationButtonEnabled: false,
-                zoomGesturesEnabled: true,
-                zoomControlsEnabled: false,
-                mapToolbarEnabled: false,
-                mapType: MapType.normal,
-                markers: getMarkers(_parkings),
-              ),
-        Align(
-          alignment: Alignment.topCenter,
-          child: SearchBar(
-            initialText: filter.getValue('keyword'),
-            width: width,
-            onSearchBarTap: () {
-              if (selectedParkingProvider.selected != -1 &&
-                  bottomSheetController != null) {
-                bottomSheetController!.close();
-                selectedParkingProvider.updateValue(-1);
-              }
-            },
-            onSearch: (value) {
-              if (selectedParkingProvider.selected != -1 &&
-                  bottomSheetController != null) {
-                bottomSheetController!.close();
-                selectedParkingProvider.updateValue(-1);
-              }
-              if (value.isNotEmpty) {
-                filter.change('keyword', value);
-                mapsProvider.updateShouldLoad(true);
+    mapsProvider.shouldLoad
+        ? FutureBuilder(
+            future: mapsProvider.getParkingsFromApi(
+                context,
+                filter.getValue('price'),
+                filter.getValue('openNow'),
+                filter.getValue('freeSpaces'),
+                _currentPosition!,
+                keyword: filter.getValue('keyword')),
+            builder: (BuildContext context, AsyncSnapshot snapshot) {
+              if (snapshot.hasData &&
+                  snapshot.data != null &&
+                  snapshot.connectionState == ConnectionState.done) {
+                return GoogleMap(
+                  onMapCreated: (GoogleMapController controller) {
+                    mapController = controller;
+                    mapController.setMapStyle(_mapStyle);
+                  },
+                  initialCameraPosition: CameraPosition(
+                      target: LatLng(_currentPosition!.latitude, _currentPosition!.longitude),
+                      zoom: 14.0),
+                  myLocationEnabled: true,
+                  myLocationButtonEnabled: false,
+                  zoomGesturesEnabled: true,
+                  zoomControlsEnabled: false,
+                  mapToolbarEnabled: false,
+                  mapType: MapType.normal,
+                  markers: getMarkers(snapshot.data as List<Parking>),
+                );
               } else {
-                filter.change('keyword', null);
+                return kLoader;
               }
+            })
+        : GoogleMap(
+            onMapCreated: (GoogleMapController controller) {
+              mapController = controller;
+              mapController.setMapStyle(_mapStyle);
             },
-            onFilterPressed: () {
+            initialCameraPosition: CameraPosition(
+                target: selectedParkingProvider.selected == -1 ? LatLng(_currentPosition!.latitude,
+                    _currentPosition!.longitude) : LatLng(getParkingById(selectedParkingProvider.selected)!.latitude, getParkingById(selectedParkingProvider.selected)!.longitude),
+                zoom: 14.0),
+            myLocationEnabled: true,
+            myLocationButtonEnabled: false,
+            zoomGesturesEnabled: true,
+            zoomControlsEnabled: false,
+            mapToolbarEnabled: false,
+            mapType: MapType.normal,
+            markers: getMarkers(_parkings),
+          ),
+    Align(
+      alignment: Alignment.topCenter,
+      child: SearchBar(
+        initialText: filter.getValue('keyword'),
+        width: width,
+        onSearchBarTap: () {
+          if (selectedParkingProvider.selected != -1 &&
+              bottomSheetController != null) {
+            bottomSheetController!.close();
+            selectedParkingProvider.updateValue(-1);
+          }
+        },
+        onSearch: (value) {
+          if (selectedParkingProvider.selected != -1 &&
+              bottomSheetController != null) {
+            bottomSheetController!.close();
+            selectedParkingProvider.updateValue(-1);
+          }
+          if (value.isNotEmpty) {
+            filter.change('keyword', value);
+            mapsProvider.updateShouldLoad(true);
+          } else {
+            filter.change('keyword', null);
+          }
+        },
+        onFilterPressed: () {
 
-              showModalBottomSheet(
-                  context: context,
-                  isScrollControlled: true,
-                  builder: (context) => Container(
-                        height: 0.60 * height,
-                        padding: EdgeInsets.only(
-                            bottom: MediaQuery.of(context).viewInsets.bottom),
-                        child: FilterPopup(
-                            onTap: (price, openNow, freeSpaces) {
-                              if (selectedParkingProvider.selected != -1 &&
-                                  bottomSheetController != null) {
-                                bottomSheetController!.close();
-                                selectedParkingProvider.updateValue(-1);
-                              }
-                              mapsProvider.updateShouldLoad(true);
-                              filter.changeAllValues(price, openNow, freeSpaces);
-                              Navigator.pop(context);
-                        }),
-                      ));
-            },
+          showModalBottomSheet(
+              context: context,
+              isScrollControlled: true,
+              builder: (context) => Container(
+                    height: 0.60 * height,
+                    padding: EdgeInsets.only(
+                        bottom: MediaQuery.of(context).viewInsets.bottom),
+                    child: FilterPopup(
+                        onTap: (price, openNow, freeSpaces) {
+                          if (selectedParkingProvider.selected != -1 &&
+                              bottomSheetController != null) {
+                            bottomSheetController!.close();
+                            selectedParkingProvider.updateValue(-1);
+                          }
+                          mapsProvider.updateShouldLoad(true);
+                          filter.changeAllValues(price, openNow, freeSpaces);
+                          Navigator.pop(context);
+                    }),
+                  ));
+        },
+      ),
+    ),
+    Align(
+      alignment: selectedParkingProvider.selected == -1
+          ? Alignment.bottomRight
+          : Alignment.centerRight,
+      child: Container(
+        height: width / 6,
+        width: width / 6,
+        padding: const EdgeInsets.all(10.0),
+        child: FloatingActionButton(
+          backgroundColor: Colors.white,
+          heroTag: 'recenter',
+          onPressed: () async {
+            updateCamera(await mapsProvider.getCurrentPosition());
+          },
+          child: Icon(
+            Icons.my_location,
+            size: width / 18,
+            color: colorBlueLight,
           ),
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10.0),
+              side: const BorderSide(color: Color(0xFFECEDF1))),
         ),
-        Align(
-          alignment: selectedParkingProvider.selected == -1
-              ? Alignment.bottomRight
-              : Alignment.centerRight,
-          child: Container(
-            height: width / 6,
-            width: width / 6,
-            padding: const EdgeInsets.all(10.0),
-            child: FloatingActionButton(
-              backgroundColor: Colors.white,
-              heroTag: 'recenter',
-              onPressed: () async {
-                await mapsProvider.updateCurrentPosition();
-                updateCamera(await mapsProvider.getCurrentPosition());
-              },
-              child: Icon(
-                Icons.my_location,
-                size: width / 18,
-                color: colorBlueLight,
-              ),
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10.0),
-                  side: const BorderSide(color: Color(0xFFECEDF1))),
-            ),
-          ),
-        ),
+      ),
+    ),
       ]),
-    ));
+    );
   }
 }

@@ -1,9 +1,6 @@
-import 'dart:ui';
-
 import 'package:blur/blur.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:iconly/iconly.dart';
 import 'package:provider/provider.dart';
 import 'package:squick/constants/api_constants.dart';
@@ -285,10 +282,7 @@ class _TicketInformationState extends State<TicketInformation> {
                   ],
                 ),
               ),
-              if (loading) const SpinKitDoubleBounce(
-                color: colorBlueLight,
-                size: 100.0,
-              ),
+              if (loading) kLoader
             ]
           ),
         ),

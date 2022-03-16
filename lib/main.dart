@@ -8,7 +8,6 @@ import 'package:squick/modules/home/model/database.dart';
 import 'package:squick/modules/home/screen/home_screen.dart';
 import 'package:squick/modules/map/screen/map_screen.dart';
 import 'package:squick/modules/past_transactions/screen/past_transactions_screen.dart';
-import 'package:squick/modules/scan/screen/scan_screen.dart';
 import 'package:squick/modules/ticket_information/screen/ticket_information_screen.dart';
 import 'package:squick/modules/wallet/screen/add_new_card_screen.dart';
 import 'package:squick/modules/wallet/screen/wallet_screen.dart';
@@ -44,7 +43,6 @@ class MyApp extends StatelessWidget {
           MapScreen.id: (context) => const MapScreen(),
           ExploreScreen.id: (context) => const ExploreScreen(),
           TransactionsScreen.id: (context) => const TransactionsScreen(),
-          ScanScreen.id: (context) => const ScanScreen(),
           TicketInformation.id: (context) => TicketInformation(),
           WalletScreen.id: (context) => const WalletScreen(),
           CompletedTransactionScreen.id: (context) => CompletedTransactionScreen(),

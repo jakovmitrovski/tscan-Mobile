@@ -241,11 +241,9 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
     height = MediaQuery.of(context).size.height;
     WidgetsBinding.instance!.addPostFrameCallback((_) => scrollRight());
 
-    return Scaffold(
-      body: _isFirstLoadRunning
-          ? const Center(
-              child: CircularProgressIndicator(),
-            )
+    return SizedBox(
+      child: _isFirstLoadRunning
+          ? kLoaderCentered
           : Column(
               children: [
                 Expanded(

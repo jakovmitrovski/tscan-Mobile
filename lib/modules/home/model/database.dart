@@ -5,8 +5,6 @@ import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart';
 import 'package:squick/constants/app_constants.dart';
 import 'package:squick/modules/wallet/model/credit_card.dart';
-import 'package:squick/modules/wallet/model/credit_card.dart';
-import 'package:squick/modules/wallet/model/credit_card.dart';
 
 class DatabaseProvider extends ChangeNotifier {
   DatabaseProvider._();

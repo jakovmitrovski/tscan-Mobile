@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import 'package:app_settings/app_settings.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:squick/modules/ticket_information/model/transaction_dto.dart';
@@ -20,7 +19,7 @@ class NetworkHelper {
     } else if(response.statusCode == 404) {
       AlertHelper.showAlert(context,
           title: 'Невалиден билет!',
-          description: 'Билетот кој го скениравте е невалиден.',
+          description: 'Билетот кој го скениравте не е валиден.',
           buttonText: 'Назад',
           onTap: () {
             Navigator.pop(context);
@@ -31,6 +30,15 @@ class NetworkHelper {
       AlertHelper.showAlert(context,
           title: 'Грешка!',
           description: 'Билетот кој го скениравте е веќе платен.',
+          buttonText: 'Назад',
+          onTap: () {
+            Navigator.pop(context);
+          }
+      );
+    }else {
+      AlertHelper.showAlert(context,
+          title: 'Грешка!',
+          description: 'Ве молиме обидете се повторно подоцна.',
           buttonText: 'Назад',
           onTap: () {
             Navigator.pop(context);

@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:app_settings/app_settings.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:provider/provider.dart';
 import 'package:squick/constants/app_constants.dart';
@@ -105,11 +104,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
 
     if (_currentPosition == null) {
       _getCurrentPosition(context);
-      return const SafeArea(
-          child: SpinKitDoubleBounce(
-        color: colorBlueLight,
-        size: 100.0,
-      ));
+      return kLoader;
     }
 
     return Container(
@@ -226,10 +221,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
                                         snapshot.data as List<Parking>),
                                   );
                                 } else {
-                                  return const SpinKitDoubleBounce(
-                                    color: colorBlueLight,
-                                    size: 100.0,
-                                  );
+                                  return kLoader;
                                 }
                               }),
                         ),

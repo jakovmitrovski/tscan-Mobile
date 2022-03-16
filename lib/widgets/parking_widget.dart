@@ -2,7 +2,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:iconly/iconly.dart';
-import 'package:mdi/mdi.dart';
 import 'package:squick/constants/app_constants.dart';
 import 'package:squick/models/parking.dart';
 import 'package:squick/utils/helpers/open_hours.dart';

@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_credit_card/credit_card_brand.dart';
 import 'package:flutter_credit_card/credit_card_widget.dart';
 import 'package:flutter_credit_card/custom_card_type_icon.dart';
-import 'package:iconly/iconly.dart';
 import 'package:squick/constants/app_constants.dart';
 import 'package:squick/modules/wallet/model/credit_card.dart';
 import 'package:dotted_border/dotted_border.dart';

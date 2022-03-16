@@ -15,37 +15,33 @@ class TransactionWidget extends StatelessWidget {
       height: 0.1 * height,
       margin: const EdgeInsets.symmetric(vertical: 5.0),
       child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Row(
             children: [
-              Row(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Image(image: NetworkImage(transaction.ticket.parking.imageUrlMedium),),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          transaction.ticket.parking.name,
-                          style: font16Regular.copyWith(color: colorBlueDark),
-                        ),
-                        Text(
-                          DateHelper.getFormattedDateForTransaction(transaction.createdAt),
-                          style: font12Regular.copyWith(color: colorBlueDarkLightest),
-                        )
-                      ],
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Image(image: NetworkImage(transaction.ticket.parking.imageUrlMedium),),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      transaction.ticket.parking.name,
+                      style: font16Regular.copyWith(color: colorBlueDark),
                     ),
-                  )
-                ],
+                    Text(
+                      DateHelper.getFormattedDateForTransaction(transaction.createdAt),
+                      style: font12Regular.copyWith(color: colorBlueDarkLightest),
+                    )
+                  ],
+                ),
               )
             ],
           ),
-          const Spacer(),
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: Column(

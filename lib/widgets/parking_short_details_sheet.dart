@@ -9,7 +9,6 @@ import 'package:squick/widgets/available_spaces_icon.dart';
 import 'package:squick/widgets/parking_long_details_sheet.dart';
 import 'package:squick/widgets/squick_button.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:mdi/mdi.dart';
 
 class ParkingShortDetailsSheet extends StatelessWidget {
   Parking parking;

@@ -1,7 +1,6 @@
 import 'package:app_settings/app_settings.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:provider/provider.dart';
 import 'package:squick/constants/app_constants.dart';
 import 'package:squick/models/selected_parking_provider.dart';
@@ -119,10 +118,7 @@ class _HomeScreenState extends State<HomeScreen> {
       child: Scaffold(
         resizeToAvoidBottomInset: false,
         body: loading
-            ? const SpinKitDoubleBounce(
-                color: colorBlueLight,
-                size: 100.0,
-              )
+            ? kLoader
             : Padding(
                 padding: isMap || isExplore || isTransactions
                     ? const EdgeInsets.symmetric(horizontal: 0.0)

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:squick/utils/helpers/utils.dart';
 
@@ -189,3 +190,15 @@ const kCreditCardTextStyle = TextStyle(
 const kMaxNumberOfCreditCards = 4;
 
 const kModalSheetsPadding = EdgeInsets.only(left: 25.0, right: 25.0, top: 10.0, bottom: 25.0);
+
+const kLoaderCentered = const Center(
+                        child: SpinKitDoubleBounce(
+                            color: colorBlueLight,
+                            size: 100.0,
+                        ),
+                    );
+
+const kLoader = const  SpinKitDoubleBounce(
+                            color: colorBlueLight,
+                            size: 100.0,
+                        );
