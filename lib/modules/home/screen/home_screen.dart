@@ -1,3 +1,5 @@
+import 'package:app_settings/app_settings.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:provider/provider.dart';
@@ -8,6 +10,7 @@ import 'package:squick/modules/map/screen/map_screen.dart';
 import 'package:squick/modules/past_transactions/screen/past_transactions_screen.dart';
 import 'package:squick/modules/ticket_information/screen/ticket_information_screen.dart';
 import 'package:squick/modules/wallet/screen/wallet_screen.dart';
+import 'package:squick/utils/helpers/alert.dart';
 import 'package:squick/utils/helpers/scanner.dart';
 import 'package:squick/widgets/fab.dart';
 import 'package:squick/widgets/menu.dart';
@@ -90,9 +93,27 @@ class _HomeScreenState extends State<HomeScreen> {
     Navigator.pushNamed(context, TicketInformation.id, arguments: ticketInfo);
   }
 
+  Future<void> _checkConnectivityState(BuildContext context) async {
+    final ConnectivityResult result = await Connectivity().checkConnectivity();
+
+    if (result != ConnectivityResult.wifi && result != ConnectivityResult.mobile) {
+      AlertHelper.showAlert(context,
+          title: "Немате интернет конекција!",
+          description: "Осигурајте се дека сте поврзани на интернет",
+          buttonText: "Отвори интернет поставки",
+          onTap: () async {
+            await AppSettings.openWIFISettings();
+            Navigator.pop(context);
+          }
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     var selectedParkingProvider = Provider.of<SelectedParkingProvider>(context);
+
+    _checkConnectivityState(context);
 
     return SafeArea(
       child: Scaffold(

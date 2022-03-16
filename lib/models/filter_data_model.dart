@@ -31,4 +31,8 @@ class FilterDataModel extends ChangeNotifier {
     _items[key] = value;
     notifyListeners();
   }
+
+  bool hasFilters() {
+    return _items["price"] != 250.0 || _items["openNow"] != false || _items["freeSpaces"] != false;
+  }
 }

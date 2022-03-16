@@ -58,8 +58,9 @@ dependencies:
   dotted_border: ^2.0.0+2
   blur: ^3.0.0
   fl_chart: ^0.46.0
-  scrollable_positioned_list: ^0.2.3
   flutter_svg: ^1.0.3
+  app_settings: 4.1.1
+  connectivity_plus: ^1.0.6
 
 dev_dependencies:
   flutter_test:
