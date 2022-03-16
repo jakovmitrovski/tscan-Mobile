@@ -15,7 +15,6 @@ import 'package:squick/models/maps_provider.dart';
 import 'package:squick/models/parking.dart';
 import 'package:squick/modules/map/screen/map_screen.dart';
 import 'package:squick/utils/helpers/alert.dart';
-import 'package:squick/utils/helpers/location.dart';
 import 'package:squick/widgets/filter_popup_screen.dart';
 import 'package:squick/widgets/parking_widget.dart';
 import 'package:squick/widgets/search_bar.dart';
@@ -46,19 +45,21 @@ class _ExploreScreenState extends State<ExploreScreen> {
     } on LocationServicesOffException catch(e) {
       AlertHelper.showAlert(context,
           title: e.toString(),
-          description: 'Ве молиме вклучети ги истите во подесувања на телефонот.',
-          buttonText: 'Отвори локациски подесувања',
-          onTap: () {
-            AppSettings.openLocationSettings();
+          description: 'Ве молиме вклучети ги истите во подесувања на телефонот и одново вклучете ја апликацијата за да работи соодветно!',
+          buttonText: 'Отвори подесувања',
+          onTap: () async {
+            await AppSettings.openAppSettings();
+            exit(1);
           }
       );
     } on LocationServicesPermissionDeniedException catch(e) {
       AlertHelper.showAlert(context,
           title: e.toString(),
-          description: 'Ве молиме дадете и локациски пермисии на TScan за да работи соодветно',
-          buttonText: 'Отвори локациски подесувања',
-          onTap: () {
-            AppSettings.openLocationSettings();
+          description: 'Ве молиме дадете и локациски пермисии на TScan за да работи соодветно и одново вклучете ја апликацијата за да работи соодветно!',
+          buttonText: 'Отвори подесувања',
+          onTap: () async {
+            await AppSettings.openAppSettings();
+            exit(1);
           }
       );
     } on LocationServicesPermissionDeniedForeverOffException catch(e) {
@@ -146,9 +147,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
                           width: width,
                           onSearchBarTap: () {},
                           onSearch: (value) {
-                            // setState(() {
-                            //   keyword = value;
-                            // });
+                            mapsProvider.updateShouldLoad(true);
                             filter.change('keyword', value);
                           },
                           onFilterPressed: () {

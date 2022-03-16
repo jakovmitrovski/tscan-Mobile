@@ -14,7 +14,6 @@ import 'package:squick/models/parking.dart';
 import 'package:squick/models/maps_provider.dart';
 import 'package:squick/models/selected_parking_provider.dart';
 import 'package:squick/utils/helpers/alert.dart';
-import 'package:squick/utils/helpers/location.dart';
 import 'package:squick/utils/helpers/open_hours.dart';
 import 'package:squick/widgets/filter_popup_screen.dart';
 import 'package:geolocator/geolocator.dart';
@@ -86,19 +85,21 @@ class _MapScreenState extends State<MapScreen> {
     } on LocationServicesOffException catch(e) {
       AlertHelper.showAlert(context,
           title: e.toString(),
-          description: 'Ве молиме вклучети ги истите во подесувања на телефонот.',
-          buttonText: 'Отвори локациски подесувања',
-          onTap: () {
-            AppSettings.openLocationSettings();
+          description: 'Ве молиме вклучети ги истите во подесувања на телефонот и одново вклучете ја апликацијата за да работи соодветно!',
+          buttonText: 'Отвори подесувања',
+          onTap: () async {
+            await AppSettings.openAppSettings();
+            exit(1);
           }
       );
     } on LocationServicesPermissionDeniedException catch(e) {
       AlertHelper.showAlert(context,
           title: e.toString(),
-          description: 'Ве молиме дадете и локациски пермисии на TScan за да работи соодветно',
-          buttonText: 'Отвори локациски подесувања',
-          onTap: () {
-            AppSettings.openLocationSettings();
+          description: 'Ве молиме дадете и локациски пермисии на TScan и одново вклучете ја апликацијата за да работи соодветно!',
+          buttonText: 'Отвори подесувања',
+          onTap: () async {
+            await AppSettings.openAppSettings();
+            exit(1);
           }
       );
     } on LocationServicesPermissionDeniedForeverOffException catch(e) {
@@ -166,10 +167,6 @@ class _MapScreenState extends State<MapScreen> {
               bottomSheetController!.closed
                   .whenComplete(() => selectedParkingProvider.updateValue(-1));
             }
-
-            // setState(() {
-            //   shouldLoad = false;
-            // });
             mapsProvider.updateShouldLoad(false);
           });
 
@@ -274,17 +271,9 @@ class _MapScreenState extends State<MapScreen> {
                 selectedParkingProvider.updateValue(-1);
               }
               if (value.isNotEmpty) {
-                // setState(() {
-                //   keyword = value;
-                //
-                //   // shouldLoad = true;
-                // });
                 filter.change('keyword', value);
                 mapsProvider.updateShouldLoad(true);
               } else {
-                // setState(() {
-                //   keyword = null;
-                // });
                 filter.change('keyword', null);
               }
             },
