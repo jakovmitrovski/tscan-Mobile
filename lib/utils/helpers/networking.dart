@@ -3,6 +3,7 @@ import 'package:http/http.dart' as http;
 import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:squick/constants/app_constants.dart';
 import 'package:squick/modules/ticket_information/model/transaction_dto.dart';
+import 'package:squick/utils/helpers/alert.dart';
 import 'dart:convert';
 
 import 'package:squick/widgets/alert_dialog.dart';
@@ -18,44 +19,10 @@ class NetworkHelper {
     if (response.statusCode == 200) {
       return jsonDecode(utf8.decode(response.bodyBytes));
     } else if(response.statusCode == 404) {
-      Alert(
-          context: context,
-          type: AlertType.error,
-          title: 'Невалиден билет!',
-          desc: 'Билетот кој го скениравте е невалиден.',
-          style: AlertStyle(
-              titleStyle: font16Medium.copyWith(color: colorBlueDark),
-              descStyle: font14Regular.copyWith(color: colorBlueDarkLight)),
-          buttons: [
-            DialogButton(
-              child: const Text(
-                "Назад",
-                style: TextStyle(color: Colors.white, fontSize: 14),
-              ),
-              onPressed: () => Navigator.pop(context),
-              color: Colors.grey.shade400,
-            ),
-          ]).show();
+      AlertHelper.showAlert(context, 'Невалиден билет!', 'Билетот кој го скениравте е невалиден.');
     }
     else if(response.statusCode == 400) {
-      Alert(
-          context: context,
-          type: AlertType.error,
-          title: 'Грешка!',
-          desc: 'Билетот кој го скениравте е веќе платен.',
-          style: AlertStyle(
-              titleStyle: font16Medium.copyWith(color: colorBlueDark),
-              descStyle: font14Regular.copyWith(color: colorBlueDarkLight)),
-          buttons: [
-            DialogButton(
-              child: const Text(
-                "Назад",
-                style: TextStyle(color: Colors.white, fontSize: 14),
-              ),
-              onPressed: () => Navigator.pop(context),
-              color: Colors.grey.shade400,
-            ),
-          ]).show();
+      AlertHelper.showAlert(context, 'Грешка!', 'Билетот кој го скениравте е веќе платен.');
     }
   }
 
@@ -65,9 +32,7 @@ class NetworkHelper {
         headers: {'Content-Type': 'application/json; charset=utf-8'},
         body: jsonEncode(transactionDto.toJSON()));
 
-    print(jsonEncode(transactionDto.toJSON()));
     if (response.statusCode == 200) {
-
       return true;
     } else {
       return false;
@@ -75,24 +40,7 @@ class NetworkHelper {
   }
 
   void _showErrorDialog(BuildContext context) {
-    Alert(
-        context: context,
-        type: AlertType.warning,
-        title: 'Настана грешка!',
-        desc: 'Ве молиме обидете се повторно подоцна.',
-        style: AlertStyle(
-            titleStyle: font16Medium.copyWith(color: colorBlueDark),
-            descStyle: font14Regular.copyWith(color: colorBlueDarkLight)),
-        buttons: [
-          DialogButton(
-            child: const Text(
-              "Назад",
-              style: TextStyle(color: Colors.white, fontSize: 14),
-            ),
-            onPressed: () => Navigator.pop(context),
-            color: Colors.grey.shade400,
-          ),
-        ]).show();
+    AlertHelper.showAlert(context, 'Грешка!', 'Ве молиме обидете се повторно подоцна.');
   }
 
   Future<dynamic> getParkings(BuildContext context) async {

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:squick/models/paging_response.dart';
 import 'package:squick/modules/past_transactions/model/transaction.dart';
+import 'package:squick/utils/helpers/alert.dart';
 import 'package:squick/utils/helpers/date.dart';
 import 'package:squick/utils/helpers/networking.dart';
 import 'package:squick/constants/api_constants.dart';
@@ -45,20 +46,22 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
 
   Future<String> getUserId(DeviceInfoPlugin deviceInfo) async {
     AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
-    // String? userId = androidInfo.id;
-    //TODO: Remove this - testing purposes only
-    String userId = "NRD90M";
+    String? userId = androidInfo.id;
 
-    // if (userId == null) {
-    //   //TODO: show alert problem
-    //   return null;
-    // }
+    if (userId == null) {
+      AlertHelper.showAlert(context, 'Грешка!', 'Не може да се пронајде идентификациски број.');
+      return '';
+    }
     return userId;
   }
 
-  //TODO: Change values to const..??
   void getTransactions(DeviceInfoPlugin deviceInfo, int start, int items,
-      {int month = 3, int year = 2022, bool fromButtonClick = false}) async {
+      {int month = -1, int year = -1, bool fromButtonClick = false}) async {
+    if (month == -1 || year == -1) {
+      month = _currentMonth;
+      year = _currentYear;
+    }
+
     if (!fromButtonClick) {
       setState(() {
         _isFirstLoadRunning = true;
@@ -66,6 +69,14 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
     }
 
     String user = await getUserId(deviceInfo);
+
+    if (user.isEmpty) {
+      setState(() {
+        _transactions = [];
+      });
+
+      return;
+    }
 
     Uri uri = Uri.parse(
         '$baseEndpoint/transactions/$user?year=$year&month=$month&start=$start&items=$items');
@@ -84,16 +95,21 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
             _transactionsPagingResponse.content as List<SingleTransaction>;
       });
     } else {
-      //TODO: unable to load data
+      AlertHelper.showAlert(context, 'Грешка!', 'Ве молиме обидете се повторно подоцна.');
     }
   }
 
   void _getTotalSpent(DeviceInfoPlugin deviceInfo,
-      {int month = 3, int year = 2022}) async {
+      {int month = -1, int year = -1}) async {
+    if (month == -1 || year == -1) {
+      month = _currentMonth;
+      year = _currentYear;
+    }
+
     String user = await getUserId(deviceInfo);
 
     Uri uri = Uri.parse(
-      '$baseEndpoint/transactions/$user/sum?year=$year&month=$month');
+        '$baseEndpoint/transactions/$user/sum?year=$year&month=$month');
 
     NetworkHelper networkHelper = NetworkHelper(uri);
     final sumData = await networkHelper.getSum(context);
@@ -103,7 +119,7 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
         _totalSpent = ParseUtils.parseSumData(sumData);
       });
     } else {
-      //TODO: unable to load data
+      AlertHelper.showAlert(context, 'Грешка!', 'Ве молиме обидете се повторно подоцна.');
     }
   }
 
@@ -151,7 +167,6 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
     for (int i = 0, month = _currentMonth, year = _currentYear;
         i < 12;
         i++, month--) {
-
       if (month == 0) {
         month = 12;
         year--;
@@ -173,13 +188,11 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
                 _selectedIndex = i;
                 _transactions = [];
               }),
-
               _getTotalSpent(_deviceInfo, month: month, year: year),
-              getTransactions(_deviceInfo, 0, _items, month: month, year: year, fromButtonClick: true),
-
+              getTransactions(_deviceInfo, 0, _items,
+                  month: month, year: year, fromButtonClick: true),
               scrollRight(),
             },
-
             selected: i == _selectedIndex,
           ),
         ),
@@ -192,9 +205,8 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
   void scrollRight() {
     if (_scrollController.hasClients) {
       double position = _selectedIndex * (90 + 2 * 8);
-      _scrollController.animateTo(
-          position,
-          duration: const Duration(milliseconds: 1500),
+      _scrollController.animateTo(position,
+          duration: const Duration(milliseconds: 500),
           curve: Curves.fastOutSlowIn);
     }
   }
@@ -329,15 +341,6 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
                     ),
                   ),
                 ),
-                //
-                // if (!_hasNextPage)
-                //   Container(
-                //     padding: const EdgeInsets.only(top: 30, bottom: 40),
-                //     color: Colors.amber,
-                //     child: const Center(
-                //       child: Text('You have fetched all of the content'),
-                //     ),
-                //   ),
               ],
             ),
     );
