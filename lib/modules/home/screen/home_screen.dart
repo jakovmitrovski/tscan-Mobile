@@ -27,7 +27,7 @@ class _HomeScreenState extends State<HomeScreen> {
       isMap = true,
       isTransactions = false,
       isWallet = false;
-  Widget screen = MapScreen();
+  Widget screen = const MapScreen();
   bool loading = false;
 
   updateUI(int index) {
@@ -107,7 +107,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     ? const EdgeInsets.symmetric(horizontal: 0.0)
                     : const EdgeInsets.symmetric(horizontal: 25.0),
                 child: IndexedStack(
-                  children: [
+                  children: const [
                     ExploreScreen(),
                     MapScreen(),
                     TransactionsScreen(),

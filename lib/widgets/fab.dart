@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 
 class FloatingMenuButton extends StatelessWidget {
 
@@ -14,7 +15,7 @@ class FloatingMenuButton extends StatelessWidget {
         child: FloatingActionButton(
           elevation: 0,
           onPressed: onPressed,
-          child: Image.asset('assets/images/scan_ticket.png'),
+          child: SvgPicture.asset('assets/images/scan_ticket.svg'),
         ),
       ),
     );

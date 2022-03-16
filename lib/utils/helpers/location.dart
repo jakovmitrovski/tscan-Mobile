@@ -1,4 +1,7 @@
 import 'package:geolocator/geolocator.dart';
+import 'package:squick/models/exceptions/location_services_permission_denied_exception.dart';
+import 'package:squick/models/exceptions/location_services_off_exception.dart';
+import 'package:squick/models/exceptions/location_services_permission_denied_forever_exception.dart';
 
 
 class LocationHelper {
@@ -9,19 +12,19 @@ class LocationHelper {
 
     serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (!serviceEnabled) {
-      throw 'Location services are disabled.';
+      throw const LocationServicesOffException();
     }
 
     permission = await Geolocator.checkPermission();
     if (permission == LocationPermission.denied) {
       permission = await Geolocator.requestPermission();
       if (permission == LocationPermission.denied) {
-        throw 'Location permissions are denied';
+        throw const LocationServicesPermissionDeniedException();
       }
     }
 
     if (permission == LocationPermission.deniedForever) {
-      throw 'Location permissions are permanently denied, we cannot request permissions.';
+      throw const LocationServicesPermissionDeniedForeverOffException();
     }
 
     return await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.bestForNavigation);
