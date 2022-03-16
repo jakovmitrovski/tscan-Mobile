@@ -8,11 +8,19 @@ class SearchBar extends StatelessWidget {
   VoidCallback onSearchBarTap;
   Function onSearch;
   VoidCallback onFilterPressed;
+  String? initialText;
+  final _searchController = TextEditingController();
 
-  SearchBar({required this.width, required this.onSearchBarTap, required this.onSearch, required this.onFilterPressed});
+  SearchBar({required this.width, required this.onSearchBarTap, required this.onSearch, required this.onFilterPressed, this.initialText});
 
   @override
   Widget build(BuildContext context) {
+
+    if (initialText != null) {
+      _searchController.text = initialText!;
+      _searchController.selection = TextSelection.fromPosition(TextPosition(offset: _searchController.text.length));
+    }
+
     return Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(10.0),
@@ -35,6 +43,7 @@ class SearchBar extends StatelessWidget {
           Expanded(
             flex: 4,
             child: TextField(
+              controller: _searchController,
               onTap: onSearchBarTap,
               onSubmitted: (value) {
                 onSearch(value);
@@ -60,9 +69,9 @@ class SearchBar extends StatelessWidget {
                     borderRadius: BorderRadius.circular(10.0),
                   ),
                   child: IconButton(
-                    icon: Icon(IconlyLight.filter),
-                    color: Colors.white,
-                    onPressed: onFilterPressed
+                      icon: Icon(IconlyLight.filter),
+                      color: Colors.white,
+                      onPressed: onFilterPressed
                   ),
                 ),
               )

@@ -1,3 +1,6 @@
+import 'dart:io';
+
+import 'package:app_settings/app_settings.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -36,20 +39,38 @@ class _ExploreScreenState extends State<ExploreScreen> {
   String? keyword;
   late double height;
 
-  _getCurrentPosition() async {
+  _getCurrentPosition(BuildContext context) async {
     try {
-      Position p = await LocationHelper().getCurrentLocation();
-      setState(() {
-        _currentPosition = p;
-      });
+      await mapsProvider.updateCurrentPosition();
+      _currentPosition = await mapsProvider.getCurrentPosition();
     } on LocationServicesOffException catch(e) {
-      AlertHelper.showAlert(context, e.toString(), 'Ве молиме вклучети ги истите во подесувања на телефонот.');
+      AlertHelper.showAlert(context,
+          title: e.toString(),
+          description: 'Ве молиме вклучети ги истите во подесувања на телефонот.',
+          buttonText: 'Отвори локациски подесувања',
+          onTap: () {
+            AppSettings.openLocationSettings();
+          }
+      );
     } on LocationServicesPermissionDeniedException catch(e) {
-      AlertHelper.showAlert(context, e.toString(), 'Ве молиме дадете и локациски пермисии на TScan за да работи соодветно');
+      AlertHelper.showAlert(context,
+          title: e.toString(),
+          description: 'Ве молиме дадете и локациски пермисии на TScan за да работи соодветно',
+          buttonText: 'Отвори локациски подесувања',
+          onTap: () {
+            AppSettings.openLocationSettings();
+          }
+      );
     } on LocationServicesPermissionDeniedForeverOffException catch(e) {
-      AlertHelper.showAlert(context, e.toString(), 'За TScan да работи соодветно, потребно е одново да ја инсталирате апликацијата.');
+      AlertHelper.showAlert(context,
+          title: e.toString(),
+          description: 'За TScan да работи соодветно, потребно е одново да ја инсталирате апликацијата.',
+          buttonText: 'Затвори ја TScan',
+          onTap: () {
+            exit(1);
+          }
+      );
     }
-
   }
 
   @override
@@ -57,7 +78,6 @@ class _ExploreScreenState extends State<ExploreScreen> {
     screen = const MapScreen();
     selected = "map";
     super.initState();
-    _getCurrentPosition();
   }
 
   List<Widget> getParkingList(List<Parking> parkings) {
@@ -83,6 +103,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
     var width = MediaQuery.of(context).size.width;
 
     if (_currentPosition == null) {
+      _getCurrentPosition(context);
       return const SafeArea(
           child: SpinKitDoubleBounce(
         color: colorBlueLight,
@@ -121,12 +142,14 @@ class _ExploreScreenState extends State<ExploreScreen> {
                         ),
                       ),
                       SearchBar(
+                          initialText: filter.getValue('keyword'),
                           width: width,
                           onSearchBarTap: () {},
                           onSearch: (value) {
-                            setState(() {
-                              keyword = value;
-                            });
+                            // setState(() {
+                            //   keyword = value;
+                            // });
+                            filter.change('keyword', value);
                           },
                           onFilterPressed: () {
                             showModalBottomSheet(
@@ -140,8 +163,8 @@ class _ExploreScreenState extends State<ExploreScreen> {
                                               .bottom),
                                       child: FilterPopup(
                                           onTap: (price, openNow, freeSpaces) {
-                                        filter.changeAllValues(
-                                            price, openNow, freeSpaces);
+                                        mapsProvider.updateShouldLoad(true);
+                                        filter.changeAllValues(price, openNow, freeSpaces);
                                         Navigator.pop(context);
                                       }),
                                     ));
@@ -180,7 +203,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
                                   filter.getValue('openNow'),
                                   filter.getValue('freeSpaces'),
                                   _currentPosition!,
-                                  keyword: keyword),
+                                  keyword: filter.getValue('keyword')),
                               builder: (BuildContext context,
                                   AsyncSnapshot snapshot) {
                                 if (snapshot.hasData &&

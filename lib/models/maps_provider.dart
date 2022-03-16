@@ -3,14 +3,29 @@ import 'package:geolocator/geolocator.dart';
 import 'package:squick/constants/api_constants.dart';
 import 'package:squick/models/parking.dart';
 import 'package:squick/utils/helpers/distance.dart';
+import 'package:squick/utils/helpers/location.dart';
 import 'package:squick/utils/helpers/networking.dart';
 import 'package:squick/utils/helpers/parse_utils.dart';
 
 class MapsProvider extends ChangeNotifier {
   List<Parking> _parkings = [];
   Position? _currentPosition;
+  bool shouldLoad = true;
 
-  Position? getCurrentPosition() {
+  void updateShouldLoad(bool value) {
+    shouldLoad = value;
+    notifyListeners();
+  }
+
+  Future<Position?> getCurrentPosition() async {
+    if (_currentPosition == null) {
+      try {
+        await updateCurrentPosition();
+      }catch(e) {
+        rethrow;
+      }
+    }
+
     return _currentPosition;
   }
 
@@ -19,8 +34,12 @@ class MapsProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void updateCurrentPosition(Position position) {
-    _currentPosition = position;
+  Future<void> updateCurrentPosition() async {
+    try {
+      _currentPosition = await LocationHelper().getCurrentLocation();
+    }catch(e) {
+      rethrow;
+    }
     notifyListeners();
   }
 

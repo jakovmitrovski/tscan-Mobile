@@ -23,7 +23,6 @@ class Scanner {
         "#000000", "Откажи", true, ScanMode.BARCODE);
 
     if (barcodeScanRes == '-1') {
-      print("Cancel was pressed");
       return -1;
     }
 

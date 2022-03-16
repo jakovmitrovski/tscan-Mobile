@@ -1,3 +1,6 @@
+import 'dart:io';
+
+import 'package:app_settings/app_settings.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -41,6 +44,7 @@ class _MapScreenState extends State<MapScreen> {
   late BitmapDescriptor selectedPin;
   bool shouldLoad = true;
   late SelectedParkingProvider selectedParkingProvider;
+  late MapsProvider mapsProvider;
   PersistentBottomSheetController? bottomSheetController;
 
   void loadFreeSpacesAvailablePin() async {
@@ -61,7 +65,10 @@ class _MapScreenState extends State<MapScreen> {
         'assets/images/selected_pin_car.png');
   }
 
-  void updateCamera(Position position) {
+  void updateCamera(Position? position) {
+
+    if (position == null) return;
+
     mapController.animateCamera(
       CameraUpdate.newCameraPosition(
         CameraPosition(
@@ -72,18 +79,37 @@ class _MapScreenState extends State<MapScreen> {
     );
   }
 
-  _updateCurrentPosition() async {
+  _updateCurrentPosition(BuildContext context) async {
     try {
-      Position p = await LocationHelper().getCurrentLocation();
-      setState(() {
-        _currentPosition = p;
-      });
+      await mapsProvider.updateCurrentPosition();
+      _currentPosition = await mapsProvider.getCurrentPosition();
     } on LocationServicesOffException catch(e) {
-      AlertHelper.showAlert(context, e.toString(), 'Ве молиме вклучети ги истите во подесувања на телефонот.');
+      AlertHelper.showAlert(context,
+          title: e.toString(),
+          description: 'Ве молиме вклучети ги истите во подесувања на телефонот.',
+          buttonText: 'Отвори локациски подесувања',
+          onTap: () {
+            AppSettings.openLocationSettings();
+          }
+      );
     } on LocationServicesPermissionDeniedException catch(e) {
-      AlertHelper.showAlert(context, e.toString(), 'Ве молиме дадете и локациски пермисии на TScan за да работи соодветно');
+      AlertHelper.showAlert(context,
+          title: e.toString(),
+          description: 'Ве молиме дадете и локациски пермисии на TScan за да работи соодветно',
+          buttonText: 'Отвори локациски подесувања',
+          onTap: () {
+            AppSettings.openLocationSettings();
+          }
+      );
     } on LocationServicesPermissionDeniedForeverOffException catch(e) {
-      AlertHelper.showAlert(context, e.toString(), 'За TScan да работи соодветно, потребно е одново да ја инсталирате апликацијата.');
+      AlertHelper.showAlert(context,
+          title: e.toString(),
+          description: 'За TScan да работи соодветно, потребно е одново да ја инсталирате апликацијата.',
+          buttonText: 'Затвори ја TScan',
+          onTap: () {
+            exit(1);
+          }
+      );
     }
   }
 
@@ -93,7 +119,6 @@ class _MapScreenState extends State<MapScreen> {
     rootBundle.loadString('assets/map/map_style.txt').then((string) {
       _mapStyle = string;
     });
-    _updateCurrentPosition();
     loadFreeSpacesAvailablePin();
     loadFreeSpacesUnavailablePin();
     loadSelectedPin();
@@ -105,6 +130,13 @@ class _MapScreenState extends State<MapScreen> {
     return (parking.numberOfFreeSpaces == 0 || !isOpen)
         ? freeSpacesUnavailablePin
         : freeSpacesAvailablePin;
+  }
+
+  Parking? getParkingById(int id) {
+    for (int i = 0; i < _parkings.length; i++) {
+      if (_parkings[i].id == id) return _parkings[i];
+    }
+    return null;
   }
 
   Set<Marker> getMarkers(List<Parking> parkings) {
@@ -135,9 +167,10 @@ class _MapScreenState extends State<MapScreen> {
                   .whenComplete(() => selectedParkingProvider.updateValue(-1));
             }
 
-            setState(() {
-              shouldLoad = false;
-            });
+            // setState(() {
+            //   shouldLoad = false;
+            // });
+            mapsProvider.updateShouldLoad(false);
           });
 
       markers.add(marker);
@@ -150,11 +183,13 @@ class _MapScreenState extends State<MapScreen> {
     var height = MediaQuery.of(context).size.height;
     var width = MediaQuery.of(context).size.width;
 
-    var mapsProvider = Provider.of<MapsProvider>(context);
+    mapsProvider = Provider.of<MapsProvider>(context);
     var filter = Provider.of<FilterDataModel>(context);
+
     selectedParkingProvider = Provider.of<SelectedParkingProvider>(context);
 
     if (_currentPosition == null) {
+      _updateCurrentPosition(context);
       return const SafeArea(
           child: SpinKitDoubleBounce(
         color: colorBlueLight,
@@ -167,7 +202,7 @@ class _MapScreenState extends State<MapScreen> {
       width: width,
       height: height,
       child: Stack(children: [
-        shouldLoad
+        mapsProvider.shouldLoad
             ? FutureBuilder(
                 future: mapsProvider.getParkingsFromApi(
                     context,
@@ -175,22 +210,18 @@ class _MapScreenState extends State<MapScreen> {
                     filter.getValue('openNow'),
                     filter.getValue('freeSpaces'),
                     _currentPosition!,
-                    keyword: keyword),
+                    keyword: filter.getValue('keyword')),
                 builder: (BuildContext context, AsyncSnapshot snapshot) {
                   if (snapshot.hasData &&
                       snapshot.data != null &&
                       snapshot.connectionState == ConnectionState.done) {
                     return GoogleMap(
-                      // padding: EdgeInsets.only(bottom: 100),
                       onMapCreated: (GoogleMapController controller) {
                         mapController = controller;
                         mapController.setMapStyle(_mapStyle);
                       },
                       initialCameraPosition: CameraPosition(
-                          target: _currentPosition == null
-                              ? kCenterLocation
-                              : LatLng(_currentPosition!.latitude,
-                                  _currentPosition!.longitude),
+                          target: LatLng(_currentPosition!.latitude, _currentPosition!.longitude),
                           zoom: 14.0),
                       myLocationEnabled: true,
                       myLocationButtonEnabled: false,
@@ -208,16 +239,13 @@ class _MapScreenState extends State<MapScreen> {
                   }
                 })
             : GoogleMap(
-                // padding: EdgeInsets.only(bottom: 100),
                 onMapCreated: (GoogleMapController controller) {
                   mapController = controller;
                   mapController.setMapStyle(_mapStyle);
                 },
                 initialCameraPosition: CameraPosition(
-                    target: _currentPosition == null
-                        ? kCenterLocation
-                        : LatLng(_currentPosition!.latitude,
-                            _currentPosition!.longitude),
+                    target: selectedParkingProvider.selected == -1 ? LatLng(_currentPosition!.latitude,
+                        _currentPosition!.longitude) : LatLng(getParkingById(selectedParkingProvider.selected)!.latitude, getParkingById(selectedParkingProvider.selected)!.longitude),
                     zoom: 14.0),
                 myLocationEnabled: true,
                 myLocationButtonEnabled: false,
@@ -230,6 +258,7 @@ class _MapScreenState extends State<MapScreen> {
         Align(
           alignment: Alignment.topCenter,
           child: SearchBar(
+            initialText: filter.getValue('keyword'),
             width: width,
             onSearchBarTap: () {
               if (selectedParkingProvider.selected != -1 &&
@@ -245,18 +274,22 @@ class _MapScreenState extends State<MapScreen> {
                 selectedParkingProvider.updateValue(-1);
               }
               if (value.isNotEmpty) {
-                setState(() {
-                  keyword = value;
-                  shouldLoad = true;
-                });
+                // setState(() {
+                //   keyword = value;
+                //
+                //   // shouldLoad = true;
+                // });
+                filter.change('keyword', value);
+                mapsProvider.updateShouldLoad(true);
               } else {
-                setState(() {
-                  keyword = null;
-                });
+                // setState(() {
+                //   keyword = null;
+                // });
+                filter.change('keyword', null);
               }
             },
             onFilterPressed: () {
-              shouldLoad = true;
+
               showModalBottomSheet(
                   context: context,
                   isScrollControlled: true,
@@ -264,14 +297,16 @@ class _MapScreenState extends State<MapScreen> {
                         height: 0.60 * height,
                         padding: EdgeInsets.only(
                             bottom: MediaQuery.of(context).viewInsets.bottom),
-                        child: FilterPopup(onTap: (price, openNow, freeSpaces) {
-                          if (selectedParkingProvider.selected != -1 &&
-                              bottomSheetController != null) {
-                            bottomSheetController!.close();
-                            selectedParkingProvider.updateValue(-1);
-                          }
-                          filter.changeAllValues(price, openNow, freeSpaces);
-                          Navigator.pop(context);
+                        child: FilterPopup(
+                            onTap: (price, openNow, freeSpaces) {
+                              if (selectedParkingProvider.selected != -1 &&
+                                  bottomSheetController != null) {
+                                bottomSheetController!.close();
+                                selectedParkingProvider.updateValue(-1);
+                              }
+                              mapsProvider.updateShouldLoad(true);
+                              filter.changeAllValues(price, openNow, freeSpaces);
+                              Navigator.pop(context);
                         }),
                       ));
             },
@@ -289,7 +324,8 @@ class _MapScreenState extends State<MapScreen> {
               backgroundColor: Colors.white,
               heroTag: 'recenter',
               onPressed: () async {
-                updateCamera(await LocationHelper().getCurrentLocation());
+                await mapsProvider.updateCurrentPosition();
+                updateCamera(await mapsProvider.getCurrentPosition());
               },
               child: Icon(
                 Icons.my_location,

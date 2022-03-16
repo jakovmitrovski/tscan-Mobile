@@ -6,9 +6,19 @@ import 'package:squick/constants/app_constants.dart';
 
 class AlertHelper {
 
-  static void showAlert(BuildContext context, String title,
-      String description, ) {
-    Alert(
+  static bool _isDialogShowing = false;
+
+  static void showAlert(BuildContext context, {required String title,
+      required String description, required String buttonText, required VoidCallback onTap}) {
+
+      if (buttonText == 'Затвори ја TScan') {
+        if (_isDialogShowing) {
+          return;
+        }
+        _isDialogShowing = true;
+      }
+
+      Alert(
         context: context,
         type: AlertType.error,
         title: title,
@@ -18,12 +28,12 @@ class AlertHelper {
             descStyle: font14Regular.copyWith(color: colorBlueDarkLight)),
         buttons: [
           DialogButton(
-            child: const Text(
-              "Назад",
-              style: TextStyle(color: Colors.white, fontSize: 14),
+            child: Text(
+              buttonText,
+              style: const TextStyle(color: Colors.white, fontSize: 14),
             ),
-            onPressed: () => Navigator.pop(context),
-            color: Colors.grey.shade400,
+            onPressed: onTap,
+            color: colorBlueDark,
           ),
         ]).show();
   }

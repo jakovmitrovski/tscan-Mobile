@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -12,7 +14,6 @@ import 'package:squick/constants/app_constants.dart';
 import 'dart:async';
 import 'package:squick/widgets/transaction_widget.dart';
 import 'package:squick/widgets/transactions_month_button.dart';
-import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
 class TransactionsScreen extends StatefulWidget {
   static const String id = "/transactions";
@@ -49,7 +50,15 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
     String? userId = androidInfo.id;
 
     if (userId == null) {
-      AlertHelper.showAlert(context, 'Грешка!', 'Не може да се пронајде идентификациски број.');
+      AlertHelper.showAlert(
+          context,
+          title: 'Грешка!',
+          description: 'Не може да се пронајде идентификациски број.',
+          buttonText: 'Затвори ја TScan',
+          onTap: () {
+            exit(1);
+          }
+      );
       return '';
     }
     return userId;
@@ -94,8 +103,6 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
         _transactions =
             _transactionsPagingResponse.content as List<SingleTransaction>;
       });
-    } else {
-      AlertHelper.showAlert(context, 'Грешка!', 'Ве молиме обидете се повторно подоцна.');
     }
   }
 
@@ -118,8 +125,6 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
       setState(() {
         _totalSpent = ParseUtils.parseSumData(sumData);
       });
-    } else {
-      AlertHelper.showAlert(context, 'Грешка!', 'Ве молиме обидете се повторно подоцна.');
     }
   }
 
