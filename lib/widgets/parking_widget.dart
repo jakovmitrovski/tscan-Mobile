@@ -37,7 +37,7 @@ class ParkingWidget extends StatelessWidget {
     bool isOpen = OpenHoursHelper.isOpen(parking);
 
     return Container(
-      height: 0.145.sh,
+      height: 0.165.sh,
       margin: const EdgeInsets.only(bottom: 20.0),
       decoration: const BoxDecoration(
           color: Colors.white,
@@ -105,7 +105,7 @@ class ParkingWidget extends StatelessWidget {
               child: Container(
                 padding: const EdgeInsets.all(10.0),
                 child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Column(

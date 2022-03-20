@@ -46,9 +46,15 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
   late double height;
 
   Future<String> getUserId(DeviceInfoPlugin deviceInfo) async {
-    return "NRD90M";
-    AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
-    String? userId = androidInfo.id;
+    String? userId;
+
+    if (Platform.isAndroid) {
+      AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
+      userId = androidInfo.id;
+    }else if (Platform.isIOS) {
+      IosDeviceInfo iosInfo = await deviceInfo.iosInfo;
+      userId = iosInfo.identifierForVendor;
+    }
 
     if (userId == null) {
       AlertHelper.showAlert(

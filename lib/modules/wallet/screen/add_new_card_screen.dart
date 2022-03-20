@@ -118,7 +118,7 @@ class _AddCardScreenState extends State<AddCardScreen> {
                       flex: 12,
                       child: Text(
                         'Додади картичка',
-                        style: font20Medium.copyWith(color: colorBlueDark),
+                        style: font20Bold.copyWith(color: colorBlueDark),
                         textAlign: TextAlign.center,
                       ),
                     ),

@@ -17,6 +17,8 @@ import 'package:squick/widgets/flutter_ticket.dart';
 import 'package:squick/widgets/squick_button.dart';
 import 'package:squick/widgets/ticket_content.dart';
 
+import 'dart:io';
+
 class TicketInformation extends StatefulWidget {
   static const String id = "/ticket_information";
 
@@ -78,7 +80,7 @@ class _TicketInformationState extends State<TicketInformation> {
                           flex: 8,
                           child: Text(
                             'Информации за билет',
-                            style: font20Bold.copyWith(color: colorBlueDarkLight),
+                            style: font24Bold.copyWith(color: colorBlueDarkLight),
                           ),
                         ),
                         const Expanded(
@@ -114,10 +116,16 @@ class _TicketInformationState extends State<TicketInformation> {
                                     0
                                     ? null
                                     : () async {
-                                  // AndroidDeviceInfo androidInfo =
-                                  // await deviceInfo.androidInfo;
-                                  String userId = "NRD90M";
-                                  // String? userId = androidInfo.id;
+
+                                  String? userId;
+                                  if (Platform.isAndroid) {
+                                    AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
+                                    userId = androidInfo.id;
+                                  }else if (Platform.isIOS) {
+                                    IosDeviceInfo iosInfo = await deviceInfo.iosInfo;
+                                    userId = iosInfo.identifierForVendor;
+                                  }
+
                                   setState(() {
                                     loading = true;
                                   });
