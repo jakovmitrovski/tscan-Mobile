@@ -21,6 +21,8 @@ import 'package:flutter/services.dart' show rootBundle;
 import 'package:squick/widgets/parking_short_details_sheet.dart';
 import 'package:squick/widgets/search_bar.dart';
 
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+
 class MapScreen extends StatefulWidget {
   static const String id = "/map";
 
@@ -48,19 +50,19 @@ class _MapScreenState extends State<MapScreen> {
   void loadFreeSpacesAvailablePin() async {
     freeSpacesAvailablePin = await BitmapDescriptor.fromAssetImage(
         const ImageConfiguration(devicePixelRatio: 2.5),
-        'assets/images/free_spaces_car.png');
+        Platform.isAndroid ? 'assets/images/free_spaces_car.png' : 'assets/images/free_spaces_car_ios.png');
   }
 
   void loadFreeSpacesUnavailablePin() async {
     freeSpacesUnavailablePin = await BitmapDescriptor.fromAssetImage(
         const ImageConfiguration(devicePixelRatio: 2.5),
-        'assets/images/no_free_spaces_car.png');
+    Platform.isAndroid ? 'assets/images/no_free_spaces_car.png' : 'assets/images/no_free_spaces_car_ios.png');
   }
 
   void loadSelectedPin() async {
     selectedPin = await BitmapDescriptor.fromAssetImage(
         const ImageConfiguration(devicePixelRatio: 2.5),
-        'assets/images/selected_pin_car.png');
+    Platform.isAndroid ? 'assets/images/selected_pin_car.png' : 'assets/images/selected_pin_car_ios.png');
   }
 
   void updateCamera(Position? position) {
@@ -274,7 +276,7 @@ class _MapScreenState extends State<MapScreen> {
               context: context,
               isScrollControlled: true,
               builder: (context) => Container(
-                    height: 0.60 * height,
+                    height: 0.60.sh,
                     padding: EdgeInsets.only(
                         bottom: MediaQuery.of(context).viewInsets.bottom),
                     child: FilterPopup(

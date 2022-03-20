@@ -38,7 +38,7 @@ class _WalletScreenState extends State<WalletScreen> {
               children: [
                 Text(
                   'Мои Картички',
-                  style: font32Black.copyWith(color: colorBlueDark),
+                  style: font20Bold.copyWith(color: colorBlueDark),
                 ),
                 SizedBox(
                     width: (MediaQuery.of(context).size.width - 50) / 7.03,

@@ -10,6 +10,8 @@ import 'package:squick/widgets/parking_long_details_sheet.dart';
 import 'package:squick/widgets/squick_button.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+
 class ParkingShortDetailsSheet extends StatelessWidget {
   Parking parking;
   Position position;
@@ -22,7 +24,7 @@ class ParkingShortDetailsSheet extends StatelessWidget {
         context: context,
         isScrollControlled: true,
         builder: (context) => Container(
-            height: 0.87 * height,
+            height: 0.87.sh,
             padding: EdgeInsets.only(
                 bottom: MediaQuery.of(context).viewInsets.bottom),
             child:

@@ -1,5 +1,7 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class Menu extends StatefulWidget {
 
@@ -52,7 +54,7 @@ class _MenuState extends State<Menu> {
         elevation: 5,
         child: Container(
           color: Colors.white60,
-          height: 0.1 * height,
+          height: Platform.isAndroid ? 0.1.sh : 0.08.sh,
           child: Row(
             mainAxisSize: MainAxisSize.max,
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -77,7 +79,7 @@ class _MenuState extends State<Menu> {
                     }
                   },
                   child: SvgPicture.asset(
-                    mapImage
+                    mapImage,
                   ),
                 ),
               ),

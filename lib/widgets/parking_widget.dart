@@ -7,6 +7,7 @@ import 'package:squick/models/parking.dart';
 import 'package:squick/utils/helpers/open_hours.dart';
 import 'package:squick/widgets/parking_long_details_sheet.dart';
 import 'available_spaces_icon.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class ParkingWidget extends StatelessWidget {
   double height;
@@ -21,7 +22,7 @@ class ParkingWidget extends StatelessWidget {
         context: context,
         isScrollControlled: true,
         builder: (context) => Container(
-            height: 0.87 * height,
+            height: 0.87.sh,
             padding: EdgeInsets.only(
                 bottom: MediaQuery.of(context).viewInsets.bottom),
             child: ParkingLongDetailsSheet(
@@ -36,7 +37,7 @@ class ParkingWidget extends StatelessWidget {
     bool isOpen = OpenHoursHelper.isOpen(parking);
 
     return Container(
-      height: 0.165 * height,
+      height: 0.165.sh,
       margin: const EdgeInsets.only(bottom: 20.0),
       decoration: const BoxDecoration(
           color: Colors.white,
@@ -104,7 +105,7 @@ class ParkingWidget extends StatelessWidget {
               child: Container(
                 padding: const EdgeInsets.all(10.0),
                 child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Column(

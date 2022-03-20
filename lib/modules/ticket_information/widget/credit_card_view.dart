@@ -14,7 +14,7 @@ import 'package:scroll_to_index/scroll_to_index.dart';
 import 'package:squick/utils/helpers/networking.dart';
 import 'package:squick/widgets/squick_button.dart';
 import 'package:device_info_plus/device_info_plus.dart';
-
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'credit_card_widget.dart';
 
 class CreditCardView extends StatefulWidget {
@@ -75,7 +75,7 @@ class _CreditCardViewState extends State<CreditCardView> {
     return Container(
       color: const Color(0xff757575),
       child: Container(
-        height: 0.5 * height,
+        height: 0.5.sh,
         decoration: const BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.only(
@@ -180,35 +180,33 @@ class _CreditCardViewState extends State<CreditCardView> {
                 },
               ),
             ),
-            Expanded(
-                flex: 3,
-                child: Padding(
-                  padding: const EdgeInsets.only(
-                      left: 25.0, right: 25.0, bottom: 25.0),
-                  child: SquickButton(
-                    buttonText: 'Плати',
-                    backgroundColor: colorOrange,
-                    onTap: Provider.of<DatabaseProvider>(context)
-                        .count == 0 ? null : () async {
-                      AndroidDeviceInfo androidInfo =
-                          await widget.deviceInfo.androidInfo;
-                      String? userId = androidInfo.id;
+            Padding(
+              padding: const EdgeInsets.only(
+                  left: 25.0, right: 25.0, bottom: 25.0),
+              child: SquickButton(
+                buttonText: 'Плати',
+                backgroundColor: colorOrange,
+                onTap: Provider.of<DatabaseProvider>(context)
+                    .count == 0 ? null : () async {
+                  AndroidDeviceInfo androidInfo =
+                      await widget.deviceInfo.androidInfo;
+                  String? userId = androidInfo.id;
 
-                      TransactionDto transaction = TransactionDto(
-                          userId.toString(),
-                          widget.ticket.id,
-                          widget.ticket.price,
-                          PaymentStatus.SUCCESSFUL.toString().split(".")[1]);
+                  TransactionDto transaction = TransactionDto(
+                      userId.toString(),
+                      widget.ticket.id,
+                      widget.ticket.price,
+                      PaymentStatus.SUCCESSFUL.toString().split(".")[1]);
 
-                      bool result = await networkHelper.newTransaction(
-                          transaction, context);
-                      Navigator.pop(context);
-                      Navigator.pushReplacementNamed(
-                          context, CompletedTransactionScreen.id,
-                          arguments: result);
-                    },
-                  ),
-                )),
+                  bool result = await networkHelper.newTransaction(
+                      transaction, context);
+                  Navigator.pop(context);
+                  Navigator.pushReplacementNamed(
+                      context, CompletedTransactionScreen.id,
+                      arguments: result);
+                },
+              ),
+            ),
           ],
         ),
       ),

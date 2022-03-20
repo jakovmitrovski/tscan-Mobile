@@ -17,6 +17,8 @@ import 'package:squick/widgets/flutter_ticket.dart';
 import 'package:squick/widgets/squick_button.dart';
 import 'package:squick/widgets/ticket_content.dart';
 
+import 'dart:io';
+
 class TicketInformation extends StatefulWidget {
   static const String id = "/ticket_information";
 
@@ -38,54 +40,38 @@ class _TicketInformationState extends State<TicketInformation> {
     return SafeArea(
       child: Scaffold(
         body: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 30.0),
+          padding: const EdgeInsets.only(left: 30.0, right: 30.0, bottom: 10.0),
           child: Stack(
             children: [
               Column(
                 children: [
                   Expanded(
                     flex: 1,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Expanded(
-                          flex: 2,
-                          child: Padding(
-                            padding: const EdgeInsets.only(
-                                right: 15.0, top: 15.0, bottom: 15.0),
-                            child: GestureDetector(
-                              onTap: () {
+                    child: Padding(
+                      padding: const EdgeInsets.only(top: 15),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Expanded(
+                            flex: 1,
+                            child: IconButton(
+                              onPressed: () {
                                 Navigator.pop(context);
                               },
-                              child: Material(
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(10),
-                                  side: const BorderSide(color: colorBlueDark),
-                                ),
-                                child: IconButton(
-                                  padding: const EdgeInsets.all(2),
-                                  onPressed: () {
-                                    Navigator.pop(context);
-                                  },
-                                  icon: const Icon(IconlyLight.arrow_left_2),
-                                ),
-                              ),
+                              icon: const Icon(IconlyLight.arrow_left_2, color: colorBlueDark,),
                             ),
                           ),
-                        ),
-                        Expanded(
-                          flex: 8,
-                          child: Text(
-                            'Информации за билет',
-                            style: font20Bold.copyWith(color: colorBlueDarkLight),
+                          Expanded(
+                            flex: 12,
+                            child: Text(
+                              'Информации за билет',
+                              style: font18Bold.copyWith(color: colorBlueDark),
+                              textAlign: TextAlign.center,
+                            ),
                           ),
-                        ),
-                        const Expanded(
-                          flex: 1,
-                          child: SizedBox(width: 500.0),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
                   Expanded(
@@ -114,9 +100,16 @@ class _TicketInformationState extends State<TicketInformation> {
                                     0
                                     ? null
                                     : () async {
-                                  AndroidDeviceInfo androidInfo =
-                                  await deviceInfo.androidInfo;
-                                  String? userId = androidInfo.id;
+
+                                  String? userId;
+                                  if (Platform.isAndroid) {
+                                    AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
+                                    userId = androidInfo.id;
+                                  }else if (Platform.isIOS) {
+                                    IosDeviceInfo iosInfo = await deviceInfo.iosInfo;
+                                    userId = iosInfo.identifierForVendor;
+                                  }
+
                                   setState(() {
                                     loading = true;
                                   });
@@ -182,47 +175,31 @@ class _TicketInformationState extends State<TicketInformation> {
                   children: [
                     Expanded(
                       flex: 1,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Expanded(
-                            flex: 2,
-                            child: Padding(
-                              padding: const EdgeInsets.only(
-                                  right: 15.0, top: 15.0, bottom: 15.0),
-                              child: GestureDetector(
-                                onTap: () {
+                      child: Padding(
+                        padding: const EdgeInsets.only(top: 15),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Expanded(
+                              flex: 1,
+                              child: IconButton(
+                                onPressed: () {
                                   Navigator.pop(context);
                                 },
-                                child: Material(
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(10),
-                                    side: const BorderSide(color: colorBlueDark),
-                                  ),
-                                  child: IconButton(
-                                    padding: const EdgeInsets.all(2),
-                                    onPressed: () {
-                                      Navigator.pop(context);
-                                    },
-                                    icon: const Icon(IconlyLight.arrow_left_2),
-                                  ),
-                                ),
+                                icon: const Icon(IconlyLight.arrow_left_2, color: colorBlueDark,),
                               ),
                             ),
-                          ),
-                          Expanded(
-                            flex: 8,
-                            child: Text(
-                              'Информации за билет',
-                              style: font20Bold.copyWith(color: colorBlueDarkLight),
+                            Expanded(
+                              flex: 12,
+                              child: Text(
+                                'Информации за билет',
+                                style: font18Bold.copyWith(color: colorBlueDark),
+                                textAlign: TextAlign.center,
+                              ),
                             ),
-                          ),
-                          const Expanded(
-                            flex: 1,
-                            child: SizedBox(width: 500.0),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
                     ),
                     Expanded(
@@ -255,26 +232,7 @@ class _TicketInformationState extends State<TicketInformation> {
                                   : 'Промени Картичка',
                               style: Provider.of<DatabaseProvider>(context).count == 0 ? font14Bold.copyWith(color: Colors.black) : font12Regular.copyWith(color: Colors.black),
                             ),
-                            onPressed:
-                                Provider.of<DatabaseProvider>(context).count == 0
-                                    ? () {
-                                        var backToPayment = true;
-                                        Navigator.pushNamed(context, AddCardScreen.id,
-                                            arguments: backToPayment);
-                                      }
-                                    : () {
-                                        showModalBottomSheet(
-                                          context: context,
-                                          builder: (_) => CreditCardView(
-                                            primaryIndex:
-                                                Provider.of<DatabaseProvider>(context,
-                                                        listen: false)
-                                                    .getPrimaryCard(),
-                                            ticket: ticket,
-                                            deviceInfo: deviceInfo,
-                                          ),
-                                        );
-                                      },
+                            onPressed: () {}
                           )
                         ],
                       ),

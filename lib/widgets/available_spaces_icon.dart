@@ -21,11 +21,11 @@ class AvailableSpacesIcon extends StatelessWidget {
           child: (numberOfFreeSpaces == 0 || !isOpen)
               ? Text(
                   'X',
-                  style: size==15 ? font12Medium.copyWith(color: Colors.white) : font14Medium.copyWith(color: Colors.white),
+                  style: size==15 ? font12Medium.copyWith(fontSize: 12.0, color: Colors.white) : font14Medium.copyWith(fontSize: 14.0, color: Colors.white),
                 )
               : Text(
                   'P',
-                  style: font12Medium.copyWith(color: Colors.white),
+                  style: font12Medium.copyWith(fontSize: 12.0, color: Colors.white),
                 ),
         ),
       ),

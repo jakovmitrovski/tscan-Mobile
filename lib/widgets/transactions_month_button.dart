@@ -17,7 +17,7 @@ class TransactionsMonthButton extends StatelessWidget {
     required this.buttonText,
     this.selected = false,
     this.onTap,
-    this.width = 90,});
+    this.width = 100,});
 
   @override
   Widget build(BuildContext context) {

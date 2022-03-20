@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:squick/constants/app_constants.dart';
 import 'package:squick/modules/past_transactions/model/transaction.dart';
 import 'package:squick/utils/helpers/date.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class TransactionWidget extends StatelessWidget {
   double height;
@@ -12,7 +13,7 @@ class TransactionWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 0.1 * height,
+      height: 0.1.sh,
       margin: const EdgeInsets.symmetric(vertical: 5.0),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,

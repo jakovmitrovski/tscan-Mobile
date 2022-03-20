@@ -12,6 +12,7 @@ import 'package:squick/modules/ticket_information/screen/ticket_information_scre
 import 'package:squick/modules/wallet/screen/add_new_card_screen.dart';
 import 'package:squick/modules/wallet/screen/wallet_screen.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 
 void main() async{
@@ -25,30 +26,43 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MultiProvider(
-      providers: [
-        ChangeNotifierProvider(create: (_) => DatabaseProvider()),
-        ChangeNotifierProvider(create: (_) => FilterDataModel()),
-        ChangeNotifierProvider(create: (_) => MapsProvider()),
-        ChangeNotifierProvider(create: (_) => SelectedParkingProvider()),
-      ],
-      child: MaterialApp(
-        title: 'TScan',
-        theme: ThemeData(
-          primarySwatch: Colors.blue,
-        ),
-        initialRoute: HomeScreen.id,
-        routes: {
-          HomeScreen.id: (context) => const HomeScreen(),
-          MapScreen.id: (context) => const MapScreen(),
-          ExploreScreen.id: (context) => const ExploreScreen(),
-          TransactionsScreen.id: (context) => const TransactionsScreen(),
-          TicketInformation.id: (context) => TicketInformation(),
-          WalletScreen.id: (context) => const WalletScreen(),
-          CompletedTransactionScreen.id: (context) => CompletedTransactionScreen(),
-          AddCardScreen.id: (context) => const AddCardScreen(),
-        },
-      ),
+    return ScreenUtilInit(
+      designSize: Size(325, 703),
+      minTextAdapt: true,
+      splitScreenMode: true,
+      builder: () =>
+          MultiProvider(
+            providers: [
+              ChangeNotifierProvider(create: (_) => DatabaseProvider()),
+              ChangeNotifierProvider(create: (_) => FilterDataModel()),
+              ChangeNotifierProvider(create: (_) => MapsProvider()),
+              ChangeNotifierProvider(create: (_) => SelectedParkingProvider()),
+            ],
+            child: MaterialApp(
+              title: 'TScan',
+              theme: ThemeData(
+                primarySwatch: Colors.blue,
+              ),
+              builder: (context, child) {
+                return MediaQuery(
+                  child: child as Widget,
+                  data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
+                );
+              },
+              initialRoute: HomeScreen.id,
+              routes: {
+                HomeScreen.id: (context) => const HomeScreen(),
+                MapScreen.id: (context) => const MapScreen(),
+                ExploreScreen.id: (context) => const ExploreScreen(),
+                TransactionsScreen.id: (context) => const TransactionsScreen(),
+                TicketInformation.id: (context) => TicketInformation(),
+                WalletScreen.id: (context) => const WalletScreen(),
+                CompletedTransactionScreen.id: (context) => CompletedTransactionScreen(),
+                AddCardScreen.id: (context) => const AddCardScreen(),
+              },
+            ),
+          )
     );
+
   }
 }

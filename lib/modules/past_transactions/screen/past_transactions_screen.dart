@@ -46,8 +46,15 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
   late double height;
 
   Future<String> getUserId(DeviceInfoPlugin deviceInfo) async {
-    AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
-    String? userId = androidInfo.id;
+    String? userId;
+
+    if (Platform.isAndroid) {
+      AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
+      userId = androidInfo.id;
+    }else if (Platform.isIOS) {
+      IosDeviceInfo iosInfo = await deviceInfo.iosInfo;
+      userId = iosInfo.identifierForVendor;
+    }
 
     if (userId == null) {
       AlertHelper.showAlert(
@@ -209,7 +216,7 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
 
   void scrollRight() {
     if (_scrollController.hasClients) {
-      double position = _selectedIndex * (90 + 2 * 8);
+      double position = _selectedIndex * (100 + 2 * 8);
       _scrollController.animateTo(position,
           duration: const Duration(milliseconds: 500),
           curve: Curves.fastOutSlowIn);

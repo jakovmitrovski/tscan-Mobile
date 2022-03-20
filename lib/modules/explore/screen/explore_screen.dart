@@ -19,6 +19,8 @@ import 'package:squick/widgets/parking_widget.dart';
 import 'package:squick/widgets/search_bar.dart';
 import 'dart:math';
 
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+
 class ExploreScreen extends StatefulWidget {
   static const String id = "/explore";
 
@@ -150,7 +152,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
                                 context: context,
                                 isScrollControlled: true,
                                 builder: (context) => Container(
-                                      height: 0.60 * height,
+                                      height: 0.60.sh,
                                       padding: EdgeInsets.only(
                                           bottom: MediaQuery.of(context)
                                               .viewInsets
