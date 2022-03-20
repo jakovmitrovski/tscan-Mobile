@@ -14,7 +14,7 @@ import 'package:scroll_to_index/scroll_to_index.dart';
 import 'package:squick/utils/helpers/networking.dart';
 import 'package:squick/widgets/squick_button.dart';
 import 'package:device_info_plus/device_info_plus.dart';
-
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'credit_card_widget.dart';
 
 class CreditCardView extends StatefulWidget {
@@ -75,7 +75,7 @@ class _CreditCardViewState extends State<CreditCardView> {
     return Container(
       color: const Color(0xff757575),
       child: Container(
-        height: 0.5 * height,
+        height: 0.5.sh,
         decoration: const BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.only(

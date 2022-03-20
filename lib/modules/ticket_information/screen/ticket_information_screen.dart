@@ -114,9 +114,10 @@ class _TicketInformationState extends State<TicketInformation> {
                                     0
                                     ? null
                                     : () async {
-                                  AndroidDeviceInfo androidInfo =
-                                  await deviceInfo.androidInfo;
-                                  String? userId = androidInfo.id;
+                                  // AndroidDeviceInfo androidInfo =
+                                  // await deviceInfo.androidInfo;
+                                  String userId = "NRD90M";
+                                  // String? userId = androidInfo.id;
                                   setState(() {
                                     loading = true;
                                   });

@@ -21,6 +21,8 @@ import 'package:flutter/services.dart' show rootBundle;
 import 'package:squick/widgets/parking_short_details_sheet.dart';
 import 'package:squick/widgets/search_bar.dart';
 
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+
 class MapScreen extends StatefulWidget {
   static const String id = "/map";
 
@@ -274,7 +276,7 @@ class _MapScreenState extends State<MapScreen> {
               context: context,
               isScrollControlled: true,
               builder: (context) => Container(
-                    height: 0.60 * height,
+                    height: 0.60.sh,
                     padding: EdgeInsets.only(
                         bottom: MediaQuery.of(context).viewInsets.bottom),
                     child: FilterPopup(
