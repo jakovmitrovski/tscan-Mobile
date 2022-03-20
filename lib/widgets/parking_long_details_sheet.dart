@@ -49,10 +49,10 @@ class ParkingLongDetailsSheet extends StatelessWidget {
                    padding: EdgeInsets.only(right: 2.0),
                    child: Icon(Icons.timer, color: colorBlueDark),
                  ),
-                 Text(day + ": ", style: font16Medium.copyWith(color: colorBlueDark),),
+                 Text(day + ": ", style: font14Medium.copyWith(color: colorBlueDark),),
                ],
               ),
-              Text(working, style: font16Regular.copyWith(color: colorBlueDark),)
+              Text(working, style: font14Regular.copyWith(color: colorBlueDark),)
             ],
           ),
         )

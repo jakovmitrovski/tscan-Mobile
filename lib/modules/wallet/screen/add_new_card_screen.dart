@@ -111,14 +111,14 @@ class _AddCardScreenState extends State<AddCardScreen> {
                         onPressed: () {
                           Navigator.pop(context);
                         },
-                        icon: const Icon(IconlyLight.arrow_left_2),
+                        icon: const Icon(IconlyLight.arrow_left_2, color: colorBlueDark,),
                       ),
                     ),
                     Expanded(
                       flex: 12,
                       child: Text(
                         'Додади картичка',
-                        style: font20Bold.copyWith(color: colorBlueDark),
+                        style: font18Bold.copyWith(color: colorBlueDark),
                         textAlign: TextAlign.center,
                       ),
                     ),

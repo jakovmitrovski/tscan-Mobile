@@ -216,7 +216,7 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
 
   void scrollRight() {
     if (_scrollController.hasClients) {
-      double position = _selectedIndex * (90 + 2 * 8);
+      double position = _selectedIndex * (100 + 2 * 8);
       _scrollController.animateTo(position,
           duration: const Duration(milliseconds: 500),
           curve: Curves.fastOutSlowIn);

@@ -22,7 +22,7 @@ class ParkingWidget extends StatelessWidget {
         context: context,
         isScrollControlled: true,
         builder: (context) => Container(
-            height: 0.82.sh,
+            height: 0.87.sh,
             padding: EdgeInsets.only(
                 bottom: MediaQuery.of(context).viewInsets.bottom),
             child: ParkingLongDetailsSheet(

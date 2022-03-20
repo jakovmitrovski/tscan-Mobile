@@ -180,35 +180,33 @@ class _CreditCardViewState extends State<CreditCardView> {
                 },
               ),
             ),
-            Expanded(
-                flex: 3,
-                child: Padding(
-                  padding: const EdgeInsets.only(
-                      left: 25.0, right: 25.0, bottom: 25.0),
-                  child: SquickButton(
-                    buttonText: 'Плати',
-                    backgroundColor: colorOrange,
-                    onTap: Provider.of<DatabaseProvider>(context)
-                        .count == 0 ? null : () async {
-                      AndroidDeviceInfo androidInfo =
-                          await widget.deviceInfo.androidInfo;
-                      String? userId = androidInfo.id;
+            Padding(
+              padding: const EdgeInsets.only(
+                  left: 25.0, right: 25.0, bottom: 25.0),
+              child: SquickButton(
+                buttonText: 'Плати',
+                backgroundColor: colorOrange,
+                onTap: Provider.of<DatabaseProvider>(context)
+                    .count == 0 ? null : () async {
+                  AndroidDeviceInfo androidInfo =
+                      await widget.deviceInfo.androidInfo;
+                  String? userId = androidInfo.id;
 
-                      TransactionDto transaction = TransactionDto(
-                          userId.toString(),
-                          widget.ticket.id,
-                          widget.ticket.price,
-                          PaymentStatus.SUCCESSFUL.toString().split(".")[1]);
+                  TransactionDto transaction = TransactionDto(
+                      userId.toString(),
+                      widget.ticket.id,
+                      widget.ticket.price,
+                      PaymentStatus.SUCCESSFUL.toString().split(".")[1]);
 
-                      bool result = await networkHelper.newTransaction(
-                          transaction, context);
-                      Navigator.pop(context);
-                      Navigator.pushReplacementNamed(
-                          context, CompletedTransactionScreen.id,
-                          arguments: result);
-                    },
-                  ),
-                )),
+                  bool result = await networkHelper.newTransaction(
+                      transaction, context);
+                  Navigator.pop(context);
+                  Navigator.pushReplacementNamed(
+                      context, CompletedTransactionScreen.id,
+                      arguments: result);
+                },
+              ),
+            ),
           ],
         ),
       ),
