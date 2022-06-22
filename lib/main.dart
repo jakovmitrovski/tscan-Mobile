@@ -14,11 +14,9 @@ import 'package:squick/modules/wallet/screen/wallet_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-
 void main() async{
   WidgetsFlutterBinding.ensureInitialized();
   runApp(const MyApp());
-
 }
 
 class MyApp extends StatelessWidget {

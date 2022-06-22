@@ -103,4 +103,29 @@ class NetworkHelper {
       return null;
     }
   }
+
+  Future<dynamic> createPaymentIntent({required int price, required int ticketId, required String userId}) async {
+    http.Response response = await http.post(url, body: json.encode({
+      'amount': price * 100,
+      'ticketId': ticketId,
+      'price': price,
+      'userId': userId
+    }), headers: {'Content-Type': 'application/json; charset=utf-8'});
+    if (response.statusCode == 200) {
+      return jsonDecode(utf8.decode(response.bodyBytes));
+    } else {
+      return null;
+    }
+  }
+
+  Future<dynamic> getDistFromApi({required double lat1, required double lon1, required double lat2, required double lon2}) async {
+    Uri googleUrl = Uri.parse("https://maps.googleapis.com/maps/api/distancematrix/json?destinations=${lat1},${lon1}&origins=${lat2},${lon2}&mode=driving&key=AIzaSyAVdxBK8Tn2sPZTnO4Y_TMFfQjELISyf2s");
+    http.Response response = await http.get(googleUrl);
+
+    if (response.statusCode == 200) {
+      return jsonDecode(response.body)["rows"][0]["elements"][0]["distance"]["text"];
+    }else {
+      return "0 м";
+    }
+  }
 }

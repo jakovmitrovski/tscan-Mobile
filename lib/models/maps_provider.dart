@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:squick/constants/api_constants.dart';
 import 'package:squick/models/parking.dart';
-import 'package:squick/utils/helpers/distance.dart';
 import 'package:squick/utils/helpers/location.dart';
 import 'package:squick/utils/helpers/networking.dart';
 import 'package:squick/utils/helpers/parse_utils.dart';
@@ -58,12 +57,12 @@ class MapsProvider extends ChangeNotifier {
     if (parkingsData != null) {
       _parkings = await ParseUtils.parseParkingData(parkingsData);
       for (int i = 0; i < _parkings.length; i++) {
-        _parkings[i].sortingDistance = await DistanceHelper().getDistance(
-            currentLocation.latitude,
-            currentLocation.longitude,
-            _parkings[i].latitude,
-            _parkings[i].longitude);
-        _parkings[i].distance = DistanceHelper().getDistAsString(_parkings[i].sortingDistance);
+        String distance = await NetworkHelper(Uri.parse("")).getDistFromApi(lat1: currentLocation.latitude,
+            lon1: currentLocation.longitude,
+            lat2: _parkings[i].latitude,
+            lon2: _parkings[i].longitude);
+        _parkings[i].sortingDistance = double.parse(distance.split(" ")[0]);
+        _parkings[i].distance = distance;
       }
     }
 

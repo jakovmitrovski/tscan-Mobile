@@ -8,25 +8,31 @@ import 'package:squick/modules/ticket_information/model/payment_status.dart';
 import 'package:squick/modules/ticket_information/model/ticket_info.dart';
 import 'package:squick/modules/ticket_information/model/transaction_dto.dart';
 import 'package:squick/modules/home/model/database.dart';
-import 'package:squick/modules/wallet/model/credit_card.dart';
+import 'package:stripe_payment/stripe_payment.dart';
 
 import 'package:scroll_to_index/scroll_to_index.dart';
 import 'package:squick/utils/helpers/networking.dart';
 import 'package:squick/widgets/squick_button.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import '../../../models/stripe_transaction_response.dart';
+import '../../../utils/helpers/payment.dart';
 import 'credit_card_widget.dart';
+import '../../wallet/model/credit_card.dart' as TScanCreditCard;
 
 class CreditCardView extends StatefulWidget {
-  int primaryIndex;
-  TicketInfo ticket;
-  DeviceInfoPlugin deviceInfo;
+  final int primaryIndex;
+  final TicketInfo ticket;
+  final DeviceInfoPlugin deviceInfo;
+  final VoidCallback onPayTapped;
 
   CreditCardView(
       {Key? key,
       required this.primaryIndex,
       required this.ticket,
-      required this.deviceInfo})
+      required this.deviceInfo,
+      required this.onPayTapped,
+      })
       : super(key: key);
 
   @override
@@ -36,8 +42,10 @@ class CreditCardView extends StatefulWidget {
 class _CreditCardViewState extends State<CreditCardView> {
   int currentIndex = 0;
   bool isFirstTime = true;
+  bool loading = false;
   NetworkHelper networkHelper =
       NetworkHelper(Uri.parse('$baseEndpoint/transactions'));
+  late DatabaseProvider _databaseProvider;
 
   final controller = AutoScrollController(
       viewportBoundaryGetter: () => const Rect.fromLTRB(0, 0, 0, 5),
@@ -60,6 +68,25 @@ class _CreditCardViewState extends State<CreditCardView> {
     return currentIndex;
   }
 
+  Future<StripeTransactionResponse> payTicket({required ticketId, required price, required userId, required TScanCreditCard.CreditCard card}) async {
+    var expiryArr = card.expiryDate.split('/');
+    CreditCard stripeCard = CreditCard(
+      number: card.cardNumber,
+      expMonth: int.parse(expiryArr[0]),
+      expYear: int.parse(expiryArr[1]),
+      name: card.cardholderName,
+      cvc: card.cvv,
+    );
+
+    var response = await StripeService.payViaExistingCard(
+        price: price,
+        userId: userId,
+        ticketId: ticketId,
+        card: stripeCard
+    );
+    return response;
+  }
+
   @override
   Widget build(BuildContext context) {
     if (widget.primaryIndex != -1 && isFirstTime) {
@@ -69,145 +96,159 @@ class _CreditCardViewState extends State<CreditCardView> {
         controller.scrollToIndex(widget.primaryIndex);
       });
     }
+    _databaseProvider = Provider.of<DatabaseProvider>(context);
 
-    final double height = MediaQuery.of(context).size.height;
-
-    return Container(
-      color: const Color(0xff757575),
+    return AbsorbPointer(
+      absorbing: loading,
       child: Container(
-        height: 0.5.sh,
-        decoration: const BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(20.0),
-                topRight: Radius.circular(20.0))),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Expanded(
-              flex: 1,
-              child: Center(
-                child: Container(
-                  width: 60,
-                  height: 2,
-                  color: colorGrayDark,
-                ),
-              ),
-            ),
-            Expanded(
-              flex: 10,
-              child: NotificationListener(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                  //TODO: Remove space between elements
-                  child: ListView.separated(
-                    controller: controller,
-                    clipBehavior: Clip.hardEdge,
-                    scrollDirection: Axis.horizontal,
-                    shrinkWrap: true,
-                    itemCount: Provider.of<DatabaseProvider>(context)
-                            .count +
-                        1,
-                    itemBuilder: (BuildContext context, int index) {
-                      CreditCard? card =
-                          index < Provider.of<DatabaseProvider>(context).count
-                              ? Provider.of<DatabaseProvider>(context)
-                                  .getLoadedCards[index]
-                              : null;
-                      return index ==
-                              Provider.of<DatabaseProvider>(context).count
-                          ? AutoScrollTag(
-                              key: ValueKey(index),
-                              controller: controller,
-                              index: index,
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  CreditCardViewWidget(
-                                    creditCard: CreditCard("",
-                                        cardNumber: "",
-                                        expiryDate: "",
-                                        cvv: "",
-                                        cardholderName: "",
-                                        isPrimary: 0),
-                                    isSelected: false,
-                                  ),
-                                ],
-                              ),
-                            )
-                          : AutoScrollTag(
-                              key: ValueKey(index),
-                              controller: controller,
-                              index: index,
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  CreditCardViewWidget(
-                                    creditCard: CreditCard(card!.imageUrl,
-                                        cardNumber: card.cardNumber,
-                                        expiryDate: card.expiryDate,
-                                        cvv: card.cvv,
-                                        cardholderName: card.cardholderName,
-                                        isPrimary: card.isPrimary),
-                                    isSelected:
-                                        index == currentIndex ? true : false,
-                                  ),
-                                ],
-                              ),
-                            );
-                    },
-                    separatorBuilder: (BuildContext context, int index) {
-                      return const Divider();
-                    },
+        color: const Color(0xff757575),
+        child: Container(
+          height: 0.5.sh,
+          decoration: const BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(20.0),
+                  topRight: Radius.circular(20.0))),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Expanded(
+                flex: 1,
+                child: Center(
+                  child: Container(
+                    width: 60,
+                    height: 2,
+                    color: colorGrayDark,
                   ),
                 ),
-                onNotification: (n) {
-                  if (n is ScrollEndNotification) {
+              ),
+              Expanded(
+                flex: 10,
+                child: NotificationListener(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                    child: ListView.separated(
+                      controller: controller,
+                      clipBehavior: Clip.hardEdge,
+                      scrollDirection: Axis.horizontal,
+                      shrinkWrap: true,
+                      itemCount: Provider.of<DatabaseProvider>(context)
+                              .count +
+                          1,
+                      itemBuilder: (BuildContext context, int index) {
+                        TScanCreditCard.CreditCard? card =
+                            index < Provider.of<DatabaseProvider>(context).count
+                                ? Provider.of<DatabaseProvider>(context)
+                                    .getLoadedCards[index]
+                                : null;
+                        return index ==
+                                Provider.of<DatabaseProvider>(context).count
+                            ? AutoScrollTag(
+                                key: ValueKey(index),
+                                controller: controller,
+                                index: index,
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    CreditCardViewWidget(
+                                      creditCard: TScanCreditCard.CreditCard("",
+                                          cardNumber: "",
+                                          expiryDate: "",
+                                          cvv: "",
+                                          cardholderName: "",
+                                          isPrimary: 0),
+                                      isSelected: false,
+                                    ),
+                                  ],
+                                ),
+                              )
+                            : AutoScrollTag(
+                                key: ValueKey(index),
+                                controller: controller,
+                                index: index,
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    CreditCardViewWidget(
+                                      creditCard: TScanCreditCard.CreditCard(card!.imageUrl,
+                                          cardNumber: card.cardNumber,
+                                          expiryDate: card.expiryDate,
+                                          cvv: card.cvv,
+                                          cardholderName: card.cardholderName,
+                                          isPrimary: card.isPrimary),
+                                      isSelected:
+                                          index == currentIndex ? true : false,
+                                    ),
+                                  ],
+                                ),
+                              );
+                      },
+                      separatorBuilder: (BuildContext context, int index) {
+                        return const Divider();
+                      },
+                    ),
+                  ),
+                  onNotification: (n) {
+                    if (n is ScrollEndNotification) {
+                      setState(() {
+                        controller.scrollToIndex(
+                            changeIndex(
+                                Provider.of<DatabaseProvider>(context,
+                                        listen: false)
+                                    .count,
+                                controller),
+                            preferPosition: AutoScrollPosition.middle);
+                      });
+                    }
+                    return true;
+                  },
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(
+                    left: 25.0, right: 25.0, bottom: 25.0),
+                child: SquickButton(
+                  buttonText: !loading ? 'Плати' : 'Се плаќа...',
+                  backgroundColor: colorOrange,
+                  onTap: _databaseProvider.count == 0 || loading ? null : () async {
+                    widget.onPayTapped();
                     setState(() {
-                      controller.scrollToIndex(
-                          changeIndex(
-                              Provider.of<DatabaseProvider>(context,
-                                      listen: false)
-                                  .count,
-                              controller),
-                          preferPosition: AutoScrollPosition.middle);
+                      loading = true;
                     });
-                  }
-                  return true;
-                },
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(
-                  left: 25.0, right: 25.0, bottom: 25.0),
-              child: SquickButton(
-                buttonText: 'Плати',
-                backgroundColor: colorOrange,
-                onTap: Provider.of<DatabaseProvider>(context)
-                    .count == 0 ? null : () async {
-                  AndroidDeviceInfo androidInfo =
-                      await widget.deviceInfo.androidInfo;
-                  String? userId = androidInfo.id;
+                    AndroidDeviceInfo androidInfo =
+                        await widget.deviceInfo.androidInfo;
+                    String? userId = androidInfo.id;
 
-                  TransactionDto transaction = TransactionDto(
-                      userId.toString(),
-                      widget.ticket.id,
-                      widget.ticket.price,
-                      PaymentStatus.SUCCESSFUL.toString().split(".")[1]);
+                    List<TScanCreditCard.CreditCard> cards = await _databaseProvider.getAllCreditCards();
+                    TScanCreditCard.CreditCard card = cards[currentIndex];
 
-                  bool result = await networkHelper.newTransaction(
-                      transaction, context);
-                  Navigator.pop(context);
-                  Navigator.pushReplacementNamed(
-                      context, CompletedTransactionScreen.id,
-                      arguments: result);
-                },
+                    StripeTransactionResponse response = await payTicket(price: widget.ticket.price, userId: userId, ticketId: widget.ticket.id, card: card);
+
+                    // TransactionDto transaction = TransactionDto(
+                    //     userId.toString(),
+                    //     widget.ticket.id,
+                    //     widget.ticket.price,
+                    //     response.success ? PaymentStatus.SUCCESSFUL.toString().split(".")[1] : PaymentStatus.UNSUCCESSFUL.toString().split(".")[1]);
+                    //
+                    // bool result = await networkHelper.newTransaction(
+                    //     transaction, context);
+
+                    setState(() {
+                      loading = false;
+                    });
+
+                    Navigator.pop(context);
+                    Navigator.pushReplacementNamed(
+                        context, CompletedTransactionScreen.id,
+                        arguments: response.success);
+                  },
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

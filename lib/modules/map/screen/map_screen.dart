@@ -243,7 +243,7 @@ class _MapScreenState extends State<MapScreen> {
             zoomControlsEnabled: false,
             mapToolbarEnabled: false,
             mapType: MapType.normal,
-            markers: getMarkers(_parkings),
+            markers: getMarkers(mapsProvider.getLoadedParkings()),
           ),
     Align(
       alignment: Alignment.topCenter,

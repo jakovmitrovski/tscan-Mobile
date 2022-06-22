@@ -78,15 +78,19 @@ class CompletedTransactionScreen extends StatelessWidget {
                             textColor: success ? Colors.white : colorBlueDark,
                             backgroundColor: success ? colorBlueDark : Colors.white,
                             onTap: () async {
-                              Navigator.pop(context);
                               if (!success) {
                                 final ticketInfo = await Scanner.scan(context);
+
+
+                                print(ticketInfo);
 
                                 if (ticketInfo == null || ticketInfo == -1) {
                                   return;
                                 }
 
-                                Navigator.pushNamed(context, TicketInformation.id, arguments: ticketInfo);
+                                Navigator.pushReplacementNamed(context, TicketInformation.id, arguments: ticketInfo);
+                              }else {
+                                Navigator.pop(context);
                               }
                             },
                           ),

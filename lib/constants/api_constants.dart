@@ -1,1 +1,1 @@
-const baseEndpoint = 'https://squick.herokuapp.com/api';
+const baseEndpoint = 'https://tscan.herokuapp.com/api';
